@@ -173,7 +173,7 @@ $ rm -f /etc/yum.repos.d/CentOS-*
 $ yum install -y nano net-tools wget bind-utils telnet
 ```
 
-&emsp;&emsp;另外，由于 firewalld 经常与 docker 冲突，因此在搭建环境时将 firewalld 删除了，这里我们需要将 iptables 相关的服务安装上，后续将直接通过 iptables 来控制防火墙。关于 iptables 更多相关操作，可以查看我另一篇文档[[链接](/blogs/linux/iptables)]。
+&emsp;&emsp;另外，由于 firewalld 经常与 docker 冲突，因此在搭建环境时将 firewalld 删除了，这里我们需要将 iptables 相关的服务安装上，后续将直接通过 iptables 来控制防火墙。关于 iptables 更多相关操作，可以查看我另一篇文档[[链接](/blogs/linux/network/iptables)]。
 
 ```bash
 # 安装 iptables
