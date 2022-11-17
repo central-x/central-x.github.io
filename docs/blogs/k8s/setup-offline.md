@@ -17,7 +17,7 @@ title: 搭建 Kubernetes 1.24.1 环境（离线）
 
 ## 步骤
 ### 生成 SSL 证书
-　　由于 Registry 需要使用 SSL 证书，因此需要提前生成 SSL 证书。SSL 证书可以通过我之前的笔记[[链接]()]来生成，也可以直接使用我在压缩包 ssl 目录下提供的证书。
+　　由于 Registry 需要使用 SSL 证书，因此需要提前生成 SSL 证书。SSL 证书可以通过我之前的笔记[[链接](https://zhuanlan.zhihu.com/p/522788875)]来生成，也可以直接使用我在压缩包 ssl 目录下提供的证书。
 
 　　本次笔记里面，需要用到根据证（root.crt），以及通用 SSL 证书（cluster.k8s ）。
 
