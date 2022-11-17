@@ -1,0 +1,18 @@
+{
+  "name": "central-x",
+  "version": "1.0.0",
+  "description": "Document for CentralX",
+  "main": "index.js",
+  "repository": "https://alan-yeh@github.com/central-x/central-x.github.io.git",
+  "author": "Alan Yeh <alan@yeh.cn>",
+  "license": "MIT",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0-alpha.29",
+    "vue": "^3.2.45"
+  }
+}
