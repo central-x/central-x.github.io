@@ -73,7 +73,6 @@ export default {
                     ]
                 },
             ],
-
             "/studio/": [
                 {
                     text: "Central Studio",
@@ -261,6 +260,42 @@ export default {
                                 {text: "FAQ", link: "/studio/provider/deployment/faq"}
                             ]
                         },
+                    ]
+                }
+            ],
+            "/blogs/": [
+                {
+                    text: "Blogs", 
+                    items: [
+                        {text: "Summary", link: "/blogs/"}
+                    ]
+                },
+                {
+                    text: "Kubernetes",
+                    collapsible: true,
+                    collapsed: true,
+                    items: [
+                        {text: "搭建 Kubernetes 环境", link: "/blogs/k8s/setup"},
+                        {text: "搭建 Kubernetes 环境（离线）", link: "/blogs/k8s/setup-offline"},
+                        {text: "本地控制远端 Kubernetes 集群", link: "/blogs/k8s/remote-control"},
+                    ]
+                },
+                {
+                    text: "Linux",
+                    collapsible: true,
+                    collapsed: true,
+                    items: [
+                        {text: "下载 yum 的离线安装包", link: "/blogs/linux/download-yum"},
+                        {text: "Linux 常用命令", link: "/blogs/linux/command"},
+                    ]
+                },
+                {
+                    text: "ESXi",
+                    collapsible: true,
+                    collapsed: true,
+                    items: [
+                        {text: "创建 EXSi 系统模板", link: "/blogs/exsi/template"},
+                        {text: "使用命令升级 ESXi", link: "/blogs/exsi/upgrade"},
                     ]
                 }
             ]
