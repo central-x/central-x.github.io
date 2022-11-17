@@ -5,6 +5,7 @@ export default {
     themeConfig: {
         logo: "/logo.svg",
         title: "CentralX",
+        outline: "deep",
         socialLinks: [
             {icon: "github", link: "https://github.com/central-x"}
         ],
