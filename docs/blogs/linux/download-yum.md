@@ -4,13 +4,13 @@ title: 下载 yum 的离线安装包
 
 # {{ $frontmatter.title }}
 ## 概述
-　　在生产环境中，因为安全原因，经常会不提供外网访问权限。在这种环境下，想要安装软件或更新软件，就需要提前将离线安装包下载下来，然后通过相关途径将安装包复制到生产环境系统中才行。
+&emsp;&emsp;在生产环境中，因为安全原因，经常会不提供外网访问权限。在这种环境下，想要安装软件或更新软件，就需要提前将离线安装包下载下来，然后通过相关途径将安装包复制到生产环境系统中才行。
 
-　　由于使用 yum 来安装或更新软件都非常方便，因此我搜索了一下 yum 如何下载离线安装包的方法，这里做一下笔记。
+&emsp;&emsp;由于使用 yum 来安装或更新软件都非常方便，因此我搜索了一下 yum 如何下载离线安装包的方法，这里做一下笔记。
 
 ## 步骤
 ### 下载 rpm 包
-　　找一台环境与生产环境一致的电脑，并且这台电脑需要可以联接互联网。然后通过以下命令将安装包下载到指定的本地目录里：
+&emsp;&emsp;找一台环境与生产环境一致的电脑，并且这台电脑需要可以联接互联网。然后通过以下命令将安装包下载到指定的本地目录里：
 
 ```bash
 # 下载所有系统/软件更新相关的包
@@ -25,7 +25,7 @@ $ yum install docker-ce --downloadonly --downloaddir=/root/packages/centos/7/x86
 $ yum update docker-ce --downloadonly --downloaddir=/root/packages/centos/7/x86_64/docker
 ```
 
-　　如果你只知道命令，但是不知道是什么包提供的，可以通过以下方法来查询命令所在包:
+&emsp;&emsp;如果你只知道命令，但是不知道是什么包提供的，可以通过以下方法来查询命令所在包:
 
 ```bash
 # 通过以下命令，可以看到 netstat 是由 net-tools 包提供的功能
@@ -52,7 +52,7 @@ net-tools-2.0-0.25.20131004git.el7.x86_64
 ```
 
 ### 安装 rpm 包
-　　安装离线 rpm 包的方式，可以选择以下两种之一：
+&emsp;&emsp;安装离线 rpm 包的方式，可以选择以下两种之一：
 
 - 如果你管理的服务器比较少，那么可以通过线下复制的方式，将安装包复制到服务器，然后通过下以命令安装：
 
@@ -72,7 +72,7 @@ $ rpm -Uvh ./docker/*
 
 - 如果你管理的服务器比较多，那么可以搭建 rpm 私服，然后将下载好的 rpm 包上传到私服，其它服务器将 rpm 源指向私服，即可安装这些软件包：
 
-　　目前市面上有很多工具都提供了包管理工具，如 GitLab、Nexus3 等等，简单一点也可以自己起个服务器，然后用 nginx、httpd 这些服务器来托管：
+&emsp;&emsp;目前市面上有很多工具都提供了包管理工具，如 GitLab、Nexus3 等等，简单一点也可以自己起个服务器，然后用 nginx、httpd 这些服务器来托管：
 
 ```bash
 # 安装 createrepo 工具包
@@ -85,7 +85,7 @@ $ mkdir /root/packages/centos/7/x86_64/os && createrepo /root/centos/7/x86_64/os
 $ createrepo --update createrepo /root/centos/7/x86_64/os
 ```
 
-　　然后通过 nginx 暴露 yum 源（如果不懂 Nginx，可以参考我之前的笔记[[链接](https://zhuanlan.zhihu.com/p/522862935)]）：
+&emsp;&emsp;然后通过 nginx 暴露 yum 源（如果不懂 Nginx，可以参考我之前的笔记[[链接](/blogs/linux/nginx)]）：
 
 ```bash
 # 修改 /etc/nginx/nginx.conf
@@ -101,7 +101,7 @@ server {
 }
 ```
 
-　　完成以上步骤之后，就可以将其它服务器的 yum 源切换到自己托管的源了。
+&emsp;&emsp;完成以上步骤之后，就可以将其它服务器的 yum 源切换到自己托管的源了。
 
 ```bash
 # 将原来的服务器的 yum 源移除(先备份起来)

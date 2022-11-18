@@ -2,6 +2,8 @@
 
 This site is build with [VitePress](https://vitepress.vuejs.org). Site content is written in markdown format located in `docs`.
 
+Use `yarn install` to install dependencies.
+
 Use `yarn docs:dev` to boot up dev environment.
 
 Use `yarn docs:buid` to generate static html files.

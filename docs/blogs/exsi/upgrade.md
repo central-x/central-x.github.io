@@ -4,22 +4,22 @@ title: 使用命令升级 ESXi
 
 # {{ $frontmatter.title }}
 ## 概述
-　　在使用 ESXi 的过程中，如果官方发布了新版本的补丁功能，可以通过以下方式升级 ESXi 的版本。
+&emsp;&emsp;在使用 ESXi 的过程中，如果官方发布了新版本的补丁功能，可以通过以下方式升级 ESXi 的版本。
 
 ## 操作步骤
 ### 下载安装包
-　　在 VMWare 官网[[链接](https://customerconnect.vmware.com/cn/group/vmware/evalcenter?p=free-esxi7)]下载 ESXi 的软件包。注意，升级时，应该下载 Offline Bundle 格式（也就是 zip 格式）的软件包。
+&emsp;&emsp;在 VMWare 官网[[链接](https://customerconnect.vmware.com/cn/group/vmware/evalcenter?p=free-esxi7)]下载 ESXi 的软件包。注意，升级时，应该下载 Offline Bundle 格式（也就是 zip 格式）的软件包。
 
-　　下载完成之后，将该软件包上传到 ESXi 的存储里，如下图所示。
+&emsp;&emsp;下载完成之后，将该软件包上传到 ESXi 的存储里，如下图所示。
 
 ![](./assets/upgrade_01.png)
 
 ### 远程登录到服务器
-　　在默认情况下，ESXi 是不允许使用 SSH 远程登录到服务器的，因此需要先启用 Secure Shell。在首面中执行以下操作，即可启用远程 SSH 远程登录功能。
+&emsp;&emsp;在默认情况下，ESXi 是不允许使用 SSH 远程登录到服务器的，因此需要先启用 Secure Shell。在首面中执行以下操作，即可启用远程 SSH 远程登录功能。
 
 ![](./assets/upgrade_02.png)
 
-　　然后在命令行工具里，就可以执行远程操作了。
+&emsp;&emsp;然后在命令行工具里，就可以执行远程操作了。
 
 ```bash
 # 远程登录到 ESXi 服务器

@@ -4,27 +4,27 @@ title: 搭建 Kubernetes 1.24.1 环境（离线）
 
 # {{ $frontmatter.title }}
 ## 概述
-　　在上一篇笔记中，已经完成了在有网络的情况下的搭建 Kubernetes 1.24.1 环境了。但是在生产环境中，很多情况下一般是不允许服务器连接网络的，因此这里再记一篇笔记，记录一下关于如何在内网（离线）环境下搭建 Kubernetes 环境。
+&emsp;&emsp;在上一篇笔记中，已经完成了在有网络的情况下的搭建 Kubernetes 1.24.1 环境了。但是在生产环境中，很多情况下一般是不允许服务器连接网络的，因此这里再记一篇笔记，记录一下关于如何在内网（离线）环境下搭建 Kubernetes 环境。
 
-　　准备好 4 台虚拟机：
+&emsp;&emsp;准备好 4 台虚拟机：
 
 - 10.10.10.10（svc.cluster.k8s）：运行 DNS 服务、Registry 服务、Yum 源（还可以加入 NTP 服务等）
 - 10.10.10.11（master.cluster.k8s）：主节点
 - 10.10.10.12（node1.cluster.k8s）：工作节点
 - 10.10.10.13（node2.cluster.k8s）：工作节点
 
-　　为了方便搭建环，我将本篇文档里面用到的内容放在附件中[链接]，可以自行下载。
+&emsp;&emsp;为了方便搭建环，我将本篇文档里面用到的内容放在附件中[[链接](https://download.csdn.net/download/Flowy/85623839)]，可以自行下载。
 
 ## 步骤
 ### 生成 SSL 证书
-　　由于 Registry 需要使用 SSL 证书，因此需要提前生成 SSL 证书。SSL 证书可以通过我之前的笔记[[链接](https://zhuanlan.zhihu.com/p/522788875)]来生成，也可以直接使用我在压缩包 ssl 目录下提供的证书。
+&emsp;&emsp;由于 Registry 需要使用 SSL 证书，因此需要提前生成 SSL 证书。SSL 证书可以通过我之前的笔记[[链接](/blogs/linux/ssl)]来生成，也可以直接使用我在压缩包 ssl 目录下提供的证书。
 
-　　本次笔记里面，需要用到根据证（root.crt），以及通用 SSL 证书（cluster.k8s ）。
+&emsp;&emsp;本次笔记里面，需要用到根据证（root.crt），以及通用 SSL 证书（cluster.k8s ）。
 
 ### 搭建 DNS、Registry、Yum 服务
-　　由于 Docker 在搭建基础环境存在无与论比的优势，因此在 10.10.10.10 这台服务器上，我们直接通过 Docker 和 Compose 来创建相关服务，这样可以快速搭建一个新的基础环境。
+&emsp;&emsp;由于 Docker 在搭建基础环境存在无与论比的优势，因此在 10.10.10.10 这台服务器上，我们直接通过 Docker 和 Compose 来创建相关服务，这样可以快速搭建一个新的基础环境。
 
-　　将我提供的包里面的 svc.cluster.k8s 目录下的所有文件，都上传到 10.10.10.10 这台服务器上，然后通过以下命令直接安装 docker 环境。
+&emsp;&emsp;将我提供的包里面的 svc.cluster.k8s 目录下的所有文件，都上传到 10.10.10.10 这台服务器上，然后通过以下命令直接安装 docker 环境。
 
 ```bash
 # 将本地的 SSH 证书添加到 svc.cluster.k8s(10.10.10.10) 服务器上，这样后续操作时就不需要输入登录密码了
@@ -58,7 +58,7 @@ $ docker-compose --version
 Docker Compose version v2.6.0
 ```
 
-　　由于服务器是离线环境，因此我们需要手动将搭建基础环境的镜像导入为本地镜像，这样 Docker Compose 就不需要从网络上去加载镜像了。通过以下命令导入 DNS、Nginx、Registry 的镜像。
+&emsp;&emsp;由于服务器是离线环境，因此我们需要手动将搭建基础环境的镜像导入为本地镜像，这样 Docker Compose 就不需要从网络上去加载镜像了。通过以下命令导入 DNS、Nginx、Registry 的镜像。
 
 ```bash
 # 导入镜像
@@ -74,16 +74,16 @@ coredns/coredns   1.9.3     5185b96f0bec   2 weeks ago   48.8MB
 registry          2.8.1     773dbf02e42e   2 weeks ago   24.1MB
 ```
 
-　　使用 docker-compose 创建服务，完成 DNS、Registry、Yum 服务的搭建。
+&emsp;&emsp;使用 docker-compose 创建服务，完成 DNS、Registry、Yum 服务的搭建。
 
 ```bash
 # 启动服务
 $ cd ~/docker-compose && docker-compose up -d
 ```
 
-　　等待 docker-compose 命令执行完毕完，svc.cluster.k8s 这台服务器就已经完成了 DNS、Registry、Yum 源的环境搭建了。
+&emsp;&emsp;等待 docker-compose 命令执行完毕完，svc.cluster.k8s 这台服务器就已经完成了 DNS、Registry、Yum 源的环境搭建了。
 
-　　在我提供的环境中，已经将相关的域名解析信息添加到 DNS 服务器中，如果你需要修改这些解析信息，可以通过修改 ~/docker-compose/svc-dns/hosts 文件完成相关操作。在压缩包里的 DNS 服务器的配置文件中，已添加以下解析信息：
+&emsp;&emsp;在我提供的环境中，已经将相关的域名解析信息添加到 DNS 服务器中，如果你需要修改这些解析信息，可以通过修改 ~/docker-compose/svc-dns/hosts 文件完成相关操作。在压缩包里的 DNS 服务器的配置文件中，已添加以下解析信息：
 
 
 - 10.10.10.10 yum.cluster.k8s：Yum 源
@@ -93,10 +93,10 @@ $ cd ~/docker-compose && docker-compose up -d
 - 10.10.10.12 node1.cluster.k8s：工作节点域名映射
 - 10.10.10.13 node2.cluster.k8s：工作节点域名映射
 
-　　如果需要修改 Registry、Yum 源的域名信息，你还需要同时修改 ~/docker-compose/svc-nginx/conf.d 目录下的相关配置（注意 SSL 证书也需要与之匹配）。
+&emsp;&emsp;如果需要修改 Registry、Yum 源的域名信息，你还需要同时修改 ~/docker-compose/svc-nginx/conf.d 目录下的相关配置（注意 SSL 证书也需要与之匹配）。
 
 ### 测试 svc.cluster.k8s 环境
-　　搭建好 svc.cluster.k8s 环境之后，我们需要测试一下 DNS、Registry、Yum 服务器是否工作正常。我们通过在 master.cluster.k8s 这台服务器来完成相关测试。
+&emsp;&emsp;搭建好 svc.cluster.k8s 环境之后，我们需要测试一下 DNS、Registry、Yum 服务器是否工作正常。我们通过在 master.cluster.k8s 这台服务器来完成相关测试。
 
 ```bash
 # 将本地的 SSH 证书添加到 master.cluster.k8s(10.10.10.11) 服务器上，这样后续操作时就不需要输入登录密码了
@@ -141,10 +141,10 @@ $ curl https://yum.cluster.k8s
 </html>
 ```
 
-　　如果 DNS、Registry、Yum 源服务不能正常工作，那么就需要继续排查一下。
+&emsp;&emsp;如果 DNS、Registry、Yum 源服务不能正常工作，那么就需要继续排查一下。
 
 ### 更新系统环境
-　　在离线环境中，CentOS7 原来的 yum 源是没办法访问的，因此我们需要将原来的 yum 删了，切换成上面搭建的 yum.cluster.k8s 源。
+&emsp;&emsp;在离线环境中，CentOS7 原来的 yum 源是没办法访问的，因此我们需要将原来的 yum 删了，切换成上面搭建的 yum.cluster.k8s 源。
 
 ```bash
 # 删除系统原来的 yum 源
@@ -155,9 +155,9 @@ $ rm -f /etc/yum.repos.d/CentOS-*
 $ cp ~/yum.repos.d/centos.repo /etc/yum.repos.d/centos.repo
 ```
 
-　　完成以上步骤之后，当前系统的 yum 源就指向了我们搭建好的 yum 源服务，然后我们就可以像联网一样去安装和更新软件了。
+&emsp;&emsp;完成以上步骤之后，当前系统的 yum 源就指向了我们搭建好的 yum 源服务，然后我们就可以像联网一样去安装和更新软件了。
 
-　　接下来，我们将 CentOS7 的内核更新到 5.4.197，并更新系统依赖和常用工具。
+&emsp;&emsp;接下来，我们将 CentOS7 的内核更新到 5.4.197，并更新系统依赖和常用工具。
 
 ```bash
 # 更新系统内核，CentOS 7 的默认内核是 3.10.0
@@ -193,7 +193,7 @@ $ rm -f /etc/yum.repos.d/CentOS-*
 $ yum install -y nano net-tools wget bind-utils
 ```
 
-　　调整系统环境与参数。
+&emsp;&emsp;调整系统环境与参数。
 
 ```bash
 # 关闭、禁用、卸载 firewalld 防火墙
@@ -304,7 +304,7 @@ $ containerd --version
 containerd containerd.io 1.6.6 10c12954828e7c7c9b6e0ea9b0c02b01407d3ae1
 ```
 
-　　因为没有安装 docker，因此 docker 相关的命令可能就没办法使用了。可以安装 crictl 工具[[链接](https://github.com/kubernetes-sigs/cri-tools/releases)]，该工具基本可以代替 docker，如 crictl pull xxxx。Kubernetes 不使用这个，因此如果没有这种需求的话，可以跳过下面的步骤。
+&emsp;&emsp;因为没有安装 docker，因此 docker 相关的命令可能就没办法使用了。可以安装 crictl 工具[[链接](https://github.com/kubernetes-sigs/cri-tools/releases)]，该工具基本可以代替 docker，如 crictl pull xxxx。Kubernetes 不使用这个，因此如果没有这种需求的话，可以跳过下面的步骤。
 
 ```bash
 # 将压缩目录里面的 crictl-v1.24.2 文件传输到 /usr/local/bin 目录下，然后并添加可执行权限
@@ -346,9 +346,9 @@ The connection to the server localhost:8080 was refused - did you specify the ri
 ```
 
 ### 克隆虚拟机
-　　以上步骤是每一个 Kubernetes 节点都需要执行的操作。接下来需要你线下完成虚拟机的克隆工作，用于组建 Kubernetes 集群。
+&emsp;&emsp;以上步骤是每一个 Kubernetes 节点都需要执行的操作。接下来需要你线下完成虚拟机的克隆工作，用于组建 Kubernetes 集群。
 
-　　将 master.cluster.k8s 节点的虚拟机克隆两份，通过以下命令修改新虚拟机的 hostname 和 ip。
+&emsp;&emsp;将 master.cluster.k8s 节点的虚拟机克隆两份，通过以下命令修改新虚拟机的 hostname 和 ip。
 
 ```bash
 # 修改当前虚拟机的 hostname
@@ -362,14 +362,14 @@ $ reboot
 ```
 
 ### 初始化主节点
-　　在主节点，也就是主机名为 master.cluster.k8s 的服务器上，完成以下工作：
+&emsp;&emsp;在主节点，也就是主机名为 master.cluster.k8s 的服务器上，完成以下工作：
 
 ```bash
 # 导出 kubeadm 的默认配置
 $ kubeadm config print init-defaults > kubeadm-config.yaml
 ```
 
-　　修改配置文件 kubeadm-config.yaml。
+&emsp;&emsp;修改配置文件 kubeadm-config.yaml。
 
 ```yaml
 apiVersion: kubeadm.k8s.io/v1beta3
@@ -418,7 +418,7 @@ featureGates:
 mode: ipvs
 ```
 
-　　开始初始化主节点：
+&emsp;&emsp;开始初始化主节点：
 
 ```bash
 # 初始化主节点，开始部署
@@ -486,7 +486,7 @@ kube-scheduler-master.cluster.k8s            1/1     Running   0             83s
 ```
 
 ### 初始化工作节点
-　　在 node1.cluster.k8s 服务器和 node2.cluster.k8s 服务器上，执行以下命令：
+&emsp;&emsp;在 node1.cluster.k8s 服务器和 node2.cluster.k8s 服务器上，执行以下命令：
 
 ```bash
 # 将当前节点加入到 Kubernetes 集群
@@ -555,4 +555,4 @@ $ kubeadm join 10.10.10.11:6443 --token exd3wy.8ga18gnj1mbrx0pa \
 	--discovery-token-ca-cert-hash sha256:1a5a75d46629808b0e46fabaf4986d8ee3288d6c079649c45b52cb3768966f76
 ```
 
-　　以上就是 Kubernetes 1.24.1 在离线环境下的环境搭建过程了。Enjoy yourself！
+&emsp;&emsp;以上就是 Kubernetes 1.24.1 在离线环境下的环境搭建过程了。Enjoy yourself！

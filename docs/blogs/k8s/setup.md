@@ -4,10 +4,9 @@ title: 搭建 Kubernetes 1.24.1 环境
 
 # {{ $frontmatter.title }}
 ## 概述
+&emsp;&emsp;最近在学习 Kubernetes，刚好家里有台服务器，因此希望在自己的服务器上搭建环境，方便学习。结合了官方文档、搜索出无数的文档，终于搭建成功了，这里记录一下。
 
-　　最近在学习 Kubernetes，刚好家里有台服务器，因此希望在自己的服务器上搭建环境，方便学习。结合了官方文档、搜索出无数的文档，终于搭建成功了，这里记录一下。
-
-　　本文档使用 kubeadm 来创建 Kubernetes 集群。搭建集群需要满足以下条件
+&emsp;&emsp;本文档使用 kubeadm 来创建 Kubernetes 集群。搭建集群需要满足以下条件
 
 - 3 台或以上奇数台 Linux 主机（可以是虚拟机）
 - 每台主机 2GB 或更多内存
@@ -18,17 +17,17 @@ title: 搭建 Kubernetes 1.24.1 环境
 - 开启机器上的指定端口（6443）
 - 内核在 4.4 及以上
 
-　　可以参考我的另一篇笔记[链接]，通过 Exsi 模板来快速创建虚拟机。虽然是通过模板来创建虚拟机，但是 Exsi 已经帮我们处理好主机的 MAC 地址、product_uuid 信息了。根据该笔记，虚拟机已经完成了内核升级和工具升级相关的工作了，因此本文档不再赘述。
+&emsp;&emsp;可以参考我的另一篇笔记[[链接](/blogs/exsi/template)]，通过 Exsi 模板来快速创建虚拟机。虽然是通过模板来创建虚拟机，但是 Exsi 已经帮我们处理好主机的 MAC 地址、product_uuid 信息了。根据该笔记，虚拟机已经完成了内核升级和工具升级相关的工作了，因此本文档不再赘述。
 
-　　本文档里面，使用了 3 台 Exsi 虚拟的 CentOS7 主机，其 IP 和主机名分别如下：
+&emsp;&emsp;本文档里面，使用了 3 台 Exsi 虚拟的 CentOS7 主机，其 IP 和主机名分别如下：
 
 - 10.10.2.1：master.cluster.k8s
 - 10.10.2.2：node1.cluster.k8s
 - 10.10.2.3：node2.cluster.k8s
 
-　　为了保证主机间可以通过域名互通，你有以下两种方案来解决域名印射问题：
+&emsp;&emsp;为了保证主机间可以通过域名互通，你有以下两种方案来解决域名印射问题：
 
-1. 自建 DNS 服务器：你可以通过我的另一篇笔记[链接]来完成 DNS 的搭建工作，并在 DNS 服务器上添加 3 条域名解析记录。然后在搭建虚拟机的时候，将 DNS 服务器指向自建的服务器 IP 即可。
+1. 自建 DNS 服务器：你可以通过我的另一篇笔记[[链接](/blogs/docker/dns)]来完成 DNS 的搭建工作，并在 DNS 服务器上添加 3 条域名解析记录。然后在搭建虚拟机的时候，将 DNS 服务器指向自建的服务器 IP 即可。
 2. 在每一台服务器的 /etc/hosts 文件里，添加 3 条域名解析记录。
 
 ## 步骤
@@ -101,7 +100,7 @@ $ sysctl --system
 ```
 
 ### 安装容器运行时
-　　Kubernetes 1.24.0 开始 Docker 支持功能现已弃用，而是转向使用容器标准 containerd[[链接](https://containerd.io)]。其实 containerd 也是 Docker 捐献给社区，而且 Docker 本身底层也是依赖该模块。
+&emsp;&emsp;Kubernetes 1.24.0 开始 Docker 支持功能现已弃用，而是转向使用容器标准 containerd[[链接](https://containerd.io)]。其实 containerd 也是 Docker 捐献给社区，而且 Docker 本身底层也是依赖该模块。
 
 ```bash
 # 安装 Docker 源
@@ -135,7 +134,7 @@ $ containerd --version
 containerd containerd.io 1.6.4 212e8b6fa2f44b9c21b2798135fc6fb7c53efc16
 ```
 
-　　因为没有安装 docker，因此 docker 相关的命令可能就没办法使用了。可以安装 crictl 工具，该工具基本可以代替 docker，如 crictl pull xxxx。Kubernetes 不使用这个，因此如果没有这种需求的话，可以跳过下面的步骤。
+&emsp;&emsp;因为没有安装 docker，因此 docker 相关的命令可能就没办法使用了。可以安装 crictl 工具，该工具基本可以代替 docker，如 crictl pull xxxx。Kubernetes 不使用这个，因此如果没有这种需求的话，可以跳过下面的步骤。
 
 ```bash
 # 下载并解压到用户目录
@@ -154,7 +153,7 @@ CONTAINER           IMAGE               CREATED             STATE               
 ```
 
 ### 安装 kubeadm
-　　Kubernetes 官网给的 yum 源是 packages.cloud.google.com 的，如果有代理，可以使用官方的源，如果没有代理，可以使用阿里云的镜像源。
+&emsp;&emsp;Kubernetes 官网给的 yum 源是 packages.cloud.google.com 的，如果有代理，可以使用官方的源，如果没有代理，可以使用阿里云的镜像源。
 
 ```bash
 # 添加 kubernetes 源
@@ -200,17 +199,17 @@ Kustomize Version: v4.5.4
 The connection to the server localhost:8080 was refused - did you specify the right host or port?
 ```
 
-　　以上步骤是所有 Kubernetes 节点都需要执行的操作。如果你是使用 Exsi 的虚拟机来完成环境搭建的，那么到了这一步，你可以将系统导出来进行复制之后，再继续完成下面的步骤。
+&emsp;&emsp;以上步骤是所有 Kubernetes 节点都需要执行的操作。如果你是使用 Exsi 的虚拟机来完成环境搭建的，那么到了这一步，你可以将系统导出来进行复制之后，再继续完成下面的步骤。
 
 ### 初始化主节点
-　　在主节点，也就是主机名为 master.cluster.k8s 的服务器上，完成以下工作：
+&emsp;&emsp;在主节点，也就是主机名为 master.cluster.k8s 的服务器上，完成以下工作：
 
 ```bash
 # 导出 kubeadm 的默认配置
 $ kubeadm config print init-defaults > kubeadm-config.yaml
 ```
 
-　　修改配置文件 kubeadm-config.yaml。
+&emsp;&emsp;修改配置文件 kubeadm-config.yaml。
 
 ```yaml
 apiVersion: kubeadm.k8s.io/v1beta3
@@ -259,7 +258,7 @@ featureGates:
 mode: ipvs
 ```
 
-　　开始初始化主节点
+&emsp;&emsp;开始初始化主节点
 
 ```bash
 # 初始化主节点，开始部署
@@ -325,7 +324,7 @@ kube-scheduler-master.cluster.k8s            1/1     Running   0               6
 ```
 
 ### 初始化工作节点
-　　在 node1.cluster.k8s 服务器和 node2.cluster.k8s 服务器上，执行以下命令：
+&emsp;&emsp;在 node1.cluster.k8s 服务器和 node2.cluster.k8s 服务器上，执行以下命令：
 
 ```bash
 # 将当前节点加入到 Kubernetes 集群
@@ -394,4 +393,4 @@ $ kubeadm join 10.10.2.1:6443 --token exd3wy.8ga18gnj1mbrx0pa \
 	--discovery-token-ca-cert-hash sha256:1a5a75d46629808b0e46fabaf4986d8ee3288d6c079649c45b52cb3768966f76
 ```
 
-　　以上就是 Kubernetes 1.24.1 的环境搭建过程了。Enjoy yourself！
+&emsp;&emsp;以上就是 Kubernetes 1.24.1 的环境搭建过程了。Enjoy yourself！

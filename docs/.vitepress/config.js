@@ -2,6 +2,7 @@ export default {
     title: "CentralX",
     description: "Fullstack DevSuit",
     lastUpdated: true,
+    cleanUrls: 'with-subfolders',
     themeConfig: {
         logo: "/logo.svg",
         title: "CentralX",
@@ -46,7 +47,14 @@ export default {
                     text: "Java Framework",
                     items: [
                         {text: "Summary", link: "/framework/java/"},
-                        {text: "central-stdlib", link: "/framework/java/stdlib"},
+                        {
+                            text: "central-stdlib", 
+                            items: [
+                                {text: "Summary", link: "/framework/java/stdlib/"},
+                                {text: "Http", link: "/framework/java/stdlib/http"},
+                                {text: "ORM", link: "/framework/java/stdlib/orm"},
+                            ]
+                        },
                         {text: "central-starter-cache", link: "/framework/java/cache"},
                         {text: "central-starter-graphql", link: "/framework/java/graphql"},
                         {text: "central-starter-graphql-stub", link: "/framework/java/graphql-stub"},
@@ -281,12 +289,26 @@ export default {
                     ]
                 },
                 {
+                    text: "Docker",
+                    collapsible: true,
+                    collapsed: true,
+                    items: [
+                        {text: "搭建 Docker 环境", link: "/blogs/docker/setup"},
+                        {text: "构建多指令集镜像", link: "/blogs/docker/multi-arch"},
+                        {text: "搭建 DNS 服务", link: "/blogs/docker/dns"},
+                        {text: "搭建 Clash 代理", link: "/blogs/docker/clash"},
+                        {text: "搭建 Nexus3", link: "/blogs/docker/nexus3"},
+                    ]
+                },
+                {
                     text: "Linux",
                     collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "下载 yum 的离线安装包", link: "/blogs/linux/download-yum"},
                         {text: "Linux 常用命令", link: "/blogs/linux/command"},
+                        {text: "创建自签名 SSL 证书", link: "/blogs/linux/ssl"},
+                        {text: "Nginx 的安装和使用", link: "/blogs/linux/nginx"},
                     ]
                 },
                 {
@@ -305,5 +327,7 @@ export default {
             copyright: 'Copyright © 2021-present Alan Yeh'
         }
     },
-
+    plugins: [
+        'flowchart'
+    ]
 }
