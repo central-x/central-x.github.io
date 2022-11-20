@@ -34,7 +34,9 @@ public class YourApplication {
 }
 ```
 
-### 注解
+### 注解管理缓存
+&emsp;&emsp;在日常开发过程中，最经常使用缓存的方式，就是通过在方法上面添加相关的注解，以达到自动管理缓存的过程。
+
 #### 执行顺序
 
 ```mermaid
@@ -50,4 +52,89 @@ Service-->>@CacheEvict: 返回结果
 @CacheEvict-->>@Cacheable: 返回结果
 @Cacheable->>@Cacheable: 更新缓存
 @Cacheable-->>客户端: 返回结果
+```
+
+#### @Cachable
+&emsp;&emsp;本注解主要用于在没有缓存时生成缓存，有缓存时直接返回结果。
+
+```java
+    /**
+     * 本缓存会在调用方法前，检查是否存在指定键的缓存
+     * 如果存在缓存，则直接返回缓存，本方法将不会被调用
+     * 如果不存在缓存，则调用本方法，并将本方法返回的数据保存到缓存，供下次使用
+     *
+     * 通过 key 指定缓存的键名，使用模板语法计算键
+     * 通过 expires 指定缓存失效时间
+     */
+    @Cacheable(key = "account:id:${args[0]}", expires = 30 * 60 * 1000L)
+    public Account findById(String id) {
+        // 根据主键查询帐户信息
+        ...
+    }
+
+
+    /**
+     * 通过 sign(args) 计算参数的签名，不同的参数签名不一样，因此对应的缓存也不一样。
+     * 通过 dependencies 指定当前缓存的依赖。当依赖的缓存被清除时，当前缓存也会被一起清除。
+     */
+    @Cacheable(key = "account:findBy:${sign(args)}", dependencies = "account:id:any")
+    public List<Account> findBy(Long first, Long offset, Conditions<Account> conditions, Orders<Account> orders) {
+        // 通过条件查询帐户信息
+        ...
+    }
+```
+
+#### @CacheEvict
+&emsp;&emsp;本注解用于清除指定的缓存。在清除缓存时，会同时清除依赖本缓存的其它缓存。
+
+```java
+    /**
+     * 清除指定的缓存
+     * 同时清除键为 account:id:any 的缓存，由于 account:findBy:* 依赖了这个缓存，因此也会被同时清除
+     */
+    @CacheEvict(key = "account:id:${args[0]}")
+    @CacheEvict(key = "account:id:any")
+    public boolean deleteById(String id) {
+        // 根据主键删除数据
+        ...
+    }
+```
+
+### 手动管理缓存
+
+```java
+    @Autowired
+    private CacheStorage storage;
+
+    
+    public List<Account> findBy(Long first, Long offset, Conditions<Account> conditions, Orders<Account> orders) {
+        // 根据参数计算缓存键
+        var key = ...;
+
+        // 判断缓存是否存在
+        if (this.storage.exists(key)) {
+            // 如果缓存存在，则返回缓存
+            return this.storage.get(key);
+        }
+
+        // 根据主键查询帐户信息
+        var accounts = ...;
+
+        // 保存结果到缓存系统，缓存有效期为 30 分钟，并依赖键为 account:id:any 的缓存
+        this.storage.put(key, accounts, 30 * 60 * 1000L, "account:id:any");
+
+        return accounts;
+    }
+
+
+    public boolean deleteById(String id) {
+        // 根据主键删除数据
+        var result = ...
+
+        // 同时清除 account:id:${id} 和 account:id:any 这两个缓存
+        // 在清除这两个缓存的时候，缓存系统会同时清除依赖本缓存的其它缓存
+        this.storage.evict("account:id:" + id, "account:id:any");
+        return result;
+    }
+
 ```
