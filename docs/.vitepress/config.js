@@ -10,9 +10,10 @@ export default withMermaid(
             ["link", { rel: "icon", href: "/favicon-32x32.png", sizes: "32x32", type: "image/png"}],
             ["link", { rel: "icon", href: "/favicon-16x16.png", sizes: "16x16", type: "image/png"}],
             ["link", { rel: "manifest", href: "/site.webmanifest"}],
-            ["link", { rel: "mask-icon", href: "/safari-pinned-tab.svg", color: "#5bbad5"}],
-            ["meta", { rel: "msapplication-TileColor", content: "#da532c"}],
-            ["meta", { rel: "theme-color", content: "#ffffff"}],
+            ["link", { rel: "mask-icon", href: "/safari-pinned-tab.svg", color: "#333333"}],
+            ["meta", { name: "apple-mobile-web-app-title", content: "CentralX"}],
+            ["meta", { name: "application-name", content: "CentralX"}],
+            ["meta", { rel: "msapplication-TileColor", content: "#2b5797"}]
         ],
         lastUpdated: true,
         cleanUrls: 'with-subfolders',
