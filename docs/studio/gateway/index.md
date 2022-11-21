@@ -1,3 +1,3 @@
 # Central Gateway
-
-Coming soon.
+## 概述
+&emsp;&emsp;

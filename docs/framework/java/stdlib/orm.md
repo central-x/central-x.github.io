@@ -1,7 +1,4 @@
----
-title: ORM
----
-# {{ $frontmatter.title }}
+# ORM
 ## 概述
 &emsp;&emsp;在 Central Studio 中，主要使用 GraphQL 作为数据存取方式。同时，Central Studio 还支持多租户、多数据源的访问方式，对数据库访问具有比较高的定制性。综合考虑，最后决定自研数据库访问框架。
 

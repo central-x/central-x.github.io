@@ -333,6 +333,14 @@ export default withMermaid(
                             {text: "创建 EXSi 系统模板", link: "/blogs/exsi/template"},
                             {text: "使用命令升级 ESXi", link: "/blogs/exsi/upgrade"},
                         ]
+                    },
+                    {
+                        text: "Web",
+                        collapsible: true,
+                        collapsed: true,
+                        items: [
+                            {text: "快速生成 favicon", link: "/blogs/web/favicon"},
+                        ]
                     }
                 ]
             },

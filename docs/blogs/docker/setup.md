@@ -1,8 +1,4 @@
----
-title: 搭建 Docker 环境
----
-
-# {{ $frontmatter.title }}
+# 搭建 Docker 环境
 ## 概述
 &emsp;&emsp;记录一下在 CentOS7 环境下的 Docker 搭建过程。注意，在开始搭建 Docker 环境前，可以参考另一篇笔记[[链接](/blogs/exsi/template)]来完成 CentOS7 的初始化、更新工作。
 

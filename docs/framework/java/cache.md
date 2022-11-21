@@ -1,7 +1,4 @@
----
-title: Central Starter Cache
----
-# {{ $frontmatter.title }}
+# Central Starter Cache
 ## 概述
 &emsp;&emsp;Central Starter Cache 主要用于为项目提供缓存管理功能。在后端开发过程中，经常通过缓存来提升接口响应速度，减少数据库的压力。由于 Spring Cache 的缓存管理功能不支持级联删除功能，因此可能会出现缓存清除困难、缓存清除不干净等问题，很多应用程序不得不提供手动「清除缓存」的功能给用户，用户体验不佳。
 

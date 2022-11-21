@@ -1,8 +1,4 @@
----
-title: 搭建 Kubernetes 1.24.1 环境
----
-
-# {{ $frontmatter.title }}
+# 搭建 Kubernetes 1.24.1 环境
 ## 概述
 &emsp;&emsp;最近在学习 Kubernetes，刚好家里有台服务器，因此希望在自己的服务器上搭建环境，方便学习。结合了官方文档、搜索出无数的文档，终于搭建成功了，这里记录一下。
 

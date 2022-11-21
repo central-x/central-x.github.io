@@ -1,8 +1,4 @@
----
-title: Java Framework
----
-
-# {{ $frontmatter.title }}
+# Java Framework
 ## 概述
 &emsp;&emsp;Java Framework [[链接](https://github.com/central-x/central-framework)]主要包含了一系列工具类、框架、Spring Starter。其主要的目的是为了提升后端开发效率，提升后端开发速度。
 

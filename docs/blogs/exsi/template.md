@@ -1,8 +1,4 @@
----
-title: 创建 EXSi 系统模板
----
-
-# {{ $frontmatter.title }}
+# 创建 EXSi 系统模板
 ## 概述
 &emsp;&emsp;家里有个服务器，装了 Exsi 7.0 系统。由于在学习 Kubernetes，需要经常装虚拟机，因此这里记录一下创建 CentOS7 系统模板的过程。
 

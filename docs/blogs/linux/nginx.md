@@ -1,8 +1,4 @@
----
-title: Nginx 的安装和使用
----
-
-# {{ $frontmatter.title }}
+# Nginx 的安装和使用
 ## 概述
 &emsp;&emsp;记不住，写篇笔记。
 

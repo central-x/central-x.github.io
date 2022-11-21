@@ -1,8 +1,4 @@
----
-title: 创建自签名 SSL 证书
----
-
-# {{ $frontmatter.title }}
+# 创建自签名 SSL 证书
 ## 概述
 &emsp;&emsp;利用 OpenSSL 生成根证书（RootCA），并通过根证书签发新证书。
 

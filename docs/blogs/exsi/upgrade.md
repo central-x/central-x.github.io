@@ -1,8 +1,4 @@
----
-title: 使用命令升级 ESXi
----
-
-# {{ $frontmatter.title }}
+# 使用命令升级 ESXi
 ## 概述
 &emsp;&emsp;在使用 ESXi 的过程中，如果官方发布了新版本的补丁功能，可以通过以下方式升级 ESXi 的版本。
 

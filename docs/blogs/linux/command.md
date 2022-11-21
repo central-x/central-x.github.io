@@ -1,8 +1,4 @@
----
-title: Linux 常用命令
----
-
-# {{ $frontmatter.title }}
+# Linux 常用命令
 ## 概述
 &emsp;&emsp;Linux 命令太多了，实在记不住，这里记录一下
 

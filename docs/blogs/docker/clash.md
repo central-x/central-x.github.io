@@ -1,8 +1,4 @@
----
-title: 搭建 Clash 代理
----
-
-# {{ $frontmatter.title }}
+# 搭建 Clash 代理
 ## 概述
 &emsp;&emsp;最近在学习 Kubernetes，由于 Kubernetes 很多镜像、包都比较难访问，因此需要为服务器搭建一个代理服务，方便用于拉取镜像和包。
 
