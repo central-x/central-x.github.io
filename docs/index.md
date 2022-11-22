@@ -13,8 +13,14 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /quick-start
+      link: /studio/
     - theme: alt
       text: View on GitHub
       link: https://github.com/central-x
+
+features:
+  - title: Central Framework
+    details: Provides multi-platform frameworks
+  - title: Central Studio
+    details: Powerful DevSuit 
 ---

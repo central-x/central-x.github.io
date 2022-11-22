@@ -1,3 +1,29 @@
 # Central Security
 ## 概述
-&emsp;&emsp;本系统主要为所有业务系统提供统一认证相关的功能。
+&emsp;&emsp;Central Security 是 Central Studio 套件中的会话认证管理中心，通过插件可以方便的管理会话认证过程。Central Security 还实现了多种统一认证协议，可以供第三方业务系统接入进来，包括:
+
+- OAuth2.0 认证协议
+- CAS 认证协议
+- OpenId 认证协议（实现中）
+- SAML 认证协议（实现中）
+
+## 认证流程
+
+```mermaid
+sequenceDiagram
+actor 客户端
+participant Gateway
+participant Security
+participant Service
+
+客户端 ->> +Gateway: 访问
+Gateway ->> Gateway: 是否已登录
+Gateway -->> -客户端: 否，重定向到认证中心
+客户端 ->> +Security: 访问认证中心
+Security ->> Security: 引导用户登录
+Security -->> 客户端: 完成登录
+客户端 ->> Gateway: 访问
+Gateway ->> Gateway: 是否已登录
+Gateway ->> Service: 已登录，转发请求
+Service -->> 客户端: 响应
+```

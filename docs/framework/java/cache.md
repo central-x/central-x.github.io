@@ -38,6 +38,12 @@ public class YourApplication {
 
 ```mermaid
 sequenceDiagram
+
+actor 客户端
+participant @Cacheable
+participant @CacheEvict
+participant Service
+
 客户端->>@Cacheable: 发起请求
 @Cacheable->>@Cacheable: 是否存在缓存？
 @Cacheable-->>客户端: 返回缓存

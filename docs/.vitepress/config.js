@@ -1,19 +1,19 @@
-import { defineConfig } from "vitepress";
-import { withMermaid } from "vitepress-plugin-mermaid";
+import {defineConfig} from "vitepress";
+import {withMermaid} from "vitepress-plugin-mermaid";
 
 export default withMermaid(
     defineConfig({
         title: "CentralX",
         description: "Fullstack DevSuit",
         head: [
-            ["link", { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180"}],
-            ["link", { rel: "icon", href: "/favicon-32x32.png", sizes: "32x32", type: "image/png"}],
-            ["link", { rel: "icon", href: "/favicon-16x16.png", sizes: "16x16", type: "image/png"}],
-            ["link", { rel: "manifest", href: "/site.webmanifest"}],
-            ["link", { rel: "mask-icon", href: "/safari-pinned-tab.svg", color: "#333333"}],
-            ["meta", { name: "apple-mobile-web-app-title", content: "CentralX"}],
-            ["meta", { name: "application-name", content: "CentralX"}],
-            ["meta", { rel: "msapplication-TileColor", content: "#2b5797"}]
+            ["link", {rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png"}],
+            ["link", {rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png"}],
+            ["link", {rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png"}],
+            ["link", {rel: "manifest", href: "/site.webmanifest"}],
+            ["link", {rel: "mask-icon", href: "/safari-pinned-tab.svg", color: "#666666"}],
+            ["meta", {name: "apple-mobile-web-app-title", content: "CentralX"}],
+            ["meta", {name: "application-name", content: "CentralX"}],
+            ["meta", {rel: "msapplication-TileColor", content: "#2b5797"}]
         ],
         lastUpdated: true,
         cleanUrls: 'with-subfolders',
@@ -29,7 +29,6 @@ export default withMermaid(
                 text: "Edit this page on GitHub"
             },
             nav: [
-                {text: "Get Started", link: "/quick-start"},
                 {
                     text: "Central Framework",
                     items: [
@@ -62,7 +61,7 @@ export default withMermaid(
                         items: [
                             {text: "Summary", link: "/framework/java/"},
                             {
-                                text: "central-stdlib", 
+                                text: "central-stdlib",
                                 items: [
                                     {text: "Summary", link: "/framework/java/stdlib/"},
                                     {text: "Http", link: "/framework/java/stdlib/http"},
@@ -100,9 +99,9 @@ export default withMermaid(
                         text: "Central Studio",
                         items: [
                             {text: "Summary", link: "/studio/"},
-                            {text: "Service Specification", link: "/studio/service-specification"},
-                            {text: "Tenant Specification", link: "/studio/tenant-specification"},
-                            {text: "Deployment", link: "/studio/deployment"},
+                            // {text: "Service Specification", link: "/studio/service-specification"},
+                            // {text: "Tenant Specification", link: "/studio/tenant-specification"},
+                            // {text: "Deployment", link: "/studio/deployment"},
                             {text: "Changelog", link: "/studio/changelog"},
                         ]
                     },
@@ -112,39 +111,39 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "Summary", link: "/studio/dashboard/"},
-                            {
-                                text: "Guide",
-                                items: [
-                                    {
-                                        text: "Saas",
-                                        items: [
-                                            {text: "Application", link: "/studio/dashboard/guide/saas/application"},
-                                            {text: "Tenant", link: "/studio/dashboard/guide/saas/tenant"}
-                                        ]
-                                    }, {
-                                        text: "System",
-                                        items: [
-                                            {text: "Dictionary", link: "/studio/dashboard/guide/system/dictionary"},
-                                            {text: "Database", link: "/studio/dashboard/guide/system/database"}
-                                        ]
-                                    }, {
-                                        text: "Authority",
-                                        items: [
-                                            {text: "Menu", link: "/studio/dashboard/guide/authority/menu"},
-                                            {text: "Role", link: "/studio/dashboard/guide/authority/role"}
-                                        ]
-                                    },
-                                ]
-                            },
-                            {
-                                text: "Deployment",
-                                items: [
-                                    {text: "Summary", link: "/studio/dashboard/deployment/"},
-                                    {text: "Environment", link: "/studio/dashboard/deployment/environment"},
-                                    {text: "Steps", link: "/studio/dashboard/deployment/steps"},
-                                    {text: "FAQ", link: "/studio/dashboard/deployment/faq"}
-                                ]
-                            },
+                            // {
+                            //     text: "Guide",
+                            //     items: [
+                            //         {
+                            //             text: "Saas",
+                            //             items: [
+                            //                 {text: "Application", link: "/studio/dashboard/guide/saas/application"},
+                            //                 {text: "Tenant", link: "/studio/dashboard/guide/saas/tenant"}
+                            //             ]
+                            //         }, {
+                            //             text: "System",
+                            //             items: [
+                            //                 {text: "Dictionary", link: "/studio/dashboard/guide/system/dictionary"},
+                            //                 {text: "Database", link: "/studio/dashboard/guide/system/database"}
+                            //             ]
+                            //         }, {
+                            //             text: "Authority",
+                            //             items: [
+                            //                 {text: "Menu", link: "/studio/dashboard/guide/authority/menu"},
+                            //                 {text: "Role", link: "/studio/dashboard/guide/authority/role"}
+                            //             ]
+                            //         },
+                            //     ]
+                            // },
+                            // {
+                            //     text: "Deployment",
+                            //     items: [
+                            //         {text: "Summary", link: "/studio/dashboard/deployment/"},
+                            //         {text: "Environment", link: "/studio/dashboard/deployment/environment"},
+                            //         {text: "Steps", link: "/studio/dashboard/deployment/steps"},
+                            //         {text: "FAQ", link: "/studio/dashboard/deployment/faq"}
+                            //     ]
+                            // },
                         ]
                     },
                     {
@@ -154,15 +153,15 @@ export default withMermaid(
                         items: [
                             {text: "Summary", link: "/studio/gateway/"},
                             {text: "Integration", link: "/studio/gateway/integration"},
-                            {
-                                text: "Deployment",
-                                items: [
-                                    {text: "Summary", link: "/studio/gateway/deployment/"},
-                                    {text: "Environment", link: "/studio/gateway/deployment/environment"},
-                                    {text: "Steps", link: "/studio/gateway/deployment/steps"},
-                                    {text: "FAQ", link: "/studio/gateway/deployment/faq"}
-                                ]
-                            },
+                            // {
+                            //     text: "Deployment",
+                            //     items: [
+                            //         {text: "Summary", link: "/studio/gateway/deployment/"},
+                            //         {text: "Environment", link: "/studio/gateway/deployment/environment"},
+                            //         {text: "Steps", link: "/studio/gateway/deployment/steps"},
+                            //         {text: "FAQ", link: "/studio/gateway/deployment/faq"}
+                            //     ]
+                            // },
                         ]
                     },
                     {
@@ -171,16 +170,16 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "Summary", link: "/studio/security/"},
-                            {text: "Integration", link: "/studio/security/integration"},
-                            {
-                                text: "Deployment",
-                                items: [
-                                    {text: "Summary", link: "/studio/security/deployment/"},
-                                    {text: "Environment", link: "/studio/security/deployment/environment"},
-                                    {text: "Steps", link: "/studio/security/deployment/steps"},
-                                    {text: "FAQ", link: "/studio/security/deployment/faq"}
-                                ]
-                            },
+                            // {text: "Integration", link: "/studio/security/integration"},
+                            // {
+                            //     text: "Deployment",
+                            //     items: [
+                            //         {text: "Summary", link: "/studio/security/deployment/"},
+                            //         {text: "Environment", link: "/studio/security/deployment/environment"},
+                            //         {text: "Steps", link: "/studio/security/deployment/steps"},
+                            //         {text: "FAQ", link: "/studio/security/deployment/faq"}
+                            //     ]
+                            // },
                         ]
                     },
                     {
@@ -189,16 +188,16 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "Summary", link: "/studio/storage/"},
-                            {text: "Integration", link: "/studio/storage/integration"},
-                            {
-                                text: "Deployment",
-                                items: [
-                                    {text: "Summary", link: "/studio/storage/deployment/"},
-                                    {text: "Environment", link: "/studio/storage/deployment/environment"},
-                                    {text: "Steps", link: "/studio/storage/deployment/steps"},
-                                    {text: "FAQ", link: "/studio/storage/deployment/faq"}
-                                ]
-                            },
+                            // {text: "Integration", link: "/studio/storage/integration"},
+                            // {
+                            //     text: "Deployment",
+                            //     items: [
+                            //         {text: "Summary", link: "/studio/storage/deployment/"},
+                            //         {text: "Environment", link: "/studio/storage/deployment/environment"},
+                            //         {text: "Steps", link: "/studio/storage/deployment/steps"},
+                            //         {text: "FAQ", link: "/studio/storage/deployment/faq"}
+                            //     ]
+                            // },
                         ]
                     },
                     {
@@ -207,16 +206,16 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "Summary", link: "/studio/logging/"},
-                            {text: "Integration", link: "/studio/logging/integration"},
-                            {
-                                text: "Deployment",
-                                items: [
-                                    {text: "Summary", link: "/studio/logging/deployment/"},
-                                    {text: "Environment", link: "/studio/logging/deployment/environment"},
-                                    {text: "Steps", link: "/studio/logging/deployment/steps"},
-                                    {text: "FAQ", link: "/studio/logging/deployment/faq"}
-                                ]
-                            },
+                            // {text: "Integration", link: "/studio/logging/integration"},
+                            // {
+                            //     text: "Deployment",
+                            //     items: [
+                            //         {text: "Summary", link: "/studio/logging/deployment/"},
+                            //         {text: "Environment", link: "/studio/logging/deployment/environment"},
+                            //         {text: "Steps", link: "/studio/logging/deployment/steps"},
+                            //         {text: "FAQ", link: "/studio/logging/deployment/faq"}
+                            //     ]
+                            // },
                         ]
                     },
                     {
@@ -225,16 +224,16 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "Summary", link: "/studio/multicast/"},
-                            {text: "Integration", link: "/studio/multicast/integration"},
-                            {
-                                text: "Deployment",
-                                items: [
-                                    {text: "Summary", link: "/studio/multicast/deployment/"},
-                                    {text: "Environment", link: "/studio/multicast/deployment/environment"},
-                                    {text: "Steps", link: "/studio/multicast/deployment/steps"},
-                                    {text: "FAQ", link: "/studio/multicast/deployment/faq"}
-                                ]
-                            },
+                            // {text: "Integration", link: "/studio/multicast/integration"},
+                            // {
+                            //     text: "Deployment",
+                            //     items: [
+                            //         {text: "Summary", link: "/studio/multicast/deployment/"},
+                            //         {text: "Environment", link: "/studio/multicast/deployment/environment"},
+                            //         {text: "Steps", link: "/studio/multicast/deployment/steps"},
+                            //         {text: "FAQ", link: "/studio/multicast/deployment/faq"}
+                            //     ]
+                            // },
                         ]
                     },
                     {
@@ -243,51 +242,51 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "Summary", link: "/studio/provider/"},
-                            {text: "Integration", link: "/studio/provider/integration"},
-                            {
-                                text: "GraphQL",
-                                collapsible: true,
-                                collapsed: true,
-                                items: [
-                                    {text: "Summary", link: "/studio/provider/graphql/"},
-                                    {text: "First Request", link: "/studio/provider/graphql/first-request"}
-                                ]
-                            },
-                            {
-                                text: "Api",
-                                items: [
-                                    {text: "Summary", link: "/studio/provider/api/"},
-                                    {
-                                        text: "Saas",
-                                        items: [
-                                            {text: "Application", link: "/studio/provider/api/saas/application"},
-                                            {text: "Tenant", link: "/studio/provider/api/saas/tenant"}
-                                        ]
-                                    },
-                                    {
-                                        text: "System",
-                                        items: [
-                                            {text: "Dictionary", link: "/studio/provider/api/system/dictionary"},
-                                            {text: "Database", link: "/studio/provider/api/system/database"}
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                text: "Deployment",
-                                items: [
-                                    {text: "Summary", link: "/studio/provider/deployment/"},
-                                    {text: "Environment", link: "/studio/provider/deployment/environment"},
-                                    {text: "Steps", link: "/studio/provider/deployment/steps"},
-                                    {text: "FAQ", link: "/studio/provider/deployment/faq"}
-                                ]
-                            },
+                            // {text: "Integration", link: "/studio/provider/integration"},
+                            // {
+                            //     text: "GraphQL",
+                            //     collapsible: true,
+                            //     collapsed: true,
+                            //     items: [
+                            //         {text: "Summary", link: "/studio/provider/graphql/"},
+                            //         {text: "First Request", link: "/studio/provider/graphql/first-request"}
+                            //     ]
+                            // },
+                            // {
+                            //     text: "Api",
+                            //     items: [
+                            //         {text: "Summary", link: "/studio/provider/api/"},
+                            //         {
+                            //             text: "Saas",
+                            //             items: [
+                            //                 {text: "Application", link: "/studio/provider/api/saas/application"},
+                            //                 {text: "Tenant", link: "/studio/provider/api/saas/tenant"}
+                            //             ]
+                            //         },
+                            //         {
+                            //             text: "System",
+                            //             items: [
+                            //                 {text: "Dictionary", link: "/studio/provider/api/system/dictionary"},
+                            //                 {text: "Database", link: "/studio/provider/api/system/database"}
+                            //             ]
+                            //         }
+                            //     ]
+                            // },
+                            // {
+                            //     text: "Deployment",
+                            //     items: [
+                            //         {text: "Summary", link: "/studio/provider/deployment/"},
+                            //         {text: "Environment", link: "/studio/provider/deployment/environment"},
+                            //         {text: "Steps", link: "/studio/provider/deployment/steps"},
+                            //         {text: "FAQ", link: "/studio/provider/deployment/faq"}
+                            //     ]
+                            // },
                         ]
                     }
                 ],
                 "/blogs/": [
                     {
-                        text: "Blogs", 
+                        text: "Blogs",
                         items: [
                             {text: "Summary", link: "/blogs/"}
                         ]
