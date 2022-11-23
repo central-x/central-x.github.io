@@ -1,6 +1,6 @@
 # Central Security
 ## 概述
-&emsp;&emsp;Central Security 是 Central Studio 套件中的会话认证管理中心，通过插件可以方便的管理会话认证过程。Central Security 还实现了多种统一认证协议，可以供第三方业务系统接入进来，包括:
+&emsp;&emsp;Central Security 是 Central Studio 套件中的会话认证管理中心，通过插件可以方便的管理会话认证过程。Central Security 还实现了多种统一认证协议，可以供第三方应用系统接入进来，包括:
 
 - OAuth2.0 认证协议
 - CAS 认证协议

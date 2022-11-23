@@ -170,6 +170,39 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "Summary", link: "/studio/security/"},
+                            {
+                                text: "REST API", 
+                                items: [
+                                    {text: "获取登录选项", link: "/studio/security/api/get-login-option"},
+                                    {text: "获取验证码", link: "/studio/security/api/get-captcha"},
+                                    {text: "登录", link: "/studio/security/api/login"},
+                                    {text: "退出登录", link: "/studio/security/api/logout"},
+                                ]
+                            }, 
+                            {
+                                text: "SSO",
+                                items: [
+                                    {text: "Summary", link: "/studio/security/sso/"},
+                                    {
+                                        text: "CAS", 
+                                        items: [
+                                            {text: "Summary", link: "/studio/security/sso/cas/"},
+                                            {text: "登录入口", link: "/studio/security/sso/cas/login"},
+                                            {text: "服务认证", link: "/studio/security/sso/cas/service-validate"},
+                                            {text: "退出登录入口", link: "/studio/security/sso/cas/logout"}
+                                        ]
+                                    },
+                                    {
+                                        text: "OAuth2.0", 
+                                        items: [
+                                            {text: "Summary", link: "/studio/security/sso/oauth/"},
+                                            {text: "获取授权码", link: "/studio/security/sso/oauth/authorize"},
+                                            {text: "获取访问凭证", link: "/studio/security/sso/oauth/access-token"},
+                                            {text: "获取当前用户信息", link: "/studio/security/sso/oauth/user"}
+                                        ]
+                                    }
+                                ]
+                            }
                             // {text: "Integration", link: "/studio/security/integration"},
                             // {
                             //     text: "Deployment",
@@ -348,8 +381,14 @@ export default withMermaid(
                 copyright: 'Copyright © 2021-present Alan Yeh'
             }
         },
-        plugins: [
-            'flowchart'
-        ]
+        markdown: {
+            config: md => {
+                md.linkify.set( {
+                    fuzzyLink: false,
+                    fuzzyIP: false,
+                    fuzzyEmail: false
+                })
+            }
+        }
     })
 )
