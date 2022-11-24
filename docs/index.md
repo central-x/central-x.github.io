@@ -20,7 +20,7 @@ hero:
 
 features:
   - title: Central Framework
-    details: Provides multi-platform frameworks
+    details: "　　多平台基础类库，提供了大量强大的基础工具，帮助你更快、更清晰地完成逻辑。"
   - title: Central Studio
-    details: Powerful DevSuit 
+    details: "　　功能强大的微服务开发套件，提供了多种业务无关的基础微服务，加速应用开发，让开发者专注于业务。"
 ---
