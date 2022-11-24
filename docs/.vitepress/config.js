@@ -221,6 +221,28 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "Summary", link: "/studio/storage/"},
+                            {
+                                text: "REST API",
+                                items: [
+                                    {text: "接口总体说明", link: "/studio/storage/api/"},
+                                    {text: "上传文件", link: "/studio/storage/api/upload"},
+                                    {text: "秒传", link: "/studio/storage/api/rapid"},
+                                    {text: "二次确认", link: "/studio/storage/api/confirm"},
+                                    {text: "删除对象", link: "/studio/storage/api/delete"},
+                                    {text: "获取对象信息", link: "/studio/storage/api/details"},
+                                    {text: "批量获取对象信息", link: "/studio/storage/api/list"},
+                                    {text: "下载文件", link: "/studio/storage/api/download"},
+                                    {
+                                        text: "分片上传文件",
+                                        items: [
+                                            {text: "创建分片任务", link: "/studio/storage/api/multipart/create"},
+                                            {text: "上传分片", link: "/studio/storage/api/multipart/upload"},
+                                            {text: "完成分片上传", link: "/studio/storage/api/multipart/complete"},
+                                            {text: "取消分片上传", link: "/studio/storage/api/multipart/cancel"}
+                                        ]
+                                    }
+                                ]
+                            },
                             // {text: "Integration", link: "/studio/storage/integration"},
                             // {
                             //     text: "Deployment",
@@ -257,6 +279,19 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "Summary", link: "/studio/multicast/"},
+                            {
+                                text: "REST API",
+                                items: [
+                                    {text: "接口总体说明", link: "/studio/multicast/api/"},
+                                    {text: "广播消息", link: "/studio/multicast/api/publish"}
+                                ]
+                            },
+                            {
+                                text: "广播器",
+                                items: [
+                                    {text: "邮件广播", link: "/studio/multicast/broadcaster/email-smtp"}
+                                ]
+                            },
                             // {text: "Integration", link: "/studio/multicast/integration"},
                             // {
                             //     text: "Deployment",
