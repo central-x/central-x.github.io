@@ -310,6 +310,12 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "Summary", link: "/studio/provider/"},
+                            {
+                                text: "GraphQL", 
+                                items: [
+                                    {text: "Summary", link: "/studio/provider/api/"}
+                                ]
+                            },
                             // {text: "Integration", link: "/studio/provider/integration"},
                             // {
                             //     text: "GraphQL",
