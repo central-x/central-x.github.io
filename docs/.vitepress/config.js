@@ -42,7 +42,7 @@ export default withMermaid(
                     text: "Central Studio",
                     items: [
                         {text: "Central Studio", link: "/studio/"},
-                        {text: "Central Dashboard", link: "/studio/dashboard/"},
+                        // {text: "Central Dashboard", link: "/studio/dashboard/"},
                         {text: "Central Gateway", link: "/studio/gateway/"},
                         {text: "Central Security", link: "/studio/security/"},
                         {text: "Central Storage", link: "/studio/storage/"},
@@ -105,12 +105,12 @@ export default withMermaid(
                             {text: "Changelog", link: "/studio/changelog"},
                         ]
                     },
-                    {
-                        text: "Central Dashboard",
-                        collapsible: true,
-                        collapsed: true,
-                        items: [
-                            {text: "Summary", link: "/studio/dashboard/"},
+                    // {
+                    //     text: "Central Dashboard",
+                    //     collapsible: true,
+                    //     collapsed: true,
+                    //     items: [
+                    //         {text: "Summary", link: "/studio/dashboard/"},
                             // {
                             //     text: "Guide",
                             //     items: [
@@ -144,8 +144,8 @@ export default withMermaid(
                             //         {text: "FAQ", link: "/studio/dashboard/deployment/faq"}
                             //     ]
                             // },
-                        ]
-                    },
+                    //     ]
+                    // },
                     {
                         text: "Central Gateway",
                         collapsible: true,
@@ -256,24 +256,6 @@ export default withMermaid(
                         ]
                     },
                     {
-                        text: "Central Logging",
-                        collapsible: true,
-                        collapsed: true,
-                        items: [
-                            {text: "Summary", link: "/studio/logging/"},
-                            // {text: "Integration", link: "/studio/logging/integration"},
-                            // {
-                            //     text: "Deployment",
-                            //     items: [
-                            //         {text: "Summary", link: "/studio/logging/deployment/"},
-                            //         {text: "Environment", link: "/studio/logging/deployment/environment"},
-                            //         {text: "Steps", link: "/studio/logging/deployment/steps"},
-                            //         {text: "FAQ", link: "/studio/logging/deployment/faq"}
-                            //     ]
-                            // },
-                        ]
-                    },
-                    {
                         text: "Central Multicast",
                         collapsible: true,
                         collapsed: true,
@@ -300,6 +282,24 @@ export default withMermaid(
                             //         {text: "Environment", link: "/studio/multicast/deployment/environment"},
                             //         {text: "Steps", link: "/studio/multicast/deployment/steps"},
                             //         {text: "FAQ", link: "/studio/multicast/deployment/faq"}
+                            //     ]
+                            // },
+                        ]
+                    },
+                    {
+                        text: "Central Logging",
+                        collapsible: true,
+                        collapsed: true,
+                        items: [
+                            {text: "Summary", link: "/studio/logging/"},
+                            // {text: "Integration", link: "/studio/logging/integration"},
+                            // {
+                            //     text: "Deployment",
+                            //     items: [
+                            //         {text: "Summary", link: "/studio/logging/deployment/"},
+                            //         {text: "Environment", link: "/studio/logging/deployment/environment"},
+                            //         {text: "Steps", link: "/studio/logging/deployment/steps"},
+                            //         {text: "FAQ", link: "/studio/logging/deployment/faq"}
                             //     ]
                             // },
                         ]
