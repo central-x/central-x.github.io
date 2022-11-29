@@ -4,7 +4,7 @@
 
 &emsp;&emsp;题外话，VMware 还是挺好的，个人用的话，只要注册[[链接](https://customerconnect.vmware.com/cn/web/vmware/evalcenter?p=free-esxi7)]后，就可以免费直接赠送永久许可证，只不过该许可证有一点点限制，CPU 核心最大数量为 8 核，其余的限制基本忽略不计，个人用的话，功能绰绰有余。
 
-## 步骤
+## 创建模板
 ### 准备工作
 - CentOS7 系统镜像[[下载](https://www.centos.org/download/)]
 
@@ -114,7 +114,8 @@ $ yum install -y nano net-tools wget bind-utils
 
 &emsp;&emsp;将这三个文件保存起来，后续需要创建新的虚拟机的时候，就可以通过这三个文件快速创建一个虚拟机，从而节省时间。
 
-### 通过模板创建新虚拟机
+## 使用模板
+### 创建新虚拟机
 &emsp;&emsp;点击创建/注册虚拟机，选择从 OVF 或 OVA 文件部署虚拟机后，点击下一步。
 
 ![](./assets/template_13.png)
@@ -135,7 +136,10 @@ $ yum install -y nano net-tools wget bind-utils
 
 ![](./assets/template_17.png)
 
-&emsp;&emsp;点击完成之后，Exsi 会在后台启动上传任务，注意不要刷新浏览器。上传完毕后，Exsi 会自动将虚拟机开机。虚拟机开机之后，需要更改主机名（hostname）和 IP，防止与后面再创建的虚拟冲突了。
+&emsp;&emsp;点击完成之后，Exsi 会在后台启动上传任务，注意不要刷新浏览器。上传完毕后，Exsi 会自动将虚拟机开机。
+
+### 修改配置
+&emsp;&emsp;虚拟机开机之后，需要更改主机名（hostname）和 IP，防止与后面再创建的虚拟冲突了。
 
 ```bash
 # 修改主机名

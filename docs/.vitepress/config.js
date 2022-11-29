@@ -396,6 +396,7 @@ export default withMermaid(
                             {text: "Linux 常用命令", link: "/blogs/linux/command"},
                             {text: "创建自签名 SSL 证书", link: "/blogs/linux/ssl"},
                             {text: "Nginx 的安装和使用", link: "/blogs/linux/nginx"},
+                            {text: "搭建内网穿透代理", link: "/blogs/linux/proxy"},
                         ]
                     },
                     {
@@ -405,6 +406,15 @@ export default withMermaid(
                         items: [
                             {text: "创建 EXSi 系统模板", link: "/blogs/exsi/template"},
                             {text: "使用命令升级 ESXi", link: "/blogs/exsi/upgrade"},
+                        ]
+                    },
+                    {
+                        text: "Java",
+                        collapsible: true,
+                        collapsed: true,
+                        items: [
+                            {text: "基于 JSch 实现 Scp 文件传输", link: "/blogs/java/jsch-scp"},
+                            {text: "基于 JSch 实现 Sftp 文件传输", link: "/blogs/java/jsch-sftp"},
                         ]
                     },
                     {
