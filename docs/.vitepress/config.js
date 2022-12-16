@@ -424,6 +424,14 @@ export default withMermaid(
                         items: [
                             {text: "快速生成 favicon", link: "/blogs/web/favicon"},
                         ]
+                    },
+                    {
+                        text: "Android",
+                        collapsible: true,
+                        collapsed: true,
+                        items: [
+                            {text: "JUnit 自定义 Application", link: "/blogs/android/junit-custom-application"}
+                        ]
                     }
                 ]
             },
