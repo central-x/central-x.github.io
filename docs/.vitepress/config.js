@@ -84,7 +84,13 @@ export default withMermaid(
                     {
                         text: "Android Framework",
                         items: [
-                            {text: "Summary", link: "/framework/android/"}
+                            {text: "Summary", link: "/framework/android/"},
+                            {
+                                text: "Core",
+                                items: [
+                                    {text: "Dependency Injection", link: "/framework/android/core/di/index"}
+                                ]
+                            }
                         ]
                     },
                     {
