@@ -40,10 +40,20 @@ class DemoApplication: Application() {
 ## Configuration Metadata
 &emsp;&emsp;在上一章节所述，配置元数据（Configuration Metadata）主要用于让开发者告诉容器如何去实例化、配置、组装 Bean。那么，在本章节，将介绍如何通过注解的方式（Annotation-base configuration）实现配置元数据。
 
-&emsp;&emsp;一般情况下，通过 `@Configuraiton`、`@Bean`、`@Import`、`@DependsOn`、`@LazyInit`、`@Scope`、`@Primary` 这些注解，基本可以完成配置元数据的组装工作。
+&emsp;&emsp;一般情况下，通过以下注解，基本可以完成配置元数据组装工作：
+
+- `@Configuraiton`：标识指定类的配置类，容器将会解析该类里面所有带 `@Bean` 注解的方法；
+- `@Bean`：用于标识配置类里面的方法。带有该注解的方法将作为 Bean 的工厂方法；
+- `@Import`：用于引入更多的组件、配置类等；
+- `@DependsOn`：用于声明 Bean 的依赖关系；
+- `@LazyInit`：用于声明 Bean 是否延迟初始化；
+- `@Scope`：用于声明 Bean 的作用域；
+- `@Primary`：如果出现多个相同类型的 Bean，通过本注解标识哪个为主要的 Bean；
+- `@Autowired`：用于指定依赖注入的入口，可以作用于构造函数、方法、属性等；
+- `@Qualifier`：用于指定注入的 Bean 的名称，主要作用于参数、属性。
 
 ### @Configuration 和 @Bean
-&emsp;&emsp;`@Configuration` 注解用于标识指定的类是配置类。容器如果发现 Bean 带有 `@Configuraiton` 注解时，就会解析该类的所有公开的方法，将所有带 `@Bean` 注解的方法作为 Bean 工厂方法。如：
+&emsp;&emsp;`@Configuration` 注解用于标识指定的类是配置类。容器如果发现 Bean 带有 `@Configuraiton` 注解时，就会解析该类的所有公开的方法（包括静态方法），将所有带 `@Bean` 注解的方法作为 Bean 工厂方法。如：
 
 ```kotlin
 @Configuration
@@ -86,7 +96,7 @@ class ApplicationConfiguration {
 class ApplicationConfiguration
 ```
 
-&emsp;&emsp;容器在解析 @Configuration 时，同时还会去解析 `resource/META-INF/${ConfigurationClassName}.imports` 文件，其行为与 `@Import` 一致。`.imports` 文件的格式与 `.properties` 文件格式一致，内容如下:
+&emsp;&emsp;容器在解析 @Configuration 时，同时还会去解析 `resources/META-INF/${ConfigurationClassName}.imports` 文件，其行为与 `@Import` 一致。`.imports` 文件的格式与 `.properties` 文件格式一致，内容如下:
 
 ```properties
 imports=central.demo.service.AccountServiceImpl,\
@@ -214,8 +224,9 @@ class DataServiceImpl: DataService {
 
     /**
      * 由于这个构造函数的参数更多，因此容器将通过此构造函数注入依赖
+     * 如果 DepartmentService 存在多个 Bean，开发者也可以通过 @Qualifier 注解要求注入指定名称的依赖
      */
-    constructor(accountService: AccountService, departmentService: DepartmentService) {
+    constructor(accountService: AccountService, @Qualifier("departmentService") departmentService: DepartmentService) {
         this.accountService = accountService
         this.departmentService = departmentService
     }
@@ -233,7 +244,7 @@ class DataServiceImpl: DataService {
         this.accountService = accountService
     }
 
-    constructor(accountService: AccountService, departmentService: DepartmentService) {
+    constructor(accountService: AccountService, @Qualifier("departmentService") departmentService: DepartmentService) {
         this.accountService = accountService
         this.departmentService = departmentService
     }
@@ -303,7 +314,7 @@ class DataServiceImpl: DataService, ApplicationContextAware {
 }
 ```
 
-## 生命周期
+## Lifecycle
 ### InitializingBean
 &emsp;&emsp;容器在完成 Bean 的创建，并在完成依赖注入之后，如果发现该 Bean 实现了 `InitializingBean` 接口，则会调用该接口的 `initialize` 方法，用于通知该 Bean 继续完成相关初始化逻辑。
 
@@ -338,7 +349,7 @@ class DataServiceImpl: DataService, DestroyableBean {
 }
 ```
 
-## 高级用法
+## Advanced
 ### BeanPostProcessor
 &emsp;&emsp;如果一个 Bean 实现了 `BeanPostProcessor` 接口，那么该 Bean 将会被提前初始化，并可以加入到 Bean 的生命周期的处理过程。`BeanPostProcessor` 主要用于在 Bean 的初始化前、初始化后对 Bean 执行相关处理逻辑。实际上，容器的依赖注入功能也是通该接口实现的。该接口的实现如下:
 
