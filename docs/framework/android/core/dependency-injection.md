@@ -50,7 +50,8 @@ class DemoApplication: Application() {
 - `@Scope`：用于声明 Bean 的作用域；
 - `@Primary`：如果出现多个相同类型的 Bean，通过本注解标识哪个为主要的 Bean；
 - `@Autowired`：用于指定依赖注入的入口，可以作用于构造函数、方法、属性等；
-- `@Qualifier`：用于指定注入的 Bean 的名称，主要作用于参数、属性。
+- `@Qualifier`：用于指定注入的 Bean 的名称，主要作用于参数、属性；
+- `@Value`：用于指定注入的环境变量（[Environment](/framework/android/core/environment)]）的名称；
 
 ### @Configuration 和 @Bean
 &emsp;&emsp;`@Configuration` 注解用于标识指定的类是配置类。容器如果发现 Bean 带有 `@Configuraiton` 注解时，就会解析该类的所有公开的方法（包括静态方法），将所有带 `@Bean` 注解的方法作为 Bean 工厂方法。如：
