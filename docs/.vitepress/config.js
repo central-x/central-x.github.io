@@ -88,7 +88,8 @@ export default withMermaid(
                             {
                                 text: "Core",
                                 items: [
-                                    {text: "Dependency Injection", link: "/framework/android/core/dependency-injection"}
+                                    {text: "Dependency Injection", link: "/framework/android/core/dependency-injection"},
+                                    {text: "AOP", link: "/framework/android/core/aop"},
                                 ]
                             }
                         ]
