@@ -91,6 +91,7 @@ export default withMermaid(
                                     {text: "Dependency Injection", link: "/framework/android/core/dependency-injection"},
                                     {text: "Environment", link: "/framework/android/core/environment"},
                                     {text: "AOP", link: "/framework/android/core/aop"},
+                                    {text: "Resource", link: "/framework/android/core/resource"},
                                 ]
                             }
                         ]
