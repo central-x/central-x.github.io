@@ -93,6 +93,7 @@ export default withMermaid(
                                     {text: "AOP", link: "/framework/android/core/aop"},
                                     {text: "Resource", link: "/framework/android/core/resource"},
                                     {text: "Converter", link: "/framework/android/core/converter"},
+                                    {text: "Event", link: "/framework/android/core/event"},
                                 ]
                             }
                         ]
