@@ -2,8 +2,7 @@
 ## 概述
 &emsp;&emsp;Java 标准的 `java.net.URL` 类是标准的用于表示资源的类型，这个类型可以处理一些特定协议的资源。但是在日常开发中，我们经常需要定义一些私有的协议去处理一些资源，这在 `java.net.URL` 中是比较难处理的，因此提出了 Resource 的概念。
 
-## 接口
-### Resource Interface
+## Resource Interface
 &emsp;&emsp;`Resource` 接口用于表示一些更低层级的资源。下面是 Resource 接口的定义:
 
 ```kotlin
@@ -45,7 +44,7 @@ interface Resource {
 }
 ```
 
-### ResourceLoader Interface
+## ResourceLoader Interface
 &emsp;&emsp;`ResourceLoader` 接口用于获取资源。下面的 ResourceLoader 接口的定义:
 
 ```kotlin
@@ -110,9 +109,9 @@ interface ResourceLoader {
 }
 ```
 
-### Built-in ResourceLoader
+## Built-in ResourceLoader
 
-- UrlResourceLoader: 用于加载 http、https 协议的资源，返回 UrlResource 表示网络资源
-- ClassPathResourceLoader: 用于加载 classpath 协议的资源，返回 ClassPathResource 表示类路径资源
-- FileSystemResourceLoader: 用于加载 file 协议的资源，返回 FileSystemResource 表示文件系统资源
-- AssetResourceLoader: 用于加载 asset 协议的资源，返回 AssetResource 表示 Android 应用的 res 目录下的资源
+- UrlResourceLoader: 返回 UrlResource，用于加载 http、https 协议的资源，表示网络资源
+- ClassPathResourceLoader: 返回 ClassPathResource，用于加载 classpath 协议的资源，表示类路径资源
+- FileSystemResourceLoader: 返回 FileSystemResource，用于加载 file 协议的资源，表示文件系统资源
+- AssetResourceLoader: 返回 AssetResource，用于加载 asset 协议的资源，表示 Android 应用的 res 目录下的资源

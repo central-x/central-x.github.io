@@ -2,7 +2,7 @@
 ## 概述
 &emsp;&emsp;在使用系统的过程中，我们经常面临着类型转换的问题。比如在 properties 文件中保存的变量是字符串类型，但是注入时需要注入 Long 类型等等。为了方便地解决这些问题，本类库在 `central.convert` 包下定义了一套完整的类型转换系统。该系统使用 SPI 机制去实现类型转换器的注册逻辑，并支持在运行时执行类型转换逻辑。开发者还可以通过容器注入的方式去添加一些自定义的类型转换器。
 
-## Converter
+## Converter Interface
 &emsp;&emsp;`Converter` 接口是类型转换的上层接口，本类库提供了该接口的标准实现类 `GenericConverter`。开发者通过该接口可以方便地完成类型转换工作。`Converter` 的接口定义如下：
 
 ```kotlin
@@ -32,7 +32,7 @@ class TestComponent {
     private lateinit var converter: Converter
 
     fun test() {
-        val source = "1234"
+        val source: String = "1234"
 
         // 判断是否支持类型转换
         if (converter.support(source::class.java, Int::class.java)) {
@@ -46,7 +46,7 @@ class TestComponent {
 
 ## Custom TypeConverter
 ### TypeConverter Interface
-&emsp;&emsp;`TypeConverter` 是实现类型转换逻辑的基本单元。开发者在自定义类型转换器时，需要实现该接口。接口定义如下：
+&emsp;&emsp;`TypeConverter` 是实现类型转换逻辑的基本单元。本类库在 `central.convert.support.impl` 包下提供了很多内置的类型转换器。开发者在自定义类型转换器时，也同样需要实现该接口。接口定义如下：
 
 ```kotlin
 interface TypeConverter<T> {
@@ -65,7 +65,7 @@ interface TypeConverter<T> {
 }
 ```
 
-&emsp;&emsp;开发者可以参考 `central.convert.support.impl` 包下面实现的类型转换器去实现自定义类型转换器，如：
+&emsp;&emsp;开发者可以参考内置的类型转换器去实现自定义类型转换器，如：
 
 ```kotlin
 class IntegerConverter : Converter<Int> {
@@ -102,8 +102,12 @@ imports=your.converter.full.path.CustomConverter
 
 &emsp;&emsp;`GenericConverter` 在创建时，会自动寻找该文件并加载指定的类型转换器。
 
+::: tip 提示
+&emsp;&emsp;通过 SPI 的方式注册类型转换器后，后续所有新建的 `GenericConverter` 实例都将自动加载这些转换器。
+:::
+
 ### Container Register
-&emsp;&emsp;在 IoC 容器中，同时也内置了 Converter 的实现。如果开发者使用了 IoC 容器，那么开发者只需要将类型转换器注册到容器中即可。如：
+&emsp;&emsp;在 IoC 容器中，同时也内置了 Converter 的实现。如果开发者使用了 IoC 容器，那么开发者只需要将类型转换器注册到容器中，IoC 容器会自动将该转换器注册到内置的 Converter 实例中。如：
 
 ```kotlin
 @Configuration
@@ -112,3 +116,7 @@ class ApplicationConfiguration {
     
 }
 ```
+
+::: tip 提示
+&emsp;&emsp;通过 IoC 容器的方式注册的类型转换器，只会注册到容器内置的 `GenericConverter` 实例，而开发者自己新建的 `GenericConverter` 实例是没有注册这些转换器的。
+:::
