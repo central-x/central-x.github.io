@@ -7,14 +7,14 @@
 
 ## Profiles
 ### Bean Definition Profiles
-&emsp;&emsp;Bean 定义配置（Bean Definition Profiles）在容器中实现了一种机制，这种机制可以允许 Bean 定义注册到不同的环境（Environment）中。“环境配置”可以用于解决以下场景的问题：
+&emsp;&emsp;Bean 定义配置（Bean Definition Profiles）在容器中实现了一种机制，这种机制可以允许 Bean 定义注册到不同的环境配置（Environment Profile）中。“环境配置”可以用于解决类似以下问题：
 
 - 测试环境所用的 HttpClient 与生产环境的 HttpClient 需要有不同的配置
 - 只有在生产环境才启用一些监控的组件（monitoring infrastructure）
 - 在指定的环境下需要定制特定的 Bean 实现
 
 ### Using @Profile
-&emsp;&emsp;`@Profile` 注解用于让开发者指定组件与环境配置的绑定关系，当环境配置被激活时，该组件也会激活。注意，`@Profile("default")` 代表的是如果 development 和 production 都没有被激活时，则使用 default 的配置。
+&emsp;&emsp;`@Profile` 注解用于让开发者将指定组件绑定到指定的环境配置，当该环境配置被激活时，该组件也会被激活。
 
 ```kotlin
 @Configuration
@@ -47,6 +47,10 @@ class DefaultConfiguration {
     }
 }
 ```
+
+:::tip 提示
+&emsp;&emsp;注意，`@Profile("default")` 代表的是如果 development 和 production 都没有被激活时，则使用 default 的配置。
+:::
 
 &emsp;&emsp;`@Profile` 也可以作用于方法级别，这样可以缩小影响范围。
 
@@ -96,19 +100,23 @@ central.profiles.active=development
 
 ```kotlin
 AndroidApplication.run(this)
-val containsMyProperty = AndroidApplication.applicationContext.environment("my-property")
+val containsMyProperty = AndroidApplication.applicationContext.environment.containsProperty("my-property")
 System.out.println("Does my environment contain the 'my-property' property? " + containsMyProperty)
 ```
 
-&emsp;&emsp;在上面的代码片段中，我们看到了环境（Environment）提供了一种高层级的方式去访问 `my-property` 属性的方式。环境（Environment）在返回 `my-property` 属性时，会从一系列 `PropertySource` 对象中搜索。`PropertySource` 是一种简单的键值对存储容器，而 `StandardEnvironment` 默认加载了两个 PropertySource 对象：一个是 JVM 环境变量（`System.getProperties()`），另一个是系统环境变量（`System.getenv()`）。
+&emsp;&emsp;在上面的代码片段中，我们看到了环境（Environment）提供了一种高层级的方式去访问 `my-property` 属性的方式。环境（Environment）在返回 `my-property` 属性时，会从一系列 `PropertySource` 对象中搜索。`PropertySource` 是一种简单的键值对存储容器，而 `StandardEnvironment` 默认加载了三个 PropertySource 对象：
 
-&emsp;&emsp;也就是说，如果你使用 `StandardEnvironment` 的话，当 JVM 环境变量或系统环境变量包含 `my-property` 时，`env.containsProperty("my-property")` 都会返回 true。
+- JVM 属性（`System.getProperties()`），用于获取 JVM 里面的相关信息；
+- 系统属性（`System.getenv()`），用于获取当前操作系统的相关信息；
+- 应用属性（`classpath:/application.properties` 或 `classpath:/application.yml`），用于获取开发者定义的应用配置信息。
+
+&emsp;&emsp;也就是说，如果你使用 `StandardEnvironment` 的话，当 JVM 属性、系统属性、应用属性里任一包含 `my-property` 时，`env.containsProperty("my-property")` 都会返回 true。
 
 ::: tip 提示
-&emsp;&emsp;Environment 在搜索 PropertySource 时，会根据其优先级返回结果。一般情况下，系统属性的优先级会高于环境变量。因此如果 `my-property` 属性同时出现在系统属性和环境变量里，那么 `env.getProperty("my-property")` 会返回系统属性的值。
+&emsp;&emsp;Environment 在搜索 PropertySource 时，会根据其优先级返回结果。一般情况下，系统属性的优先级最高，JVM 属性其次，应用属性优先级最低。因此 `my-property` 属性如果同时出现在系统属性和环境变量里，那么 `env.getProperty("my-property")` 会返回系统属性的值。
 :::
 
-&emsp;&emsp;环境（Environment）还提供了可配置化的机制，用于将开发者自定义的 PropertySource 加入到环境（Environment）的搜索链中。
+&emsp;&emsp;环境（Environment）还提供了可配置化的机制，用于将开发者自定义的 PropertySource 加入到环境（Environment）的搜索域中。
 
 ```kotlin
 AndroidApplication.run(this)
@@ -123,7 +131,7 @@ sources.addFirst(MyPropertySource())
 
 ```kotlin
 @Configuration
-@PropertySource("classpath:/central/application.properties")
+@PropertySource("classpath:/demo/application.properties")
 class ApplicationConfiguration {
 
     @Autowired
@@ -139,14 +147,14 @@ class ApplicationConfiguration {
 ```
 
 ### Using @Value
-&emsp;&emsp;`@Value` 注解提供了一种声明式的机制，可以便利地获取环境（Evnironment）的属性。
+&emsp;&emsp;`@Value` 注解提供了一种声明式的机制，可以便利地注入环境（Evnironment）的属性。
 
 ```kotlin
 @Configuration
 class ApplicationConfiguration {
 
     /**
-     * 通过方式注入 Environment 属性
+     * 通过方法注入 Environment 属性
      */
     @Bean
     fun testBean(@Value("testbean.name") name: String): TestBean {
@@ -159,7 +167,7 @@ class ApplicationConfiguration {
 class TestService {
 
     /**
-     * 通过属性方式注入 Environment 属性
+     * 通过属性注入 Environment 属性
      */
     @Value("testservice.name")
     lateinit var name: String
