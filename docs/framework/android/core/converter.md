@@ -94,7 +94,7 @@ class IntegerConverter : Converter<Int> {
 ```
 
 ### SPI Register
-&emsp;&emsp;`GenericConverter` 实现了通过 SPI 机制去加载自定义类型转换器的逻辑。开发者只需要在 `resource` 目录下新建 `META-INF/central.convert.ConversionService.imports` 文件，文件内容如下：
+&emsp;&emsp;`GenericConverter` 实现了通过 SPI 机制去加载自定义类型转换器的逻辑。开发者只需要在 `resource` 目录下新建 `META-INF/central.convert.Converter.imports` 文件，文件内容如下：
 
 ```properties
 imports=your.converter.full.path.CustomConverter
