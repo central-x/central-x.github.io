@@ -95,6 +95,12 @@ export default withMermaid(
                                     {text: "Converter", link: "/framework/android/core/converter"},
                                     {text: "Event", link: "/framework/android/core/event"},
                                 ]
+                            },
+                            {
+                                text: "Bridge",
+                                items: [
+                                    {text: "Component", link: "/framework/android/bridge/component"},
+                                ]
                             }
                         ]
                     },
