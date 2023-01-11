@@ -30,6 +30,12 @@ export default withMermaid(
             },
             nav: [
                 {
+                    text: "Specification",
+                    items: [
+                        {text: "Api", link: "/specification/api", activeMatch: "/specification/api"}
+                    ]
+                },
+                {
                     text: "Central Framework",
                     items: [
                         {text: "Java", link: "/framework/java/", activeMatch: '/framework/java/'},
@@ -54,6 +60,9 @@ export default withMermaid(
                 {text: "Blogs", link: "/blogs/"}
             ],
             sidebar: {
+                "/specification/": [
+                    { text: "Api", link: "/specification/api" }
+                ],
                 "/framework/": [
                     // { text: "Framework Java", link: "/framework/java/guide" },
                     {
