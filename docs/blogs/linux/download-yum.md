@@ -9,16 +9,21 @@
 &emsp;&emsp;找一台环境与生产环境一致的电脑，并且这台电脑需要可以联接互联网。然后通过以下命令将安装包下载到指定的本地目录里：
 
 ```bash
+# 下载内核
+$ mkdir -p /root/packages/centos/7/x86_64/elrepo
+$ rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-6.el7.elrepo.noarch.rpm
+$ yum --enablerepo=elrepo-kernel install kernel-lt --downloadonly --downloaddir=/root/packages/centos/7/x86_64/elrepo
+
 # 下载所有系统/软件更新相关的包
-$ mkdir /root/packages/centos/7/x86_64/updates
+$ mkdir -p /root/packages/centos/7/x86_64/updates
 $ yum update --downloadonly --downloaddir=/root/packages/centos/7/x86_64/updates
 
 # 下载 docker-ce 以及依赖到 docker 目录下
-$ mkdir /root/packages/centos/7/x86_64/docker
-$ yum install docker-ce --downloadonly --downloaddir=/root/packages/centos/7/x86_64/docker
+$ mkdir -p /root/packages/centos/7/x86_64/docker-ce
+$ yum install docker-ce --downloadonly --downloaddir=/root/packages/centos/7/x86_64/docker-ce
  
 # 下载 docker-ce 的更新包到 docker 目录下
-$ yum update docker-ce --downloadonly --downloaddir=/root/packages/centos/7/x86_64/docker
+$ yum update docker-ce --downloadonly --downloaddir=/root/packages/centos/7/x86_64/docker-ce
 ```
 
 &emsp;&emsp;如果你只知道命令，但是不知道是什么包提供的，可以通过以下方法来查询命令所在包:
