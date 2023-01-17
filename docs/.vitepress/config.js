@@ -465,6 +465,7 @@ export default withMermaid(
                             {text: "Nginx 的安装和使用", link: "/blogs/linux/nginx"},
                             {text: "搭建内网穿透代理", link: "/blogs/linux/frp-proxy"},
                             {text: "iptable 的使用", link: "/blogs/linux/iptables"},
+                            {text: "Keepalived", link: "/blogs/linux/keepalived"},
                         ]
                     },
                     {
