@@ -32,7 +32,8 @@ export default withMermaid(
                 {
                     text: "Specification",
                     items: [
-                        {text: "Api", link: "/specification/api", activeMatch: "/specification/api"}
+                        {text: "Api", link: "/specification/api", activeMatch: "/specification/api"},
+                        {text: "MicroService", link: "/specification/microservice", activeMatch: "/specification/microservice"}
                     ]
                 },
                 {
@@ -61,7 +62,8 @@ export default withMermaid(
             ],
             sidebar: {
                 "/specification/": [
-                    { text: "Api", link: "/specification/api" }
+                    { text: "Api", link: "/specification/api" },
+                    { text: "MicroService", link: "/specification/microservice" }
                 ],
                 "/framework/": [
                     // { text: "Framework Java", link: "/framework/java/guide" },
