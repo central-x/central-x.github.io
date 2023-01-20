@@ -400,9 +400,29 @@ export default withMermaid(
                         collapsible: true,
                         collapsed: true,
                         items: [
-                            {text: "搭建 Kubernetes 环境", link: "/blogs/k8s/setup"},
-                            {text: "搭建 Kubernetes 环境（离线）", link: "/blogs/k8s/setup-offline"},
-                            {text: "本地控制远端 Kubernetes 集群", link: "/blogs/k8s/remote-control"},
+                            {
+                                text: "Setup",
+                                collapsiable: true,
+                                collpased: true,
+                                items: [
+                                    {text: "搭建 Kubernetes 环境", link: "/blogs/k8s/setup/"},
+                                    {text: "搭建 Kubernetes 环境（离线）", link: "/blogs/k8s/setup/offline"},
+                                ]
+                            }, {
+                                text: "Kubernetes in Action",
+                                collapsiable: true,
+                                collpased: true,
+                                items: [
+                                    {text: "Pod", link: "/blogs/k8s/in-action/pod"},
+                                ]
+                            }, {
+                                text: "Tips",
+                                collapsiable: true,
+                                collpased: true,
+                                items: [
+                                    {text: "本地控制远端 Kubernetes 集群", link: "/blogs/k8s/tips/remote-control"},
+                                ]
+                            }
                         ]
                     },
                     {
