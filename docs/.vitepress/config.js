@@ -414,6 +414,7 @@ export default withMermaid(
                                 collpased: true,
                                 items: [
                                     {text: "Pod", link: "/blogs/k8s/in-action/pod"},
+                                    {text: "ReplicaSet", link: "/blogs/k8s/in-action/replica-set"},
                                 ]
                             }, {
                                 text: "Tips",
