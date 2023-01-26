@@ -418,6 +418,7 @@ export default withMermaid(
                                     {text: "Job", link: "/blogs/k8s/in-action/job"},
                                     {text: "Service", link: "/blogs/k8s/in-action/service"},
                                     {text: "Volumn", link: "/blogs/k8s/in-action/volumn"},
+                                    {text: "ConfigMap 和 Secret", link: "/blogs/k8s/in-action/configmap-secret"},
                                 ]
                             }, {
                                 text: "Tips",
