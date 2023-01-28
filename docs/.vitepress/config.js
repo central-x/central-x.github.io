@@ -419,6 +419,8 @@ export default withMermaid(
                                     {text: "Service", link: "/blogs/k8s/in-action/service"},
                                     {text: "Volumn", link: "/blogs/k8s/in-action/volumn"},
                                     {text: "ConfigMap 和 Secret", link: "/blogs/k8s/in-action/configmap-secret"},
+                                    {text: "Downward API", link: "/blogs/k8s/in-action/downward-api"},
+                                    {text: "Deployment", link: "/blogs/k8s/in-action/deployment"},
                                 ]
                             }, {
                                 text: "Tips",
@@ -426,6 +428,8 @@ export default withMermaid(
                                 collpased: true,
                                 items: [
                                     {text: "本地控制远端 Kubernetes 集群", link: "/blogs/k8s/tips/remote-control"},
+                                    {text: "kubectl explain", link: "/blogs/k8s/tips/kubectl-explain"},
+                                    {text: "探针技术", link: "/blogs/k8s/tips/probe"},
                                 ]
                             }
                         ]
