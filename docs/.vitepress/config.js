@@ -421,6 +421,8 @@ export default withMermaid(
                                     {text: "ConfigMap 和 Secret", link: "/blogs/k8s/in-action/configmap-secret"},
                                     {text: "Downward API", link: "/blogs/k8s/in-action/downward-api"},
                                     {text: "Deployment", link: "/blogs/k8s/in-action/deployment"},
+                                    {text: "API 服务器的安全防护", link: "/blogs/k8s/in-action/api-security"},
+                                    {text: "计算资源管理", link: "/blogs/k8s/in-action/resources"},
                                 ]
                             }, {
                                 text: "Tips",
