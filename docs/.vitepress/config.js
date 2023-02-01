@@ -423,6 +423,7 @@ export default withMermaid(
                                     {text: "Deployment", link: "/blogs/k8s/in-action/deployment"},
                                     {text: "API 服务器的安全防护", link: "/blogs/k8s/in-action/api-security"},
                                     {text: "计算资源管理", link: "/blogs/k8s/in-action/resources"},
+                                    {text: "自动伸缩", link: "/blogs/k8s/in-action/automatic-scaling"},
                                 ]
                             }, {
                                 text: "Tips",
