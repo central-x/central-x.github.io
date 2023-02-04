@@ -434,6 +434,10 @@ export default withMermaid(
                                     {text: "本地控制远端 Kubernetes 集群", link: "/blogs/k8s/tips/remote-control"},
                                     {text: "kubectl explain", link: "/blogs/k8s/tips/kubectl-explain"},
                                     {text: "探针技术", link: "/blogs/k8s/tips/probe"},
+                                    {text: "修改资源的方式", link: "/blogs/k8s/tips/modifying-resources"},
+                                    {text: "创建运行一次的 Pod", link: "/blogs/k8s/tips/onetime-pod"},
+                                    {text: "以固定顺序启动 Pod", link: "/blogs/k8s/tips/pod-starting-order"},
+                                    {text: "容器生命周期", link: "/blogs/k8s/tips/lifecycle"},
                                 ]
                             }
                         ]
