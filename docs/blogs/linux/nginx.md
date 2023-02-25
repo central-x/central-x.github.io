@@ -180,3 +180,48 @@ server {
     }
 }
 ```
+
+### 直接返回字符串
+
+```nginx
+server {
+    listen 80;
+
+    location / {
+        default_type application/json;
+        return 200 '{"status": 200}';
+    }
+}
+```
+
+### 流代理
+
+- **/etc/nginx/nginx.conf**
+
+```nginx
+# 注意，这个 stream 节点在 http 节点下面，与 http 节点平级，不要写入 http 节点内
+stream {
+    log_format basic '$remote_addr [$time_local] '
+                 '$protocol $status $bytes_sent $bytes_received '
+                 '$session_time';
+    access_log /var/log/nginx/stream-access.log basic buffer=32k;
+
+    error_log  /var/log/nginx/stream-error.log notice;
+
+    # 包含 conf.d 下所有以 .stream 结尾的配置
+    include /etc/nginx/conf.d/*.stream;
+}
+```
+
+- **/etc/nginx/conf.d/test.stream**
+
+```nginx
+server {
+    listen 443;
+    ssl_preread on; # 如果代理的是 https 端口，需要加入本行配置
+
+    proxy_pass 127.0.0.1:8433;
+    proxy_connect_timeout 300s;
+    proxy_timeout 300s;
+}
+```
