@@ -4,7 +4,7 @@
 
 ## 操作步骤
 ### 下载安装包
-&emsp;&emsp;在 VMWare 官网[[链接](https://customerconnect.vmware.com/cn/group/vmware/evalcenter?p=free-esxi7)]下载 ESXi 的软件包。注意，升级时，应该下载 Offline Bundle 格式（也就是 zip 格式）的软件包。
+&emsp;&emsp;在 VMWare 官网[[链接](https://customerconnect.vmware.com/cn/group/vmware/evalcenter?p=free-esxi8)]下载 ESXi 的软件包。注意，升级时，应该下载 Offline Bundle 格式（也就是 zip 格式）的软件包。
 
 &emsp;&emsp;下载完成之后，将该软件包上传到 ESXi 的存储里，如下图所示。
 
