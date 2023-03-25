@@ -2,7 +2,7 @@
 ## 概述
 &emsp;&emsp;运行在 Pod 中的应用可以于 API 服务器交互来查看和控制部署在集群中的资源状态（如 kubernetes dashboard）。如果对 Pod 进行了过高的授权，那么 Pod 里面的恶意应用将可以轻易地控制集群（比如通过 path traversal 或者 directory traversal 攻击获取 token，并用这个 token 运行恶意的 pod），带来了数据、应用上的风险。
 
-&emsp;&emsp;Kubernetes 支持通过 RBAC 的方式进行授权，用于在安全的方式下对应用进行恰当地授权。
+&emsp;&emsp;Kubernetes 支持通过 RBAC 的方式进行授权，用于在安全的方式下对应用进行恰当地授权。在 Kubernetes 中，API 服务器的访问授权主要涉及以下概念和资源：
 
 - ServiceAccount: ServiceAccount 代表一种非人类操作的帐户，主要用于向应用 Pods、系统组件之类的进行授权。
 - Role 和 RoleBinding: 普通权限控制，主要控制指定命名空间下的资源。

@@ -1,10 +1,24 @@
-# Deployment
+# 无状态应用管理
 ## 概述
-&emsp;&emsp;Deployment 是基于 ReplicaSet 的资源，支持声明式地更新应用程序。Deployment 是一种更高阶资源，用于ukbl者应用程序并以声明的方式升级应用，而不是通过 ReplicationController 或 ReplicaSet 进行部署。
+&emsp;&emsp;在微服务开发的过程中，我们大多数的应用都是无状态的。在 Kubernetes 中，一般可以通过 ReplicationController、ReplicaSet 和 Deployment 三种资源来管理这些无状态应用。这三种资源的区别主要如下：
+
+- ReplicationController：用于管理 Pod，确保在任何时候都有特定数量的 Pod 副本处于运行状态。当 Pod 数量过多时，ReplicationController 会终止多余的 Pod；当 Pod 数量太少时，ReplicationController 会启动新的 Pod 副本。目前不建议继续使用 ReplicationController，而是使用 ReplicaSet 和 Deployment 来建立副本管理机制。
+- ReplicaSet：与 ReplicationController 大多数功能一致，但是支持更高级的标签选择器。一般情况下，我们都是通过更高层级的 Deployment 资源，而不是直接使用 ReplicaSet。
+- Deployment：基于 ReplicaSet 资源，并支持声明式地更新应用程序。Deployment 是一种更高阶资源，用于部署应用程序并以声明的方式升级应用。
 
 &emsp;&emsp;使用 Deployment 可以更容易地更新应用程序，因为可以直接定义单个 Deployment 资源所需达到的状态，并让 Kubernetes 处理中间的状态。
 
-## 声明
+## ReplicationController
+&emsp;&emsp;
+
+## ReplicaSet
+&emsp;&emsp;
+
+## Deployment
+### 概述
+
+### 部署
+&emsp;&emsp;
 
 ```yaml
 apiVersion: apps:v1
@@ -49,7 +63,7 @@ kubia-1506449474-xis6m    1/1       Running   0          18s
 
 &emsp;&emsp;通过 ReplicaSet 创建 Pod 时，他们的名称是由 ReplicaSet 的名称加上一个运行时生成的随机字符串组成。现在由 Deployment 创建的三个 Pod 名称中均包含一个额外的数字，这个数字实际上是对应 Deployment 中的 Pod 模板的哈希值。
 
-## 升级
+### 升级
 &emsp;&emsp;升级时，只需要修改 Deployment 资源中定义的 Pod 模板，Kubernetes 会自动将实际的系统状态收敛为资源中定义的状态，匹配期望的状态。如何达到新的系统状态的过程是由 Deployment 的升级策略决定的，默认策略是执行滚动升级（策略名为 RollingUpdate），另一种是 Recreate 策略，两种策略的区别如下:
 
 - RollingUpdate 策略会渐进地删除旧的 Pod，与此同时创建新的 Pod，使应用程序在整个升级过程中都处于可用状态，并确保其处理请求的能力没有因为升级而有所影响。升级过程中的 Pod 数量可以在期望副本数的一定区间内浮动。如果应用能够支持多个版本同时对外提供服务，则推荐使用这个策略来升级应用。
@@ -93,7 +107,7 @@ kubia-1506449474    0          0          24m
 kubia-1581357123    3          3          23m
 ```
 
-## 回滚
+### 回滚
 &emsp;&emsp;Deployment 在完成升级之后，原来的 ReplicaSet 并没有删除，通过 Kubernetes 可以取消最后一次部署的 Deployment。
 
 ```bash
@@ -113,7 +127,7 @@ REVISION    CHANGE-CAUSE
 $ kubectl rollout undo deployment kubia --to-revision=1
 ```
 
-## 配合就绪探针阻止出错版本的滚动升级
+### 配合就绪探针阻止出错版本的滚动升级
 &emsp;&emsp;在 Deployment 中设置 minReadySeconds 属性，除了可以减慢滚动升级速率，更重要的功能是避免部团出错版本的应用。
 
 &emsp;&emsp;minReadySeconds 属性指定新创建的 Pod 至少要成功运行多久之后，才能将其视为可用。在 Pod 可用之前，滚动升级的过程不会继续。

@@ -1,6 +1,6 @@
-# Service
+# 服务发布
 ## 概述
-&emsp;&emsp;在没有 Kubernetes 的场景下，每个服务都可以有固定的访问地址，系统间的通信都是通过固定的 IP 地址通信。但是在 Kubernetes 在世界里，这一点并不适用，主要是因为：
+&emsp;&emsp;在没有 Kubernetes 的场景下，每个应用都可以有固定的访问地址，系统间的通信都是通过固定的 IP 地址通信。但是在 Kubernetes 在世界里，这一点并不适用，主要是因为：
 
 - Pod 是短暂的：它们随时会启动或者关闭
 - Pod 的数量是不确定的：它们可能根据 ReplicaSet 的调整而随时新增或减少实体
@@ -102,14 +102,14 @@ kubia   10.108.1.4:8080,10.108.2.5:8080,10.108.2.6:8080  1h
 
 &emsp;&emsp;一般情况下我们不会独立去操作它，因此忽略。
 
-### 将服务暴露给外部客户端
-&emsp;&emsp;有几种方式可以在外部访问服务：
+## 服务公开
+&emsp;&emsp;部署好应用之后，除了需要让内部应用间能相互访问，我们还需要让外部的客户端能够访问这些应用。有几种方式可以在外部访问服务：
 
 - 将服务的类型设置为 NodePort: 每个集群节点都会在节点上打开一个端口，对于 NodePort 服务，每个集群节点在节点本身上打开一个端口，并将在该端口上接收到的流量重定向到基础服务。该服务仅在内部集群 IP 和端口上才能访问，但也可以通过所有节点上专用的端口访问。
 - 将服务的类型设置成 LoadBalance，NodePort 类型的一种扩展: 这使得服务可以通过一个专用的负截均衡器来访问，这是由 Kubernetes 中正在运行的云基础设施提供的。负载均衡器将流量重定向到跨所有节点的节点端口。客户端通过负载均衡器的 IP 连接到服务。
 - 创建一个 Ingress 资源: 它运行在 HTTP 层，因此可以提供比工作在第 4 层的服务更多的功能。
 
-#### NodePort
+### NodePort
 &emsp;&emsp;NodePort 服务可以让 Kubernetes 在其所有节点上保留一个端口（所有节点上都使用相同的端口号），并将传入的连接转发给作为服务部份的 Pod。
 
 ```yaml
@@ -132,7 +132,13 @@ spec:
 
 ![](./assets/service-nodeport.svg)
 
-#### LoadBalancer
+&emsp;&emsp;使用 NodePort 时，需要注意以下问题:
+
+- 每个服务都会有一个独立的端口，端口不能复用
+- 端口范围只能是 30000～32767
+- 如果节点的 IP 地址发生变化，需要手工处理
+
+### LoadBalancer
 &emsp;&emsp;负载均衡器服务一般由云提供商提供，自行搭建的 Kubernetes 一般情况下不包含该类型的服务。云服务商会额外提供一个负载均衡器服务器，用于在 NodePort 的基础上提供对节点的负载均衡。
 
 ```yaml
@@ -154,7 +160,22 @@ spec:
 
 ![](./assets/service-loadbalancer.svg)
 
-#### Ingress
+&emsp;&emsp;本方式最大的缺点是每个用 LoadBalancer 暴露的服务都会有它自己的 IP 地址，每个用到的 LoadBalancer 都需要付费。
+
+### Ingress
+&emsp;&emsp;Ingress 资源是 Kubernetes 集群的流量入口，提供了基于域名（主机名）或路径的路由服务，可以将多个 Service 合并成一个入口，扮演着「智能路由」或集群入口的角色。需要注意的是，Ingress 资源必须有 Ingress Controller 在集群中运行时才能正常工作。不同的 Kubernetes 环境使用不同的控制器实现，不同的控制器也有着不同（但类似）的行为表现。
+
+&emsp;&emsp;在一些云服务商如 Google Kubernetes Engine，他们一般会提供带有 HTTP 负载均衡模块功能的 Ingress Controller，因此他们的行为模式更像 LoadBalancer。
+
+![](./assets/ingress-loadbalancer.svg)
+
+&emsp;&emsp;而如果是我们自行搭建的 Kubernetes 集群，一般没有提供 Ingress Controller，那么需要我们根据需求自行选择 Ingress Controller 实现。常见的 Ingress Controller 有HAProxy、Treafik、Kubernetes 官方维护的 Nginx、Nginx 开源版、Nginx商业版等。由于我们一般无法提供负载均衡模块，因此我们选用的 Ingress Controller 的行为模式更像 NodePort。
+
+&emsp;&emsp;以 Kubernetes 官方维护的 Ingress Nginx 为例，它的 Ingress Controller 实际上就是一个 Pod，这个 Pod 会被调度到指定的节点上，然后开放指定的端口（一般是 80 和 443）。这个 Pod 通过监听 Kubernetes 集群的 Ingress 资源，从而动态更新 Pod 里的 Nginx 配置文件并重新加载 Nginx 进程，从而达到即时更新路由的效果。
+
+![](./assets/ingress-nodeport.svg)
+
+&emsp;&emsp;注意，上图的 LoadBalancer 可以选用硬件负载均衡器或软件负载均衡器，这是根据可用性要求自行添加的，它不属于 Ingress Controller 的一部份。如果没有高可用需求，将基中一个节点的 IP 提供给客户也是一种选择。
 
 ```yaml
 apiVersion: networking.k8s.io/v1
