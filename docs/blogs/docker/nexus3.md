@@ -1,6 +1,6 @@
 # 搭建 Nexus3
 ## 概述
-&emsp;&emsp;在之前搭建 Kubernetes 离线环境[[链接](/blogs/k8s/setup/offline)]的时候，利用 createrepo 和 nginx 搭建了 yum 私库，利用 registry 和 nginx 搭建了 docker 私库，解决了在无网环境下更新 CentOS 7 系统和安装 Kubernetes 环境的问题。但是这种方案始终还是太过麻烦了，后面找了一下，发现 Nexus3 不仅支持当作 maven 私库来使用，还可以当成 yum 私库、registry 私库、apt 私库、npm 私库等等。
+&emsp;&emsp;在之前搭建 Kubernetes 离线环境[[链接](/blogs/k8s/setup/)]的时候，利用 createrepo 和 nginx 搭建了 yum 私库，利用 registry 和 nginx 搭建了 docker 私库，解决了在无网环境下更新 CentOS 7 系统和安装 Kubernetes 环境的问题。但是这种方案始终还是太过麻烦了，后面找了一下，发现 Nexus3 不仅支持当作 maven 私库来使用，还可以当成 yum 私库、registry 私库、apt 私库、npm 私库等等。
 
 &emsp;&emsp;在日常使用的过程中，还是这类带可视化界面的系统更方便些，因此写一篇笔记记录一下使用 Docker 搭建 Nexus3 的过程。
 
