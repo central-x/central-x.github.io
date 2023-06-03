@@ -401,6 +401,23 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {
+                                text: "Kubernetes in Setup",
+                                collapsiable: true,
+                                collpased: true,
+                                items: [
+                                    { text: "概述", link: "/blogs/k8s/setup/index" },
+                                    { text: "搭建基础服务环境", link: "/blogs/k8s/setup/svc" },
+                                    { text: "通用步骤", link: "/blogs/k8s/setup/steps" },
+                                    { text: "初始化主节点", link: "/blogs/k8s/setup/master" },
+                                    { text: "初始化工作节点", link: "/blogs/k8s/setup/node" },
+                                    { text: "初始化存储节点", link: "/blogs/k8s/setup/storage" },
+                                    { text: "安装 Ingress Controller", link: "/blogs/k8s/setup/ingress-controller" },
+                                    { text: "监控集群", link: "/blogs/k8s/setup/metrics" },
+                                    { text: "安装 Dashboard", link: "/blogs/k8s/setup/dashboard" },
+                                    { text: "集中管理集群", link: "/blogs/k8s/setup/centralized" },
+                                    { text: "运维规约", link: "/blogs/k8s/setup/convention" },
+                                ]
+                            },{
                                 text: "Kubernetes in Action",
                                 collapsiable: true,
                                 collpased: true,
