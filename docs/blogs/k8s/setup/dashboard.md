@@ -7,7 +7,7 @@
 
 ```bash
 # 使用 helm 安装 kube-dashboard
-$ helm install kube-dashboard mirror/kube-dashboard  -n kube-system
+$ helm install kube-dashboard mirror/kube-dashboard -n kube-system
 NAME: kube-dashboard
 LAST DEPLOYED: Tue Jun 13 03:05:13 2023
 NAMESPACE: default

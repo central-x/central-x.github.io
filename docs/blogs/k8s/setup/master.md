@@ -517,7 +517,7 @@ $ helm repo add mirror http://mirror.cluster.k8s/repository/helm/
 
 ```bash
 # 安装 kube-flannel 插件
-$ helm install kube-flannel mirror/kube-flannel
+$ helm install kube-flannel mirror/kube-flannel -n kube-system
 NAME: kube-flannel
 LAST DEPLOYED: Tue Jun 13 02:55:47 2023
 NAMESPACE: default

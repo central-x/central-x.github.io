@@ -6,11 +6,8 @@
 ### 部署 metrics-server
 
 ```bash
-# 将主节点的 front-proxy-ca.crt 证书转为 pem 格式证书
-$ openssl x509 -in /etc/kubernetes/pki/front-proxy-ca.crt -out /etc/kubernetes/pki/front-proxy-ca.pem -outform PEM
-
-# 将 pem 证书复制到所有的工作节点上
-$ scp /etc/kubernetes/pki/front-proxy-ca.pem root@node1.cluster.k8s:/etc/kubernetes/pki/front-proxy-ca.pem
+# 将 crt 证书复制到所有的工作节点上
+$ scp /etc/kubernetes/pki/front-proxy-ca.crt root@node1.cluster.k8s:/etc/kubernetes/pki/front-proxy-ca.crt
 
 # 在主节点（master1.cluster.k8s）上，通过 helm 安装 metrics-server
 $ helm install kube-metrics-server mirror/kube-metrics-server -n kube-system
