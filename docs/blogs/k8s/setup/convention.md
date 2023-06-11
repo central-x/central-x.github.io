@@ -55,7 +55,8 @@ Context "kubernetes-admin@kubernetes" modified.
 
 &emsp;&emsp;常用于节点标签如下:
 
-- `cluster.k8s/node=ingress`：标识该节点需要部署 Ingress Controller。
+- `cluster.k8s/ingress=enabled`：标识该节点为集群流量入口。
+- `cluster.k8s/egress=enabled`：标识该节点为集群流量出口。
 - 待补充
 
 ### 资源标签
