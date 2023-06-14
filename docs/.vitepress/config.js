@@ -448,6 +448,7 @@ export default withMermaid(
                                     { text: "创建运行一次的 Pod", link: "/blogs/k8s/tips/onetime-pod" },
                                     { text: "以固定顺序启动 Pod", link: "/blogs/k8s/tips/pod-starting-order" },
                                     { text: "容器生命周期", link: "/blogs/k8s/tips/lifecycle" },
+                                    { text: "修改证书有效期", link: "/blogs/k8s/tips/kubeadm-certs" },
                                 ]
                             }
                         ]
@@ -462,6 +463,7 @@ export default withMermaid(
                             { text: "搭建 DNS 服务", link: "/blogs/docker/dns" },
                             { text: "搭建 Clash 代理", link: "/blogs/docker/clash" },
                             { text: "搭建 Nexus3", link: "/blogs/docker/nexus3" },
+                            { text: "代理下载镜像", link: "/blogs/docker/pull-image-from-proxy" },
                         ]
                     },
                     {
