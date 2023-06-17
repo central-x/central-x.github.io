@@ -454,6 +454,14 @@ export default withMermaid(
                         ]
                     },
                     {
+                        text: "Middleware",
+                        collapsible: true,
+                        collapsed: true,
+                        items: [
+                            { text: "Nginx", link: "/blogs/middleware/nginx" },
+                        ]
+                    },
+                    {
                         text: "Docker",
                         collapsible: true,
                         collapsed: true,
@@ -474,7 +482,6 @@ export default withMermaid(
                             { text: "下载 yum 的离线安装包", link: "/blogs/linux/download-yum" },
                             { text: "Linux 常用命令", link: "/blogs/linux/command" },
                             { text: "创建自签名 SSL 证书", link: "/blogs/linux/ssl" },
-                            { text: "Nginx 的安装和使用", link: "/blogs/linux/nginx" },
                             { text: "搭建内网穿透代理", link: "/blogs/linux/frp-proxy" },
                             { text: "iptable 的使用", link: "/blogs/linux/iptables" },
                             { text: "Keepalived", link: "/blogs/linux/keepalived" },
