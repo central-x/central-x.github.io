@@ -6,7 +6,7 @@
 ### CentOS7
 
 ```bash
-# 安装 Nginx 源
+# 添加 Nginx 源
 $ rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
 
 # 安装 Nginx
@@ -35,7 +35,70 @@ $ brew services start nginx
 $ nginx -t
 ```
 
-## 常见操作
+## 常用文件路径
+
+- 总配置文件: 这个文件主要用于总体配置 nginx 的规则。注意不要将普通转发路由等信息写在这里
+   - Linux: `/etc/nginx/nginx.conf`
+   - Mac: `/usr/local/etc/nginx/nginx.conf`
+
+```nginx
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+# Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    worker_connections 1024;
+}
+
+# 请求转发 (7 层代理)
+http {
+    log_format  main  '$remote_addr -> $host [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 4096;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    server_tokens	off;
+
+    # 包含 conf.d 下所有以 .conf 结尾的配置
+    include /etc/nginx/conf.d/*.conf;
+}
+
+# 流转发 (3 层代理)
+stream {
+    log_format basic '$remote_addr [$time_local] '
+                     '$protocol $status $bytes_sent $bytes_received '
+                     '$session_time';
+    access_log /var/log/nginx/stream-access.log basic buffer=32k;
+
+    error_log  /var/log/nginx/stream-error.log notice;
+
+    # 包含 conf.d 下所有以 .stream 结尾的配置
+    include /etc/nginx/conf.d/*.stream;
+}
+```
+
+- 配置目录: 这个文件夹主要用于存放普通转发规则。其中以 `.conf` 结尾的是普通转发，以 `.stream` 结尾的配置文件是流转发（端口转发）
+   - Linux: `/etc/nginx/conf.d`
+   - Mac: `/usr/local/etc/nginx/conf.d`
+- 日志目录: 这个文件夹主要用于存放访问日志（`access.log`）和错误日志（`error.log`）
+   - Linux: `/var/log/nginx`
+   - Mac: `/usr/local/var/log/nginx`
+
+## 请求代理
 ### 反向代理
 
 ```nginx
@@ -194,7 +257,7 @@ server {
 }
 ```
 
-### 流代理
+## 流代理
 
 - **/etc/nginx/nginx.conf**
 
