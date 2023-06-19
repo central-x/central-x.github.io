@@ -163,10 +163,13 @@ server {
 server {
     # 监听端口
     listen 80;
+    # 设置默认编码
+    charset utf-8;
 
-    # 托管 /opt/html 目录下的静态文件
+    # 托管 /usr/share/nginx/www 目录下的静态文件
     location / {
-        root /opt/html;
+        root /usr/share/nginx/www;
+        index index.htm index.html;
     }
 }
 ```
@@ -187,7 +190,7 @@ http {
 
 ```nginx
 server {
-    # 将 HTTP 请求转成 HTTPS 请求
+    # 将 HTTP 请求重定向到 HTTPS 请求
     listen 80;
     server_name local.cluster.k8s;
     rewrite ^(.*)$ https://$host$1 permanent;
@@ -203,10 +206,10 @@ server {
     # 证书配置，将这个改成你申请的证书的文件地址
     ssl_certificate_key /etc/nginx/ssl/cluster.k8s.key;
 
-    # 其余配置与反向代码、静态资源托管一致
+    # 其余配置与反向代理、静态资源托管一致
     location / {
-        root   /usr/share/nginx/html;
-        index  index.html index.htm;
+        root /usr/share/nginx/www;
+        index index.htm index.html;
     }
 }
 ```
