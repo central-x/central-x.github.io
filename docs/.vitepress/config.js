@@ -449,6 +449,7 @@ export default withMermaid(
                                     { text: "以固定顺序启动 Pod", link: "/blogs/k8s/tips/pod-starting-order" },
                                     { text: "容器生命周期", link: "/blogs/k8s/tips/lifecycle" },
                                     { text: "修改证书有效期", link: "/blogs/k8s/tips/kubeadm-certs" },
+                                    { text: "Ingress 代理 https", link: "/blogs/k8s/tips/ingress-https" },
                                 ]
                             }
                         ]
