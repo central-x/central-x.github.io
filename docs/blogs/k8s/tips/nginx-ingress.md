@@ -128,7 +128,7 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
 $ vi /etc/nginx/nginx.conf
 ```
 
-&emsp;&emsp;找到配置文件，发现果然是 Ingress Nginx Controller 生成的 Nginx 配置文件将外部流量的请求头给覆盖了。Ingress Nginx Controller 会覆盖以下 `X-Forwarded-*` 请求头:
+&emsp;&emsp;找到配置文件，发现果然是 Ingress Nginx Controller 生成的 Nginx 配置文件将外部流量的请求头给覆盖了。Ingress Nginx Controller 会覆盖以下和反向代理有关的请求头:
 
 - X-Real-IP
 - X-Forwarded-For
@@ -214,7 +214,7 @@ directly to the internet, or it's behind a L3/packet-based load balancer
 that doesn't alter the source IP in the packets.
 ```
 
-&emsp;&emsp;上面描述，如果 Ingress Nginx Controller 在另一个 L7 层代理/负载均衡器后面，需要将 `use-forwarded-headers` 设置为 true，那么 Ingress Nginx Controller 将会转发 `X-Forwarded-*` 相关的请求头；如果 Ingress Nginx Controller 直接暴露到互联网或在一个 L3 层负载均衡器后面，则需要将 `use-forwarded-headers` 设置为 fase，Ingress Nginx Controller 将会忽略传递进来的 `X-Forwarded-*` 请求头。
+&emsp;&emsp;上面描述，如果 Ingress Nginx Controller 在另一个 L7 层代理/负载均衡器后面，需要将 `use-forwarded-headers` 设置为 true，那么 Ingress Nginx Controller 将会转发 `X-Forwarded-*` 相关的请求头；如果 Ingress Nginx Controller 直接暴露到互联网或在一个 L3 层负载均衡器后面，则需要将 `use-forwarded-headers` 设置为 fase，Ingress Nginx Controller 将会屏蔽传递进来的 `X-Forwarded-*` 请求头。
 
 &emsp;&emsp;因此，最后我们只需要在部署 ingress-nginx 时，修改 values.yaml 文件，为 controller.config 添加新选项 `use-forwarded-headers` 。
 
@@ -229,4 +229,4 @@ controller:
 $ helm install central-studio central-studio.tgz
 ```
 
-&emsp;&emsp;再次测试，发现网关已经可以正常获取 scheme、host、port 的值，保证后续的工作。。
+&emsp;&emsp;再次测试，发现网关已经可以正常获取 scheme、host、port 的值。
