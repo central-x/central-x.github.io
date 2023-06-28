@@ -520,15 +520,15 @@ $ helm repo add mirror http://mirror.cluster.k8s/repository/helm/
 $ helm install kube-flannel mirror/kube-flannel -n kube-system
 NAME: kube-flannel
 LAST DEPLOYED: Tue Jun 13 02:55:47 2023
-NAMESPACE: default
+NAMESPACE: kube-system
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 
 # 获取 helm 列表
-$ helm list
-NAME        	NAMESPACE	REVISION	UPDATED                               	STATUS  	CHART              	APP VERSION
-kube-flannel	default  	1       	2023-06-12 06:09:54.92844014 +0800 CST	deployed	kube-flannel-0.22.0	0.22.0  
+$ helm list -n kube-system
+NAME        	NAMESPACE	    REVISION	UPDATED                               	STATUS  	CHART              	APP VERSION
+kube-flannel	kube-system  	1       	2023-06-12 06:09:54.92844014 +0800 CST	deployed	kube-flannel-0.22.0	0.22.0  
 
 # 安装 kube-flannel 插件后，再获取节点信息
 # 可以发现节点已初始化
@@ -537,13 +537,14 @@ NAME                  STATUS   ROLES           AGE    VERSION
 master1.cluster.k8s   Ready    control-plane   116s   v1.27.2
 
 # 获取系统命名空间的 pod 运行情况，全部正常运行
-$ kubectl -n kube-system get po
+$ kubectl get po -n kube-system
 NAME                                          READY   STATUS    RESTARTS      AGE
 coredns-5d78c9869d-lmqtg                      1/1     Running   0             109s
 coredns-5d78c9869d-sm29p                      1/1     Running   0             109s
 etcd-master1.cluster.k8s                      1/1     Running   0             2m4s
 kube-apiserver-master1.cluster.k8s            1/1     Running   0             2m2s
 kube-controller-manager-master1.cluster.k8s   1/1     Running   0             2m4s
+kube-flannel-ds-5llrk                         1/1     Running   0             2m30s
 kube-proxy-xxdhb                              1/1     Running   3 (93s ago)   109s
 kube-scheduler-master1.cluster.k8s            1/1     Running   0             2m3s
 ```
@@ -608,6 +609,9 @@ kube-apiserver-master3.cluster.k8s            1/1     Running   0               
 kube-controller-manager-master1.cluster.k8s   1/1     Running   1 (81s ago)     4m20s
 kube-controller-manager-master2.cluster.k8s   1/1     Running   0               91s
 kube-controller-manager-master3.cluster.k8s   1/1     Running   0               26s
+kube-flannel-ds-5llrk                         1/1     Running   0               4m25s
+kube-flannel-ds-7dwft                         1/1     Running   0               6m13h
+kube-flannel-ds-jzq5w                         1/1     Running   0               6m27h
 kube-proxy-nrxp4                              1/1     Running   0               27s
 kube-proxy-wgd5z                              1/1     Running   0               92s
 kube-proxy-xxdhb                              1/1     Running   3 (3m49s ago)   4m5s
