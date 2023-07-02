@@ -56,11 +56,11 @@ events {
 
 # 请求转发 (7 层代理)
 http {
-    log_format  main  '$remote_addr -> $host [$time_local] "$request" '
-                      '$status $body_bytes_sent "$http_referer" '
-                      '"$http_user_agent" "$http_x_forwarded_for"';
+    log_format  main    '$remote_addr -> $host [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
 
-    access_log  /var/log/nginx/access.log  main;
+    access_log          /var/log/nginx/access.log  main;
 
     sendfile            on;
     tcp_nopush          on;
@@ -71,23 +71,23 @@ http {
     include             /etc/nginx/mime.types;
     default_type        application/octet-stream;
 
-    server_tokens	off;
+    server_tokens	    off;
 
     # 包含 conf.d 下所有以 .conf 结尾的配置
-    include /etc/nginx/conf.d/*.conf;
+    include             /etc/nginx/conf.d/*.conf;
 }
 
 # 流转发 (3 层代理)
 stream {
-    log_format basic '$remote_addr [$time_local] '
-                     '$protocol $status $bytes_sent $bytes_received '
-                     '$session_time';
-    access_log /var/log/nginx/stream-access.log basic buffer=32k;
+    log_format basic    '$remote_addr [$time_local] '
+                        '$protocol $status $bytes_sent $bytes_received '
+                        '$session_time';
+    access_log          /var/log/nginx/stream-access.log basic buffer=32k;
 
-    error_log  /var/log/nginx/stream-error.log notice;
+    error_log           /var/log/nginx/stream-error.log notice;
 
     # 包含 conf.d 下所有以 .stream 结尾的配置
-    include /etc/nginx/conf.d/*.stream;
+    include             /etc/nginx/conf.d/*.stream;
 }
 ```
 
@@ -104,58 +104,58 @@ stream {
 ```nginx
 server {
     # 监听端口
-    listen 80;
+    listen                 80;
     # 监听域名
-    server_name local.cluster.k8s;
+    server_name            local.cluster.k8s;
 
-    # 路径匹配到 / 的全部转发到 http://10.10.2.2:8081 服务器上
+    # 转发代理信息
+    proxy_set_header   X-Real-IP           $remote_addr;
+    proxy_set_header   HOST                $http_host;
+    proxy_set_header   X-Forwarded-Host    $http_host;
+    proxy_set_header   X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header   X-Forwarded-Proto   $scheme;
+    proxy_set_header   X-Forwarded-Port    $server_port;
+
+    # 路径匹配到以 / 开头的全部转发到 http://10.10.2.2:8081 服务器上
     location / {
-        proxy_pass http://10.10.2.2:8081; 
-        proxy_redirect default;
-
-        proxy_set_header X-Forwarded-Host $http_host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_pass         http://10.10.2.2:8081; 
+        proxy_redirect     default;
     }
 
-    # 路径匹配到 /app 的全部转发到 http://192.168.0.237:8082 服务器上
+    # 路径匹配到以 /app 开头的全部转发到 http://192.168.0.237:8082 服务器上
     location /app {
-        proxy_pass http://192.168.0.237:8082; 
-        proxy_redirect default;
-
-        proxy_set_header X-Forwarded-Host $http_host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_pass         http://192.168.0.237:8082; 
+        proxy_redirect     default;
     }
 } 
 ```
 
 &emsp;&emsp;反向代理时，被代理的服务无法得知真实客户端相关信息，也无法得知客户端访问服务器时的协议、域名、端口信息等。而且在真实的运维过程中，可能存在多层反向代理的情况。为了保证被代理的服务可以正确地获取这些信息，需要在 Nginx 转发时添加一些请求头信息。
 
+- X-Real-IP：客户端真实 IP
 - X-Forwarded-Host：客户端访问服务器时的域名信息
 - X-Forwarded-For：代理路径，第一个 IP 是客户端的 IP，后面是每一层代理的 IP
-- X-Forwarded-Proto：客户端访问服务器时的协议
 - X-Forwarded-Port：客户端访问服务器时的端口
+- X-Forwarded-Proto：客户端访问服务器时的协议
+- X-Forwarded-Scheme：客户端访问服务器时的协议（兼容性冗余）
+- X-Scheme：客户端访问服务器时的协议（兼容性冗余）
 
 &emsp;&emsp;如果只存在单层反向代理，那么需要添加以下请求头配置
 
-- proxy_set_header X-Forwarded-Host $http_host
-- proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for
-- proxy_set_header X-Forwarded-Proto $scheme
-- proxy_set_header X-Forwarded-Port $server_port
+```nginx
+proxy_set_header   X-Real-IP           $remote_addr;
+proxy_set_header   HOST                $http_host;
+proxy_set_header   X-Forwarded-Host    $http_host;
+proxy_set_header   X-Forwarded-For     $proxy_add_x_forwarded_for;
+proxy_set_header   X-Forwarded-Proto   $scheme;
+proxy_set_header   X-Forwarded-Port    $server_port;
+```
 
-&emsp;&emsp;如果存在多层反向代理，那么首层反向代理需要添加以下请求头配置
+&emsp;&emsp;如果存在多层反向代理，那么首层反向代理与上面一致，第二层及以后的反向代理应加入以下头部配置
 
-- proxy_set_header X-Forwarded-Host $http_host
-- proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for
-- proxy_set_header X-Forwarded-Proto $scheme
-- proxy_set_header X-Forwarded-Port $server_port
-
-&emsp;&emsp;第二层及以后的反向代理应加入以下头部配置
-
-- proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for
+```nginx
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for
+```
 
 ### 静态文件托管
 
