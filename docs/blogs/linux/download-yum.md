@@ -86,7 +86,7 @@ $ mkdir /root/packages/centos/7/x86_64/os && createrepo /root/centos/7/x86_64/os
 $ createrepo --update createrepo /root/centos/7/x86_64/os
 ```
 
-&emsp;&emsp;然后通过 nginx 暴露 yum 源（如果不懂 Nginx，可以参考我之前的笔记[[链接](/blogs/linux/nginx)]）：
+&emsp;&emsp;然后通过 nginx 暴露 yum 源（如果不懂 Nginx，可以参考我之前的笔记[[链接](/blogs/middleware/nginx)]）：
 
 ```bash
 # 修改 /etc/nginx/nginx.conf
