@@ -82,14 +82,14 @@ Context "kubernetes-admin@kubernetes" modified.
 
 ```bash
 # 为资源添加标签
-$ kubectl label node node1.cluster.k8s cluster.k8s/node=ingress
+$ kubectl label node node1.cluster.k8s cluster.k8s/ingress=enabled
 node/node1.cluster.k8s labeled
 
 # 修改资源标签
-$ kubectl label node node1.cluster.k8s cluster.k8s/node=db --overwrite
+$ kubectl label node node1.cluster.k8s cluster.k8s/ingress=disabled --overwrite
 node/node1.cluster.k8s labeled
 
 # 为资源删除标签
-$ kubectl label node node1.cluster.k8s cluster.k8s/node-
+$ kubectl label node node1.cluster.k8s cluster.k8s/ingress-
 node/node1.cluster.k8s unlabeled
 ```

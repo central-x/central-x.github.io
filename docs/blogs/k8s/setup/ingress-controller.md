@@ -8,21 +8,21 @@
 
 ## 操作步骤
 ### 为节点打标签
-&emsp;&emsp;Ingress Controller 的 Pod 会被调度到在带有 `cluster.k8s/node=ingress` 标签的节点上，因此我们需要提前在指定的节点上打上该标签。
+&emsp;&emsp;Ingress Controller 的 Pod 会被调度到在带有 `cluster.k8s/ingress=enabled` 标签的节点上，因此我们需要提前在指定的节点上打上该标签。
 
 ```bash
-# 为节点打上 cluster.k8s/node=ingress 标签，让 Kubernetes 将 Ingress Controller 调度到这个节点
-$ kubectl label node node1.cluster.k8s cluster.k8s/node=ingress
+# 为节点打上 cluster.k8s/ingress=enabled 标签，让 Kubernetes 将 Ingress Controller 调度到这个节点
+$ kubectl label node node1.cluster.k8s cluster.k8s/ingress=enabled
 node/node1.cluster.k8s labeled
 
-# 如果要做高可用，最少要在 2 个节点打上 cluster.k8s/node=ingress 标签
-$ kubectl label node node2.cluster.k8s cluster.k8s/node=ingress
+# 如果要做高可用，最少要在 2 个节点打上 cluster.k8s/ingress=enabled 标签
+$ kubectl label node node2.cluster.k8s cluster.k8s/ingress=enabled
 node/node2.cluster.k8s labeled
 ```
 
 
 ::: info 提示
-`cluster.k8s/node=ingress` 标签是运维规约[[链接](/blogs/k8s/setup/convention)]中的内容，更多信息可以查看该文档的内容。
+`cluster.k8s/ingress=enabled` 标签是运维规约[[链接](/blogs/k8s/setup/convention)]中的内容，更多信息可以查看该文档的内容。
 :::
 
 ### 部署 Ingress-Nginx
@@ -85,14 +85,14 @@ If TLS is enabled for the Ingress, a Secret containing the certificate and key m
 
 ```bash
 # 获取 Ingress Controller 的 Pod 工作状态
-# 由于我们给两个节点打上了 cluster.k8s/node=ingress 标签，因此这两个节点都会被调度
+# 由于我们给两个节点打上了 cluster.k8s/ingress=enabled 标签，因此这两个节点都会被调度
 $ kubectl get po -n ingress-nginx
 NAME                             READY   STATUS    RESTARTS   AGE
 ingress-nginx-controller-f6bbd   1/1     Running   0          29s
 ingress-nginx-controller-h5ltl   1/1     Running   0          29s
 
 # 获取 Ingress Controller 的 Pod 的详细状态
-# 可以发现 Pod 是通过 DaemonSet 管理的，因此会被调度到所有带有 cluster.k8s/node=ingress 标签的节点
+# 可以发现 Pod 是通过 DaemonSet 管理的，因此会被调度到所有带有 cluster.k8s/ingress=enabled 标签的节点
 # 后续就可以通过这些节点的 IP 来访问 Ingress 了
 $ kubectl describe po ingress-nginx-controller-f6bbd -n ingress-nginx
 Name:             ingress-nginx-controller-f6bbd
