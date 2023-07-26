@@ -12,7 +12,7 @@
 $ mkdir /etc/kubernetes
 
 # 将主节点的 admin.conf 文件复制到本地相同目录下
-$ scp root@10.10.10.11:/etc/kubernetes/admin.conf /etc/kubernetes/admin.conf
+$ scp root@master1.cluster.k8s:/etc/kubernetes/admin.conf /etc/kubernetes/admin.conf
 
 # 本地安装 kubectl 工具，这里假设以 CentOS7 为例
 $ yum install kubectl
@@ -29,8 +29,8 @@ $ source ~/.bash_profile
 
 # 获取 Kubernetes 集群信息
 $ kubectl cluster-info
-Kubernetes control plane is running at https://10.10.10.11:6443
-CoreDNS is running at https://10.10.10.11:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+Kubernetes control plane is running at https://master.cluster.k8s:16443
+CoreDNS is running at https://master.cluster.k8s:16443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 

@@ -32,16 +32,16 @@ $ yum install -y ~/packages/*
 $ systemctl start docker && systemctl enable docker
 
 # 安装 docker-compose，并添加可执行权限
-$ cp ~/raw/docker-compose-linux-amd64-v2.18.1 /usr/local/bin/docker-compose
+$ cp ~/raw/docker-compose-linux-amd64-v2.20.2 /usr/local/bin/docker-compose
 $ chmod +x /usr/local/bin/docker-compose
 
 # 输出 docker 版本号
 $ docker --version
-Docker version 24.0.2, build cb74dfc
+Docker version 24.0.5, build ced0996
 
 # 输出 docker-compose 版本号
 $ docker-compose --version
-Docker Compose version v2.18.1
+Docker Compose version v2.20.2
 ```
 
 ### 导入 Docker 镜像
@@ -54,9 +54,9 @@ $ docker load -i ~/docker-images.tar
 # 查看是否导入成功
 $ docker images
 REPOSITORY        TAG       IMAGE ID       CREATED        SIZE
-nginx             1.24.0    1e96add5ea29   2 weeks ago    142MB
-sonatype/nexus3   3.53.1    6c207471be14   3 weeks ago    549MB
-coredns/coredns   1.10.1    ead0a4a53df8   4 months ago   53.6MB
+nginx             1.24.0    1e96add5ea29   2 months ago   142MB
+sonatype/nexus3   3.54.1    8b717f0e77d3   2 months ago   606MB
+coredns/coredns   1.10.1    ead0a4a53df8   5 months ago   53.6MB
 ```
 
 ### 启动环境
@@ -69,22 +69,25 @@ $ cd ~/docker-compose
 # 修改 DNS 服务配置
 $ vi ~/docker-compose/svc-dns/hosts
 # 服务节点域名映射
-10.10.20.0 svc.cluster.k8s
-10.10.20.0 mirror.cluster.k8s
+10.10.20.0    svc.cluster.k8s
+10.10.20.0    mirror.cluster.k8s
+
+# 流量入口节点域名映射
+10.10.20.1    ingress.cluster.k8s
 
 # 存储节点域名映射
-10.10.20.1 storage.cluster.k8s
+10.10.20.2    storage.cluster.k8s
 
 # 控制节点域名映射
-10.10.20.10 master.cluster.k8s # 如果是搭建高可用环境，那么此 IP 是控制节点的负载入口
-10.10.20.11 master1.cluster.k8s
-10.10.20.12 master2.cluster.k8s
-10.10.20.13 master3.cluster.k8s
+10.10.20.0    master.cluster.k8s # 如果是搭建高可用环境，那么此 IP 是控制节点的负载入口
+10.10.20.11   master1.cluster.k8s
+10.10.20.12   master2.cluster.k8s
+10.10.20.13   master3.cluster.k8s
 
 # 工作节点域名映射
-10.10.20.21 node1.cluster.k8s
-10.10.20.22 node2.cluster.k8s
-10.10.20.23 node3.cluster.k8s # 后续其余工作节点可以依次往下加
+10.10.20.21   node1.cluster.k8s
+10.10.20.22   node2.cluster.k8s
+10.10.20.23   node3.cluster.k8s # 后续其余工作节点可以依次往下加
 
 # 启动服务
 $ docker-compose up -d
@@ -96,10 +99,10 @@ $ docker-compose up -d
 ```bash
 # 输出 Docker 进程信息，查看是否为 3 个
 $ docker ps
-CONTAINER ID   IMAGE                    COMMAND                   CREATED          STATUS          PORTS                                                                      NAMES
-3394bf613896   sonatype/nexus3:3.53.1   "/opt/sonatype/nexus…"   25 seconds ago   Up 25 seconds   8081/tcp                                                                   svc-nexus
-2177b4dc1fa1   nginx:1.24.0             "/docker-entrypoint.…"   25 seconds ago   Up 25 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp, 0.0.0.0:443->443/tcp, :::443->443/tcp   svc-nginx
-d4b8d6548dea   coredns/coredns:1.10.1   "/coredns"               25 seconds ago   Up 25 seconds   0.0.0.0:53->53/tcp, 0.0.0.0:53->53/udp, :::53->53/tcp, :::53->53/udp       svc-dns
+CONTAINER ID   IMAGE                    COMMAND                   CREATED          STATUS          PORTS                                                                                                                     NAMES
+60ef98e845b6   sonatype/nexus3:3.54.1   "/uid_entrypoint.sh …"    12 seconds ago   Up 11 seconds   8081/tcp                                                                                                                  svc-nexus
+152c22afa425   nginx:1.24.0             "/docker-entrypoint.…"    12 seconds ago   Up 11 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp, 0.0.0.0:443->443/tcp, :::443->443/tcp, 0.0.0.0:16443->16443/tcp, :::16443->16443/tcp   svc-nginx
+515e1822a2ed   coredns/coredns:1.10.1   "/coredns"                12 seconds ago   Up 11 seconds   0.0.0.0:53->53/tcp, 0.0.0.0:53->53/udp, :::53->53/tcp, :::53->53/udp                                                      svc-dns
 
 # 修改当前服务器的 DNS 地址，将 DNS 地址指向自己
 $ vi /etc/sysconfig/network-scripts/ifcfg-ens192
@@ -111,14 +114,14 @@ $ service network restart
 # 测试 DNS 服务器是否可以正常解析域名
 $ ping mirror.cluster.k8s -c 4
 PING mirror.cluster.k8s (10.10.20.0) 56(84) bytes of data.
-64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=1 ttl=64 time=0.045 ms
-64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=2 ttl=64 time=0.080 ms
+64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=1 ttl=64 time=0.014 ms
+64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=2 ttl=64 time=0.062 ms
 64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=3 ttl=64 time=0.064 ms
-64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=4 ttl=64 time=0.095 ms
+64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=4 ttl=64 time=0.062 ms
 
 --- mirror.cluster.k8s ping statistics ---
-4 packets transmitted, 4 received, 0% packet loss, time 3002ms
-rtt min/avg/max/mdev = 0.045/0.071/0.095/0.018 ms
+4 packets transmitted, 4 received, 0% packet loss, time 3001ms
+rtt min/avg/max/mdev = 0.014/0.050/0.064/0.022 ms
 
 # 测试 nexus 服务
 $ curl http://mirror.cluster.k8s/v2/
@@ -141,19 +144,18 @@ $ curl -o /etc/yum.repos.d/mirror.repo http://mirror.cluster.k8s/repository/raw/
 $ uname -r
 3.10.0-1160.el7.x86_64
 
-# 安装 5.4.245 内核
-# Kubernetes 要求内核在 4.19 及以上
+# 安装 5.4 内核
 $ yum install -y kernel-lt
 
 # 设置开机从新内核启动 
-$ grub2-set-default 'CentOS Linux (5.4.245-1.el7.elrepo.x86_64) 7 (Core)'
+$ grub2-set-default 'CentOS Linux (5.4.250-1.el7.elrepo.x86_64) 7 (Core)'
 
 # 升级内核后需要重新启动
 $ reboot
 
 # 查看当前内核版本
 $ uname -r
-5.4.245-1.el7.elrepo.x86_64
+5.4.250-1.el7.elrepo.x86_64
 
 # 卸载旧内核
 $ yum remove -y kernel kernel-tools

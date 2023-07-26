@@ -38,18 +38,23 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 ```bash
 # 将 helm 下载并安装到指定目录
-$ curl -o /usr/local/bin/helm http://mirror.cluster.k8s/repository/raw/helm-linux-amd64-v3.12.0
+$ curl -o /usr/local/bin/helm http://mirror.cluster.k8s/repository/raw/helm-linux-amd64-v3.12.2
 
 # 添加可执行权限
 $ chmod +x /usr/local/bin/helm
 
 # 查看是否正常
 $ helm version
-version.BuildInfo{Version:"v3.12.0", GitCommit:"c9f554d75773799f72ceef38c51210f1842a1dea", GitTreeState:"clean", GoVersion:"go1.20.3"}
+version.BuildInfo{Version:"v3.12.2", GitCommit:"1e210a2c8cc5117d1055bfaa5d40f51bbc2e345e", GitTreeState:"clean", GoVersion:"go1.20.5"}
 
 # 查看是否能连接到集群
-$ helm list
-NAME 	NAMESPACE	REVISION	UPDATED                                STATUS  	CHART       	APP VERSION
+$ helm list -n kube-system
+NAME               	NAMESPACE  	REVISION	UPDATED                                	STATUS  	CHART                    	APP VERSION
+kube-dashboard     	kube-system	1       	2023-07-27 04:49:18.64526989 +0800 CST 	deployed	kube-dashboard-2.7.0     	2.7.0      
+kube-flannel       	kube-system	1       	2023-07-27 04:20:53.353204291 +0800 CST	deployed	kube-flannel-v0.22.0     	v0.22.0    
+kube-metrics-server	kube-system	1       	2023-07-27 04:47:23.939085564 +0800 CST	deployed	kube-metrics-server-0.6.3	0.6.3      
+nfs-permanent      	kube-system	1       	2023-07-27 04:39:13.846105718 +0800 CST	deployed	nfs-permanent-4.0.18     	4.0.2      
+nfs-temporary      	kube-system	1       	2023-07-27 04:39:36.230024145 +0800 CST	deployed	nfs-temporary-4.0.18     	4.0.2      
 
 # 添加 helm 仓库
 $ helm repo add mirror http://mirror.cluster.k8s/repository/helm/

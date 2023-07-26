@@ -23,14 +23,14 @@ $ reboot
 # 查看域名是否能正常解析
 $ ping mirror.cluster.k8s -c 4
 PING mirror.cluster.k8s (10.10.20.0) 56(84) bytes of data.
-64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=1 ttl=64 time=0.091 ms
-64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=2 ttl=64 time=0.077 ms
-64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=3 ttl=64 time=0.076 ms
-64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=4 ttl=64 time=0.033 ms
+64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=1 ttl=64 time=0.292 ms
+64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=2 ttl=64 time=0.484 ms
+64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=3 ttl=64 time=0.477 ms
+64 bytes from svc.cluster.k8s (10.10.20.0): icmp_seq=4 ttl=64 time=0.459 ms
 
 --- mirror.cluster.k8s ping statistics ---
-4 packets transmitted, 4 received, 0% packet loss, time 3026ms
-rtt min/avg/max/mdev = 0.033/0.069/0.091/0.022 ms
+4 packets transmitted, 4 received, 0% packet loss, time 3002ms
+rtt min/avg/max/mdev = 0.292/0.428/0.484/0.079 ms
 ```
 
 ### 更新系统环境
@@ -43,23 +43,23 @@ $ rm -f /etc/yum.repos.d/CentOS-*
 # 然后添加 nexus3 提供的 yum 源
 $ curl -o /etc/yum.repos.d/mirror.repo http://mirror.cluster.k8s/repository/raw/mirror.repo
 
-# 更新内核，CentOS 7 的默认内核是 3.10.0
-# Kubernetes 建议 Linux 内核版本为 4.18 及以上
+# Kubernetes 要求内核在 4.19 及以上，因此需要更新内核
+# CentOS 7 的默认内核是 3.10.0
 $ uname -r
 3.10.0-1160.el7.x86_64
 
-# 安装 5.4.245 内核
+# 更新内核
 $ yum install -y kernel-lt
 
 # 设置开机从新内核启动 
-$ grub2-set-default 'CentOS Linux (5.4.245-1.el7.elrepo.x86_64) 7 (Core)'
+$ grub2-set-default 'CentOS Linux (5.4.250-1.el7.elrepo.x86_64) 7 (Core)'
 
 # 升级内核后需要重新启动
 $ reboot
 
 # 查看当前内核版本
 $ uname -r
-5.4.242-1.el7.elrepo.x86_64
+5.4.250-1.el7.elrepo.x86_64
 
 # 卸载旧内核
 $ yum remove -y kernel kernel-tools
@@ -193,7 +193,7 @@ ip_vs_wrr              16384  0
 ip_vs_rr               16384  0 
 ip_vs_wlc              16384  0 
 ip_vs_lc               16384  0 
-ip_vs                 155648  24 ip_vs_wlc,ip_vs_rr,ip_vs_dh,ip_vs_lblcr,ip_vs_sh,ip_vs_fo,ip_vs_nq,ip_vs_lblc,ip_vs_wrr,ip_vs_lc,ip_vs_sed,ip_vs_ftp
+ip_vs                 155648  25 ip_vs_wlc,ip_vs_rr,ip_vs_dh,ip_vs_lblcr,ip_vs_sh,ip_vs_fo,ip_vs_nq,ip_vs_lblc,ip_vs_wrr,ip_vs_lc,ip_vs_sed,ip_vs_ftp
 nf_conntrack          147456  2 nf_nat,ip_vs
 nf_defrag_ipv6         24576  2 nf_conntrack,ip_vs
 nf_defrag_ipv4         16384  1 nf_conntrack
@@ -257,7 +257,7 @@ containerd containerd.io 1.6.21 3dce8eb055cbb6872793272b4f20ed16117344f8
 
 ```bash
 # 下载 crictl-linux-amd64-v1.27.0 文件到 /usr/local/bin 目录下，然后并添加可执行权限
-$ curl -o /usr/local/bin/crictl http://mirror.cluster.k8s/repository/raw/crictl-linux-amd64-v1.27.0
+$ curl -o /usr/local/bin/crictl http://mirror.cluster.k8s/repository/raw/crictl-linux-amd64-v1.27.1
 $ chmod +x /usr/local/bin/crictl
 
 # 修改 crictl 配置
@@ -291,7 +291,7 @@ $ systemctl start kubelet && systemctl enable kubelet
 # 获取 kubectl 版本信息
 $ kubectl version
 WARNING: This version information is deprecated and will be replaced with the output from kubectl version --short.  Use --output=yaml|json to get the full version.
-Client Version: version.Info{Major:"1", Minor:"27", GitVersion:"v1.27.2", GitCommit:"7f6f68fdabc4df88cfea2dcf9a19b2b830f1e647", GitTreeState:"clean", BuildDate:"2023-05-17T14:20:07Z", GoVersion:"go1.20.4", Compiler:"gc", Platform:"linux/amd64"}
+Client Version: version.Info{Major:"1", Minor:"27", GitVersion:"v1.27.4", GitCommit:"fa3d7990104d7c1f16943a67f11b154b71f6a132", GitTreeState:"clean", BuildDate:"2023-07-19T12:20:54Z", GoVersion:"go1.20.6", Compiler:"gc", Platform:"linux/amd64"}
 Kustomize Version: v5.0.1
 The connection to the server localhost:8080 was refused - did you specify the right host or port?
 ```
@@ -303,12 +303,12 @@ The connection to the server localhost:8080 was refused - did you specify the ri
 $ mv /usr/bin/kubeadm /usr/bin/kubeadm_bak
 
 # 下载新的 kubeadm
-$ curl -o /usr/bin/kubeadm http://mirror.cluster.k8s/repository/raw/kubeadm-linux-amd64-v1.27.2
+$ curl -o /usr/bin/kubeadm http://mirror.cluster.k8s/repository/raw/kubeadm-linux-amd64-v1.27.4
 
 # 授权
 $ chmod +x /usr/bin/kubeadm
 
 # 查看信息
 $ kubeadm version
-kubeadm version: &version.Info{Major:"1", Minor:"27+", GitVersion:"v1.27.2-dirty", GitCommit:"7f6f68fdabc4df88cfea2dcf9a19b2b830f1e647", GitTreeState:"dirty", BuildDate:"2023-06-11T21:07:29Z", GoVersion:"go1.20.4", Compiler:"gc", Platform:"linux/amd64"}
+kubeadm version: &version.Info{Major:"1", Minor:"27+", GitVersion:"v1.27.4-dirty", GitCommit:"fa3d7990104d7c1f16943a67f11b154b71f6a132", GitTreeState:"dirty", BuildDate:"2023-07-26T18:49:53Z", GoVersion:"go1.20.6", Compiler:"gc", Platform:"linux/amd64"}
 ```

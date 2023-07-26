@@ -1,6 +1,6 @@
-# 搭建 Kubernetes 1.27.2 集群
+# 搭建 Kubernetes 1.27.4 集群
 ## 概述
-&emsp;&emsp;记录 Kubernetes 1.27.2 在离线状态下的搭建高可用集群过程。
+&emsp;&emsp;记录 Kubernetes 1.27.4 在离线状态下的搭建高可用集群过程。
 
 ## 普通集群
 ### 服务器需求

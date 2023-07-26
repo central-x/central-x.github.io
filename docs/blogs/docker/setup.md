@@ -93,8 +93,7 @@ $ vi /etc/docker/daemon.json
 
 {
     "insecure-registries": [
-        "mirror.cluster.k8s",
-        "registry.cluster.k8s"
+        "mirror.cluster.k8s"
     ]
 }
 
@@ -129,7 +128,7 @@ $ vi /etc/docker/daemon.json
 
 {
     "insecure-registries": [
-        "mirror.cluster.k8s",
+        "mirror.cluster.k8s"
     ],
     "registry-mirrors": [
         "http://mirror.cluster.k8s"

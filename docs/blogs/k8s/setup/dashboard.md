@@ -9,24 +9,26 @@
 # 使用 helm 安装 kube-dashboard
 $ helm install kube-dashboard mirror/kube-dashboard -n kube-system
 NAME: kube-dashboard
-LAST DEPLOYED: Tue Jun 13 03:05:13 2023
-NAMESPACE: default
+LAST DEPLOYED: Thu Jul 27 04:49:18 2023
+NAMESPACE: kube-system
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 
 # 查看 helm 列表
-$ helm list
-NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-kube-dashboard          default         1               2023-06-13 03:05:13.751627052 +0800 CST deployed        kube-dashboard-2.7.0            2.7.0      
-kube-flannel            default         1               2023-06-13 02:55:47.80226894 +0800 CST  deployed        kube-flannel-0.22.0             0.22.0     
-kube-metrics-server     default         1               2023-06-13 03:03:08.929181082 +0800 CST deployed        kube-metrics-server-0.6.3       0.6.3
+$ helm list -n kube-system
+NAME               	NAMESPACE  	REVISION	UPDATED                                	STATUS  	CHART                    	APP VERSION
+kube-dashboard     	kube-system	1       	2023-07-27 04:49:18.64526989 +0800 CST 	deployed	kube-dashboard-2.7.0     	2.7.0      
+kube-flannel       	kube-system	1       	2023-07-27 04:20:53.353204291 +0800 CST	deployed	kube-flannel-v0.22.0     	v0.22.0    
+kube-metrics-server	kube-system	1       	2023-07-27 04:47:23.939085564 +0800 CST	deployed	kube-metrics-server-0.6.3	0.6.3      
+nfs-permanent      	kube-system	1       	2023-07-27 04:39:13.846105718 +0800 CST	deployed	nfs-permanent-4.0.18     	4.0.2      
+nfs-temporary      	kube-system	1       	2023-07-27 04:39:36.230024145 +0800 CST	deployed	nfs-temporary-4.0.18     	4.0.2      
 
 # 查看 Pod 的的状态
 $ kubectl get po -n kube-system
-NAME                                         READY   STATUS    RESTARTS   AGE
-kubernetes-dashboard-6bccb5f4cc-rm469        1/1     Running   0          20s
-kubernetes-metrics-scraper-dcffb9579-dm7jx   1/1     Running   0          20s
+NAME                                          READY   STATUS    RESTARTS      AGE
+kubernetes-dashboard-fc86bcc89-xxgsd          1/1     Running   0             2m48s
+kubernetes-metrics-scraper-dcffb9579-6zf8z    1/1     Running   0             2m48s
 ```
 
 ### 创建访问凭证
@@ -34,7 +36,7 @@ kubernetes-metrics-scraper-dcffb9579-dm7jx   1/1     Running   0          20s
 ```bash
 # 创建一个临时的登录 token（1 小时有效）
 $ kubectl create token -n kube-system dashboard-admin
-eyJhbGciOiJSUzI1NiIsImtpZCI6ImRJc2ZQY2F1cGRTcVlSZGFsdmgtY2xsYlhQZHRSTHlsVGZYM3BWc21nMVUifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNjg2NjAwMzcxLCJpYXQiOjE2ODY1OTY3NzEsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJkYXNoYm9hcmQtYWRtaW4iLCJ1aWQiOiIwN2E2OTcwYi0xYWExLTRiOTEtYmVlMi00ZTA3ODFiNGFiNWQifX0sIm5iZiI6MTY4NjU5Njc3MSwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmVybmV0ZXMtZGFzaGJvYXJkOmRhc2hib2FyZC1hZG1pbiJ9.P8NLU0xkALch8qY5pwoPVTEkKz5N4Vw9kvh1chU5AmsVFa1bUONSXRqkHZZXPSqDVFiVYxUTdZe1RJW3Vdv8-AsRnLFrMdNwxvE6H88UpMmtywtCga5QuR2N-bXCqTqyGdZqnehJSfWGQsdxvZ-_vrUvUyLIN_2PRo94FatIQ_XS5ooZ5pV4O97uHmiP95yndfsv5sgtRR3ww_A-wSabhl-Iop-b-Ax5Ql-4sKG2v_xGjgZzpBleFiun-ZHpDHez22oH2Z2CRTzPCfhmMr8Onbb_kyMnSzV-LN2QfVcYWKA5_oRZjnkUfa5H9j55WlkeX5NHHABkMbOEN08o2MClhw
+eyJhbGciOiJSUzI1NiIsImtpZCI6Ii02b3dfODdLMHZqcEhwYV9FeTluS2Fzb0hpVkU0ZGNfR2JMZ0RaNnZ0N00ifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNjkwNDA4MzgxLCJpYXQiOjE2OTA0MDQ3ODEsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJkYXNoYm9hcmQtYWRtaW4iLCJ1aWQiOiJmMGRlNDFkMi00Njc3LTRkYmEtYjdlNy1iNjEyNjU5OWQ2YjQifX0sIm5iZiI6MTY5MDQwNDc4MSwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmRhc2hib2FyZC1hZG1pbiJ9.hFmhFCN_auac3DN1uk1XDiyKSwEnU-rOGlyfvaPzq5ytgP75DC2sQlsFCbutibnMlvVNAyje5uPc4EJ3eJlJjFdMCH9HeOEC7buHcq_hjCjdCVSI0kXzsg77TDUfDfGECIYpWfjWM9bKZ9HShfSLvayzaK8jHSJgqdogsHpI5QogADnsYpSZ63c3i1Tptb4XcngW-Z_kqGZCRMky4VwGgXNJNCly3IoNSrWXTPYeNlPL1j9KACMPr_8avu3re7mKPXsd8q18LL_cqr8lfJhN3B-HKzJIUhURNoEel00K_AK-QBBIhked18PpAz3e-cO4gPAl54QczPqyM1An5mr44w
 ```
 
 > &emsp;&emsp;因为安全原因，从 1.24 开始，Kubernetes 不再为每个 ServiceAccount 自动创建对应的 Secret[[链接](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.24.md#urgent-upgrade-notes)]。你可以选择以下方式去解决这个问题:

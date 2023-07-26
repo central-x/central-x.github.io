@@ -20,7 +20,6 @@ $ kubectl label node node2.cluster.k8s cluster.k8s/ingress=enabled
 node/node2.cluster.k8s labeled
 ```
 
-
 ::: info 提示
 `cluster.k8s/ingress=enabled` 标签是运维规约[[链接](/blogs/k8s/setup/convention)]中的内容，更多信息可以查看该文档的内容。
 :::
@@ -32,7 +31,7 @@ node/node2.cluster.k8s labeled
 # 安装 Ingress Nginx Controller
 $ helm install ingress-nginx mirror/ingress-nginx -n ingress-nginx --create-namespace
 NAME: ingress-nginx
-LAST DEPLOYED: Tue Jun 13 03:24:24 2023
+LAST DEPLOYED: Thu Jul 27 04:43:30 2023
 NAMESPACE: ingress-nginx
 STATUS: deployed
 REVISION: 1
@@ -85,35 +84,10 @@ If TLS is enabled for the Ingress, a Secret containing the certificate and key m
 
 ```bash
 # 获取 Ingress Controller 的 Pod 工作状态
-# 由于我们给两个节点打上了 cluster.k8s/ingress=enabled 标签，因此这两个节点都会被调度
-$ kubectl get po -n ingress-nginx
-NAME                             READY   STATUS    RESTARTS   AGE
-ingress-nginx-controller-f6bbd   1/1     Running   0          29s
-ingress-nginx-controller-h5ltl   1/1     Running   0          29s
-
-# 获取 Ingress Controller 的 Pod 的详细状态
-# 可以发现 Pod 是通过 DaemonSet 管理的，因此会被调度到所有带有 cluster.k8s/ingress=enabled 标签的节点
+# 由于我们给两个节点打上了 cluster.k8s/ingress=enabled 标签，因此这两个节点都会被调度\
 # 后续就可以通过这些节点的 IP 来访问 Ingress 了
-$ kubectl describe po ingress-nginx-controller-f6bbd -n ingress-nginx
-Name:             ingress-nginx-controller-f6bbd
-Namespace:        ingress-nginx
-Priority:         0
-Service Account:  ingress-nginx
-Node:             node1.cluster.k8s/10.10.20.21
-Start Time:       Tue, 13 Jun 2023 03:24:28 +0800
-Labels:           app.kubernetes.io/component=controller
-                  app.kubernetes.io/instance=ingress-nginx
-                  app.kubernetes.io/managed-by=Helm
-                  app.kubernetes.io/name=ingress-nginx
-                  app.kubernetes.io/part-of=ingress-nginx
-                  app.kubernetes.io/version=1.8.0
-                  controller-revision-hash=746876ff65
-                  helm.sh/chart=ingress-nginx-4.7.0
-                  pod-template-generation=1
-Annotations:      <none>
-Status:           Running
-IP:               10.10.20.21
-IPs:
-  IP:           10.10.20.21
-Controlled By:  DaemonSet/ingress-nginx-controller
+$ kubectl get po -o wide -n ingress-nginx
+NAME                             READY   STATUS    RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+ingress-nginx-controller-5bvq5   1/1     Running   0          52s   10.10.20.22   node2.cluster.k8s   <none>           <none>
+ingress-nginx-controller-jw59l   1/1     Running   0          52s   10.10.20.21   node1.cluster.k8s   <none>           <none>
 ```

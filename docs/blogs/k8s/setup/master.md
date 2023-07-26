@@ -380,7 +380,7 @@ etcd:
     dataDir: /var/lib/etcd
 imageRepository: registry.k8s.io
 kind: ClusterConfiguration
-kubernetesVersion: 1.27.2 # 修改为当前版本
+kubernetesVersion: 1.27.4 # 修改为当前版本
 networking:
   dnsDomain: cluster.local
   podSubnet: 10.244.0.0/16 # 使用 flannel 模型通信，这个 IP 的值需要固定为这个值
@@ -423,8 +423,8 @@ Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
 You can now join any number of the control-plane node running the following command on each as root:
 
   kubeadm join master.cluster.k8s:16443 --token abcdef.0123456789abcdef \
-        --discovery-token-ca-cert-hash sha256:ee3da16b9d7e53d54209c5910a5629d88b52d77b51fc77ba29206dec74431972 \
-        --control-plane --certificate-key 31ce9f38771e99ddbb834e3694e13fff9f3e4741bf5bc09e9182f751a0d0cb24
+	--discovery-token-ca-cert-hash sha256:c74b6dcc0f3119703fcf08c444f13a01c77d8e649a398cb559bfb5cda257c583 \
+	--control-plane --certificate-key f6c03d58abd042750b8bcefd0a334c4fd449e7c83f5cec534fbfb39254d69080
 
 Please note that the certificate-key gives access to cluster sensitive data, keep it secret!
 As a safeguard, uploaded-certs will be deleted in two hours; If necessary, you can use
@@ -433,7 +433,7 @@ As a safeguard, uploaded-certs will be deleted in two hours; If necessary, you c
 Then you can join any number of worker nodes by running the following on each as root:
 
 kubeadm join master.cluster.k8s:16443 --token abcdef.0123456789abcdef \
-        --discovery-token-ca-cert-hash sha256:ee3da16b9d7e53d54209c5910a5629d88b52d77b51fc77ba29206dec74431972
+	--discovery-token-ca-cert-hash sha256:c74b6dcc0f3119703fcf08c444f13a01c77d8e649a398cb559bfb5cda257c583
 
 # 编辑 ~/.bash_profile，添加环境变量
 $ nano ~/.bash_profile
@@ -453,18 +453,18 @@ $ kubectl edit cm kube-proxy -n kube-system
 # 由于还没安装 flannel 网络插件导入 coredns 无法初始化，因此 master 节点还处于 NotReady 状态
 $ kubectl get nodes
 NAME                  STATUS     ROLES           AGE   VERSION
-master1.cluster.k8s   NotReady   control-plane   54s   v1.27.2
+master1.cluster.k8s   NotReady   control-plane   77s   v1.27.4
 
 # 获取系统命名空间的 pod 运行情况
-$ kubectl -n kube-system get po
+$ kubectl get po -n kube-system
 NAME                                          READY   STATUS    RESTARTS      AGE
-coredns-5d78c9869d-lmqtg                      0/1     Pending   0             46s
-coredns-5d78c9869d-sm29p                      0/1     Pending   0             46s
-etcd-master1.cluster.k8s                      1/1     Running   0             61s
-kube-apiserver-master1.cluster.k8s            1/1     Running   0             59s
-kube-controller-manager-master1.cluster.k8s   1/1     Running   0             61s
-kube-proxy-xxdhb                              1/1     Running   3 (30s ago)   46s
-kube-scheduler-master1.cluster.k8s            1/1     Running   0             60s
+coredns-5d78c9869d-56smn                      0/1     Pending   0             95s
+coredns-5d78c9869d-fmrv5                      0/1     Pending   0             95s
+etcd-master1.cluster.k8s                      1/1     Running   0             101s
+kube-apiserver-master1.cluster.k8s            1/1     Running   0             101s
+kube-controller-manager-master1.cluster.k8s   1/1     Running   0             101s
+kube-proxy-hcm5r                              1/1     Running   4 (56s ago)   95s
+kube-scheduler-master1.cluster.k8s            1/1     Running   0             101s
 
 # 查看证书有效期，全部证书有效期为 10 年
 $ kubeadm certs check-expiration
@@ -472,21 +472,21 @@ $ kubeadm certs check-expiration
 [check-expiration] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
 
 CERTIFICATE                EXPIRES                  RESIDUAL TIME   CERTIFICATE AUTHORITY   EXTERNALLY MANAGED
-admin.conf                 Jun 10, 2033 22:06 UTC   9y              ca                      no      
-apiserver                  Jun 10, 2033 22:06 UTC   9y              ca                      no      
-apiserver-etcd-client      Jun 10, 2033 22:06 UTC   9y              etcd-ca                 no      
-apiserver-kubelet-client   Jun 10, 2033 22:06 UTC   9y              ca                      no      
-controller-manager.conf    Jun 10, 2033 22:06 UTC   9y              ca                      no      
-etcd-healthcheck-client    Jun 10, 2033 22:06 UTC   9y              etcd-ca                 no      
-etcd-peer                  Jun 10, 2033 22:06 UTC   9y              etcd-ca                 no      
-etcd-server                Jun 10, 2033 22:06 UTC   9y              etcd-ca                 no      
-front-proxy-client         Jun 10, 2033 22:06 UTC   9y              front-proxy-ca          no      
-scheduler.conf             Jun 10, 2033 22:06 UTC   9y              ca                      no      
+admin.conf                 Jul 23, 2033 20:13 UTC   9y              ca                      no      
+apiserver                  Jul 23, 2033 20:13 UTC   9y              ca                      no      
+apiserver-etcd-client      Jul 23, 2033 20:13 UTC   9y              etcd-ca                 no      
+apiserver-kubelet-client   Jul 23, 2033 20:13 UTC   9y              ca                      no      
+controller-manager.conf    Jul 23, 2033 20:13 UTC   9y              ca                      no      
+etcd-healthcheck-client    Jul 23, 2033 20:13 UTC   9y              etcd-ca                 no      
+etcd-peer                  Jul 23, 2033 20:13 UTC   9y              etcd-ca                 no      
+etcd-server                Jul 23, 2033 20:13 UTC   9y              etcd-ca                 no      
+front-proxy-client         Jul 23, 2033 20:13 UTC   9y              front-proxy-ca          no      
+scheduler.conf             Jul 23, 2033 20:13 UTC   9y              ca                      no      
 
 CERTIFICATE AUTHORITY   EXPIRES                  RESIDUAL TIME   EXTERNALLY MANAGED
-ca                      Jun 10, 2033 22:06 UTC   9y              no      
-etcd-ca                 Jun 10, 2033 22:06 UTC   9y              no      
-front-proxy-ca          Jun 10, 2033 22:06 UTC   9y              no      
+ca                      Jul 23, 2033 20:13 UTC   9y              no      
+etcd-ca                 Jul 23, 2033 20:13 UTC   9y              no      
+front-proxy-ca          Jul 23, 2033 20:13 UTC   9y              no      
 ```
 
 ### 安装 Helm
@@ -494,18 +494,18 @@ front-proxy-ca          Jun 10, 2033 22:06 UTC   9y              no
 
 ```bash
 # 将 helm 下载并安装到指定目录
-$ curl -o /usr/local/bin/helm http://mirror.cluster.k8s/repository/raw/helm-linux-amd64-v3.12.0
+$ curl -o /usr/local/bin/helm http://mirror.cluster.k8s/repository/raw/helm-linux-amd64-v3.12.2
 
 # 添加可执行权限
 $ chmod +x /usr/local/bin/helm
 
 # 查看是否正常
 $ helm version
-version.BuildInfo{Version:"v3.12.0", GitCommit:"c9f554d75773799f72ceef38c51210f1842a1dea", GitTreeState:"clean", GoVersion:"go1.20.3"}
+version.BuildInfo{Version:"v3.12.2", GitCommit:"1e210a2c8cc5117d1055bfaa5d40f51bbc2e345e", GitTreeState:"clean", GoVersion:"go1.20.5"}
 
 # 查看是否能连接到集群
 $ helm list
-NAME 	NAMESPACE	REVISION	UPDATED                                STATUS  	CHART       	APP VERSION
+NAME	NAMESPACE	REVISION	UPDATED	STATUS	CHART	APP VERSION
 
 # 添加 helm 仓库
 $ helm repo add mirror http://mirror.cluster.k8s/repository/helm/
@@ -519,7 +519,7 @@ $ helm repo add mirror http://mirror.cluster.k8s/repository/helm/
 # 安装 kube-flannel 插件
 $ helm install kube-flannel mirror/kube-flannel -n kube-system
 NAME: kube-flannel
-LAST DEPLOYED: Tue Jun 13 02:55:47 2023
+LAST DEPLOYED: Thu Jul 27 04:20:53 2023
 NAMESPACE: kube-system
 STATUS: deployed
 REVISION: 1
@@ -527,26 +527,26 @@ TEST SUITE: None
 
 # 获取 helm 列表
 $ helm list -n kube-system
-NAME        	NAMESPACE	    REVISION	UPDATED                               	STATUS  	CHART              	APP VERSION
-kube-flannel	kube-system  	1       	2023-06-12 06:09:54.92844014 +0800 CST	deployed	kube-flannel-0.22.0	0.22.0  
+NAME        	NAMESPACE  	REVISION	UPDATED                                	STATUS  	CHART               	APP VERSION
+kube-flannel	kube-system	1       	2023-07-27 04:20:53.353204291 +0800 CST	deployed	kube-flannel-v0.22.0	v0.22.0    
 
 # 安装 kube-flannel 插件后，再获取节点信息
 # 可以发现节点已初始化
 $ kubectl get nodes
-NAME                  STATUS   ROLES           AGE    VERSION
-master1.cluster.k8s   Ready    control-plane   116s   v1.27.2
+NAME                  STATUS   ROLES           AGE     VERSION
+master1.cluster.k8s   Ready    control-plane   7m47s   v1.27.4
 
 # 获取系统命名空间的 pod 运行情况，全部正常运行
 $ kubectl get po -n kube-system
-NAME                                          READY   STATUS    RESTARTS      AGE
-coredns-5d78c9869d-lmqtg                      1/1     Running   0             109s
-coredns-5d78c9869d-sm29p                      1/1     Running   0             109s
-etcd-master1.cluster.k8s                      1/1     Running   0             2m4s
-kube-apiserver-master1.cluster.k8s            1/1     Running   0             2m2s
-kube-controller-manager-master1.cluster.k8s   1/1     Running   0             2m4s
-kube-flannel-ds-5llrk                         1/1     Running   0             2m30s
-kube-proxy-xxdhb                              1/1     Running   3 (93s ago)   109s
-kube-scheduler-master1.cluster.k8s            1/1     Running   0             2m3s
+NAME                                          READY   STATUS    RESTARTS        AGE
+coredns-5d78c9869d-56smn                      1/1     Running   0               7m51s
+coredns-5d78c9869d-fmrv5                      1/1     Running   0               7m51s
+etcd-master1.cluster.k8s                      1/1     Running   0               7m57s
+kube-apiserver-master1.cluster.k8s            1/1     Running   0               7m57s
+kube-controller-manager-master1.cluster.k8s   1/1     Running   0               7m57s
+kube-flannel-ds-v4qwj                         1/1     Running   0               48s
+kube-proxy-hcm5r                              1/1     Running   4 (7m12s ago)   7m51s
+kube-scheduler-master1.cluster.k8s            1/1     Running   0               7m57s
 ```
 
 ### 初始化备用主节点
@@ -556,8 +556,8 @@ kube-scheduler-master1.cluster.k8s            1/1     Running   0             2m
 # 这个命令是在主节点（master1.cluster.k8s）初始化时打印在命令行里的
 # 直接复制该命令到其它主节点上执行即可
 $ kubeadm join master.cluster.k8s:16443 --token abcdef.0123456789abcdef \
-        --discovery-token-ca-cert-hash sha256:ee3da16b9d7e53d54209c5910a5629d88b52d77b51fc77ba29206dec74431972 \
-        --control-plane --certificate-key 31ce9f38771e99ddbb834e3694e13fff9f3e4741bf5bc09e9182f751a0d0cb24
+	--discovery-token-ca-cert-hash sha256:c74b6dcc0f3119703fcf08c444f13a01c77d8e649a398cb559bfb5cda257c583 \
+	--control-plane --certificate-key f6c03d58abd042750b8bcefd0a334c4fd449e7c83f5cec534fbfb39254d69080
 
 This node has joined the cluster and a new control plane instance was created:
 
@@ -569,9 +569,9 @@ This node has joined the cluster and a new control plane instance was created:
 
 To start administering your cluster from this node, you need to run the following as a regular user:
 
-        mkdir -p $HOME/.kube
-        sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-        sudo chown $(id -u):$(id -g) $HOME/.kube/config
+	mkdir -p $HOME/.kube
+	sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+	sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 Run 'kubectl get nodes' to see this node join the cluster.
 
@@ -591,33 +591,33 @@ $ source ~/.bash_profile
 
 ```bash
 $ kubectl get nodes
-NAME                  STATUS   ROLES           AGE     VERSION
-master1.cluster.k8s   Ready    control-plane   4m14s   v1.27.2
-master2.cluster.k8s   Ready    control-plane   84s     v1.27.2
-master3.cluster.k8s   Ready    control-plane   18s     v1.27.2
+NAME                  STATUS   ROLES           AGE   VERSION
+master1.cluster.k8s   Ready    control-plane   10m   v1.27.4
+master2.cluster.k8s   Ready    control-plane   56s   v1.27.4
+master3.cluster.k8s   Ready    control-plane   6s    v1.27.4
 
 $ kubectl get po -n kube-system
 NAME                                          READY   STATUS    RESTARTS        AGE
-coredns-5d78c9869d-lmqtg                      1/1     Running   0               4m5s
-coredns-5d78c9869d-sm29p                      1/1     Running   0               4m5s
-etcd-master1.cluster.k8s                      1/1     Running   0               4m20s
-etcd-master2.cluster.k8s                      1/1     Running   0               91s
-etcd-master3.cluster.k8s                      1/1     Running   0               26s
-kube-apiserver-master1.cluster.k8s            1/1     Running   0               4m18s
-kube-apiserver-master2.cluster.k8s            1/1     Running   0               91s
-kube-apiserver-master3.cluster.k8s            1/1     Running   0               26s
-kube-controller-manager-master1.cluster.k8s   1/1     Running   1 (81s ago)     4m20s
-kube-controller-manager-master2.cluster.k8s   1/1     Running   0               91s
-kube-controller-manager-master3.cluster.k8s   1/1     Running   0               26s
-kube-flannel-ds-5llrk                         1/1     Running   0               4m25s
-kube-flannel-ds-7dwft                         1/1     Running   0               6m13h
-kube-flannel-ds-jzq5w                         1/1     Running   0               6m27h
-kube-proxy-nrxp4                              1/1     Running   0               27s
-kube-proxy-wgd5z                              1/1     Running   0               92s
-kube-proxy-xxdhb                              1/1     Running   3 (3m49s ago)   4m5s
-kube-scheduler-master1.cluster.k8s            1/1     Running   1 (77s ago)     4m19s
-kube-scheduler-master2.cluster.k8s            1/1     Running   0               90s
-kube-scheduler-master3.cluster.k8s            1/1     Running   0               26s
+coredns-5d78c9869d-56smn                      1/1     Running   0               11m
+coredns-5d78c9869d-fmrv5                      1/1     Running   0               11m
+etcd-master1.cluster.k8s                      1/1     Running   0               11m
+etcd-master2.cluster.k8s                      1/1     Running   0               2m28s
+etcd-master3.cluster.k8s                      1/1     Running   0               95s
+kube-apiserver-master1.cluster.k8s            1/1     Running   0               11m
+kube-apiserver-master2.cluster.k8s            1/1     Running   0               2m27s
+kube-apiserver-master3.cluster.k8s            1/1     Running   1 (96s ago)     96s
+kube-controller-manager-master1.cluster.k8s   1/1     Running   1 (2m17s ago)   11m
+kube-controller-manager-master2.cluster.k8s   1/1     Running   0               2m27s
+kube-controller-manager-master3.cluster.k8s   1/1     Running   0               18s
+kube-flannel-ds-4xblf                         1/1     Running   0               98s
+kube-flannel-ds-ngrcr                         1/1     Running   0               2m28s
+kube-flannel-ds-v4qwj                         1/1     Running   0               4m32s
+kube-proxy-67v7k                              1/1     Running   0               2m28s
+kube-proxy-hcm5r                              1/1     Running   4 (10m ago)     11m
+kube-proxy-jjt2t                              1/1     Running   0               98s
+kube-scheduler-master1.cluster.k8s            1/1     Running   1 (2m13s ago)   11m
+kube-scheduler-master2.cluster.k8s            1/1     Running   0               2m12s
+kube-scheduler-master3.cluster.k8s            1/1     Running   0               97s
 ```
 
 ### 命令过期处理
@@ -626,18 +626,16 @@ kube-scheduler-master3.cluster.k8s            1/1     Running   0               
 ```bash
 # 生成新的 certificate-key
 $ kubeadm init phase upload-certs --upload-certs
-W0613 02:58:56.062625    3936 version.go:104] could not fetch a Kubernetes version from the internet: unable to get URL "https://dl.k8s.io/release/stable-1.txt": Get "https://dl.k8s.io/release/stable-1.txt": dial tcp: lookup dl.k8s.io on 10.10.20.0:53: server misbehaving
-W0613 02:58:56.062682    3936 version.go:105] falling back to the local client version: v1.27.1
 [upload-certs] Storing the certificates in Secret "kubeadm-certs" in the "kube-system" Namespace
 [upload-certs] Using certificate key:
-7e2d3f6d64605d57905f2b8e57a4ff3a32b2753b3b3fdcfe7834eacb4d7bf488
+3a6c93a77e10a4f70064a488e11aced050567d3a1a746c73aa472d9178c4faf9
 
 # 生成新的 token 及加入集群的命令
 $ kubeadm token create --print-join-command
-kubeadm join master.cluster.k8s:16443 --token 8nlczr.ni69skrz2r5ijx16 --discovery-token-ca-cert-hash sha256:ee3da16b9d7e53d54209c5910a5629d88b52d77b51fc77ba29206dec74431972
+kubeadm join master.cluster.k8s:16443 --token 03hxhs.b0fmrcmg9m5e4thw --discovery-token-ca-cert-hash sha256:c74b6dcc0f3119703fcf08c444f13a01c77d8e649a398cb559bfb5cda257c583 
 
 # 将上面生成的新 certificate-key 拼接到命令后面，新节点就可以使用新的该命令来加入集群了
-$ kubeadm join master.cluster.k8s:16443 --token 8nlczr.ni69skrz2r5ijx16 
-        --discovery-token-ca-cert-hash sha256:ee3da16b9d7e53d54209c5910a5629d88b52d77b51fc77ba29206dec74431972
-        --control-plane --certificate-key 7e2d3f6d64605d57905f2b8e57a4ff3a32b2753b3b3fdcfe7834eacb4d7bf488
+$ kubeadm join master.cluster.k8s:16443 --token 03hxhs.b0fmrcmg9m5e4thw
+        --discovery-token-ca-cert-hash sha256:c74b6dcc0f3119703fcf08c444f13a01c77d8e649a398cb559bfb5cda257c583 
+        --control-plane --certificate-key 3a6c93a77e10a4f70064a488e11aced050567d3a1a746c73aa472d9178c4faf9
 ```
