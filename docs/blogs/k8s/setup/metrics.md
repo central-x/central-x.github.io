@@ -1,6 +1,8 @@
 # 监控集群
 ## 概述
-&emsp;&emsp;在 Kubernetes 中，可以使用 Metrics-server 来完成系统资源的采集工作，通过 Metrics 采集节点和 Pod 的内存、磁盘、CPU 和网络的使用率。通过这些指标，可以结合 Horizontal Pod Autoscaler(HPA) 来完成自动伸缩[[链接](/blogs/k8s/action/automatic-scaling)]。
+&emsp;&emsp;在 Kubernetes 中，可以使用 Metrics Server 来完成系统资源的采集工作，通过 Metrics 采集节点和 Pod 的内存、磁盘、CPU
+和网络的使用率。通过这些指标，可以结合 Horizontal Pod Autoscaler(HPA)
+来完成自动伸缩[[链接](/blogs/k8s/action/automatic-scaling)]。
 
 ## 操作步骤
 ### 部署 metrics-server
@@ -46,7 +48,6 @@ master3.cluster.k8s   258m         6%     759Mi           19%
 node1.cluster.k8s     64m          1%     482Mi           12%       
 node2.cluster.k8s     77m          1%     434Mi           11%       
 node3.cluster.k8s     60m          1%     301Mi           7%        
-
 
 # 获取所有 Pod 的资源使用率
 $ kubectl top po -A

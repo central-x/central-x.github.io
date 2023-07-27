@@ -1,10 +1,11 @@
 # 搭建 Kubernetes 环境（通用步骤）
 ### 概述
-&emsp;&emsp;以下步骤是控制节点（master[x].cluster.k8s）和工作节点（node[x].cluster.k8s）都需要执行的步骤，用于搭建 Kubernetes 的基础运行环境。
+&emsp;&emsp;以下步骤是控制节点（master[x].cluster.k8s）和工作节点（node[x].cluster.k8s）都需要执行的步骤，用于搭建 Kubernetes
+的基础运行环境。
 
 ## 操作步骤
 ### 更新网络配置
-&emsp;&emsp;需要将所有 Kubernetes 集群节点的服务器的 DNS 服务器指向 svc.cluster.k8s，这样就可以统一域名解析。
+&emsp;&emsp;需要将所有 Kubernetes 集群节点的服务器的 DNS 服务器指向 svc.cluster.k8s，这样就可以统一主机名解析。
 
 ```bash
 # 修改当前服务器的 hostname
@@ -34,7 +35,8 @@ rtt min/avg/max/mdev = 0.292/0.428/0.484/0.079 ms
 ```
 
 ### 更新系统环境
-&emsp;&emsp;在上一章节完成 svc.cluster.k8s 服务器的搭建之后，我们就可以通过该服务器提供的 yum 源来更新系统环境和安装 docker、kubernetes 环境了。
+&emsp;&emsp;在上一章节完成 svc.cluster.k8s 服务器的搭建之后，我们就可以通过该服务器提供的 yum 源来更新系统环境和安装
+docker、kubernetes 环境了。
 
 ```bash
 # 删除系统自身的 yum 源
@@ -43,8 +45,8 @@ $ rm -f /etc/yum.repos.d/CentOS-*
 # 然后添加 nexus3 提供的 yum 源
 $ curl -o /etc/yum.repos.d/mirror.repo http://mirror.cluster.k8s/repository/raw/mirror.repo
 
-# Kubernetes 要求内核在 4.19 及以上，因此需要更新内核
 # CentOS 7 的默认内核是 3.10.0
+# Kubernetes 要求内核在 4.19 及以上，因此需要更新内核
 $ uname -r
 3.10.0-1160.el7.x86_64
 
@@ -201,9 +203,12 @@ libcrc32c              16384  4 nf_conntrack,nf_nat,xfs,ip_vs
 ```
 
 ### 安装容器运行时
-&emsp;&emsp;Kubernetes 在 1.24.0 版本移除了 dockershim 的支持[[链接](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.24.md#dockershim-removed-from-kubelet)]，因此将不再直接支持 Docker，所以我们这边使用 containerd 作为容器运行时。
+&emsp;&emsp;Kubernetes 在 1.24.0 版本移除了 dockershim
+的支持[[链接](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.24.md#dockershim-removed-from-kubelet)]
+，因此将不再直接支持 Docker，所以我们这边使用 containerd 作为容器运行时。
 
-> &emsp;&emsp;实际上 Docker 底层也是使用 containerd 作为运行时。在使用 Kubernetes 时，一般都是通过更高级的 kubectl 来控制容器，因此使用 Docker 和直接使用 containerd 的效果差不多。
+> &emsp;&emsp;实际上 Docker 底层也是使用 containerd 作为运行时。在使用 Kubernetes 时，一般都是通过更高级的 kubectl
+> 工具来控制容器，因此使用 Docker 和直接使用 containerd 没什么特别大区别。
 
 ```bash
 # 配置 containerd 所需的模块
@@ -253,10 +258,12 @@ $ containerd --version
 containerd containerd.io 1.6.21 3dce8eb055cbb6872793272b4f20ed16117344f8
 ```
 
-&emsp;&emsp;因为没有安装 docker，因此 docker 相关的命令可能就没办法使用了。可以安装 crictl 工具[[链接](https://github.com/kubernetes-sigs/cri-tools/releases)]，该工具基本可以代替 docker，如 `crictl pull xxxx`、`crictl images` 等。
+&emsp;&emsp;因为没有安装 docker，因此 docker 相关的命令可能就没办法使用了。可以安装 crictl
+工具[[链接](https://github.com/kubernetes-sigs/cri-tools/releases)]，该工具基本可以代替
+docker，如 `crictl pull xxxx`、`crictl images` 等。
 
 ```bash
-# 下载 crictl-linux-amd64-v1.27.0 文件到 /usr/local/bin 目录下，然后并添加可执行权限
+# 下载 crictl 的可执行文件到 /usr/local/bin 目录下，并添加可执行权限
 $ curl -o /usr/local/bin/crictl http://mirror.cluster.k8s/repository/raw/crictl-linux-amd64-v1.27.1
 $ chmod +x /usr/local/bin/crictl
 
@@ -296,16 +303,16 @@ Kustomize Version: v5.0.1
 The connection to the server localhost:8080 was refused - did you specify the right host or port?
 ```
 
-&emsp;&emsp;使用 kubeadm 部署 Kubernetes 时，会自动生成证书，但是这些证书只有 1 年有效期[[文档](/blogs/k8s/tips/kubeadm-certs)]。为了避免因为证书过期而导致集群出现问题，我们使用修改源码后重新编译过的 kubeadm 来初始化 Kubernetes 集群。
+&emsp;&emsp;使用 kubeadm 部署 Kubernetes 时，会自动生成证书，但是这些证书只有 1
+年有效期[[文档](/blogs/k8s/tips/kubeadm-certs)]。为了避免因为证书过期而导致集群出现问题，我们使用修改源码后重新编译过的
+kubeadm 来初始化 Kubernetes 集群。
 
 ```bash
-# 备份原来的 kubeadm
+# 备份原来的 kubeadm（也可以不备份）
 $ mv /usr/bin/kubeadm /usr/bin/kubeadm_bak
 
-# 下载新的 kubeadm
+# 下载新的 kubeadm 可执行文件，并添加可执行权限
 $ curl -o /usr/bin/kubeadm http://mirror.cluster.k8s/repository/raw/kubeadm-linux-amd64-v1.27.4
-
-# 授权
 $ chmod +x /usr/bin/kubeadm
 
 # 查看信息

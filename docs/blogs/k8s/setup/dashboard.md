@@ -1,6 +1,7 @@
 # 安装 Dashboard
 ## 概述
-&emsp;&emsp;Kubernetes 官方提供了简单的图形式展示应用，可以用于展示集群中的各类资源，同时也可以通过 Dashboard 实时查看 Pod 的日志和在容器中执行一些命令等。
+&emsp;&emsp;Kubernetes 官方提供了简单的图形式展示应用，可以用于展示集群中的各类资源，同时也可以通过 Dashboard 实时查看 Pod
+的日志和在容器中执行一些命令等。
 
 ## 操作步骤
 ### 部署 dashboard
@@ -36,28 +37,20 @@ kubernetes-metrics-scraper-dcffb9579-6zf8z    1/1     Running   0             2m
 ```bash
 # 创建一个临时的登录 token（1 小时有效）
 $ kubectl create token -n kube-system dashboard-admin
-eyJhbGciOiJSUzI1NiIsImtpZCI6Ii02b3dfODdLMHZqcEhwYV9FeTluS2Fzb0hpVkU0ZGNfR2JMZ0RaNnZ0N00ifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNjkwNDA4MzgxLCJpYXQiOjE2OTA0MDQ3ODEsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJkYXNoYm9hcmQtYWRtaW4iLCJ1aWQiOiJmMGRlNDFkMi00Njc3LTRkYmEtYjdlNy1iNjEyNjU5OWQ2YjQifX0sIm5iZiI6MTY5MDQwNDc4MSwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmRhc2hib2FyZC1hZG1pbiJ9.hFmhFCN_auac3DN1uk1XDiyKSwEnU-rOGlyfvaPzq5ytgP75DC2sQlsFCbutibnMlvVNAyje5uPc4EJ3eJlJjFdMCH9HeOEC7buHcq_hjCjdCVSI0kXzsg77TDUfDfGECIYpWfjWM9bKZ9HShfSLvayzaK8jHSJgqdogsHpI5QogADnsYpSZ63c3i1Tptb4XcngW-Z_kqGZCRMky4VwGgXNJNCly3IoNSrWXTPYeNlPL1j9KACMPr_8avu3re7mKPXsd8q18LL_cqr8lfJhN3B-HKzJIUhURNoEel00K_AK-QBBIhked18PpAz3e-cO4gPAl54QczPqyM1An5mr44w
+eyJhbGciOiJSUzI1NiIsImtpZCI6Ii02b3dfODdLMHZqcEhwYV9FeTluS2Fzb0hpVkU0ZGNfR2JMZ0RaNnZ0N00ifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNjkwNDEwMjIyLCJpYXQiOjE2OTA0MDY2MjIsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJkYXNoYm9hcmQtYWRtaW4iLCJ1aWQiOiJmMGRlNDFkMi00Njc3LTRkYmEtYjdlNy1iNjEyNjU5OWQ2YjQifX0sIm5iZiI6MTY5MDQwNjYyMiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmRhc2hib2FyZC1hZG1pbiJ9.gx8HAFk_FEdQ97ogICplGJMmOFhWfPKRodPl8UHfXg9S0uvhPvxVrLn0SX0-DpaIBUMwBDJts7TIS8TvyB2kQzOfw4On9_dFrAlED4HCWGa8J7dpWCmOLQD8pqG5KGWuseU44Ukq3QAyVdO_nS_6FaIWSAOyN5boIY8CHlkbeUUes8lnONWwBCenA3bomlS7PQD7VRDdDBAlPUVlyAXp6RwtUkwRDzZFRikusRsva7R4WluMgncSaKTlZ5hb5hgmq_8gQiKHA4PZ-C547Z31FA5Gtr59kUkrJPXG1HcQqchPnvg-vRPvQTCvBxCrkpv0onJ94DLohF7bKZTwYQNnpg
 ```
 
-> &emsp;&emsp;因为安全原因，从 1.24 开始，Kubernetes 不再为每个 ServiceAccount 自动创建对应的 Secret[[链接](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.24.md#urgent-upgrade-notes)]。你可以选择以下方式去解决这个问题:
+> &emsp;&emsp;因为安全原因，从 1.24 开始，Kubernetes 不再为每个 ServiceAccount 自动创建对应的
+> Secret[[链接](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.24.md#urgent-upgrade-notes)]
+> 。你可以选择以下方式去解决这个问题:
 >
 > - TokenRequest API（建议）:
 > - Token Volume Projection（建议）:
 > - Service Account Token Secrets（不建议）: 你可以手
 
 ### 访问 dashboard
-&emsp;&emsp;在部署 dashboard 时，创建了一个 NodePort 类型的服务（Service）。NodePort 类型的服务会在所有的工作节点上启用一个端口，该端口将会把请求转发到 Pod 里，因此我们可以通过该端口去访问 Dashboard。
-
-```bash
-# 查看 dashboard 的服务信息
-# 可以看到服务 kubernetes-dashboard 创建了一个端口是 32693
-$ kubectl get svc -n kube-system
-NAME                        TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)         AGE
-dashboard-metrics-scraper   ClusterIP   10.96.217.31   <none>        8000/TCP        10m
-kubernetes-dashboard        NodePort    10.96.25.148   <none>        443:32693/TCP   10m
-```
-
-&emsp;&emsp;任意选择一台工作节点（node[x].cluster.k8s），在浏览器中输入该节点的 IP + 服务的端口访问 Dashboard。
+&emsp;&emsp;在集群的流量入口与出口章节中[[链接](/blogs/k8s/setup/network)]，我们提前定义了 Dashboard
+的流量入口，因此我们只需要直接访问该负载均衡器即可。
 
 ![](./assets/dashboard.png)
 

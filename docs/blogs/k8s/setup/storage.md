@@ -2,7 +2,8 @@
 ## 概述
 &emsp;&emsp;Kubernetes 支持多种类型的存储，如 NFS、Rook、Ceph 集群、Minio 等，这些存储将会被声明成卷，从而支持应用进行一些持久化存储。
 
-&emsp;&emsp;本文将列出一些常用的存储搭建过程，运维人员应根据实际情况选择。同时，为了减少 Kubernetes 管理员管理 PV 的工作量，在本文也提供了这些存储类型对应的 StorageClass 来自动管理 PV 的申请和释放的过程。
+&emsp;&emsp;本文将列出一些常用的存储搭建过程，运维人员应根据实际情况选择。同时，为了减少 Kubernetes 管理员管理 PV
+的工作量，在本文也提供了这些存储类型对应的 StorageClass 来自动管理 PV 的申请和释放的过程。
 
 ## NFS
 &emsp;&emsp;NFS 是非常常用的文件存储技术，但是其存在单点故障，因此在生产环境需要慎用。
@@ -36,7 +37,7 @@ $ nano /etc/exports
 
 # 以下是 /etc/exports 文件的内容
 # /root/permanent 和 /root/temporary 是对外暴露的存储目录
-# 10.10.20.0/24 表示 10.10.20.* 的服务器可以访问这个共享
+# 10.10.20.0/24 表示只有 10.10.20.* 网段的服务器可以访问这个共享目录
 # rw 表示读写权限，no_root_squash 表示使用者是 root 时，其权限转为匿名使用者
 /root/permanent 10.10.20.0/24(rw,no_root_squash)
 /root/temporary 10.10.20.0/24(rw,no_root_squash)
@@ -51,7 +52,7 @@ Export list for 10.10.20.1:
 /root/permanent 10.10.20.0/24
 ```
 
-&emsp;&emsp;由于不知道 Pod 会被调度到哪个节点，因此所有服务器的节点都需要安装上 nfs-utils 才能正常挂载。
+&emsp;&emsp;由于不知道 Pod 会被调度到哪个节点，因此所有服务器的节点都需要安装上 nfs-utils 才能正常挂载（这个步骤在通用步骤时已经完成了）。
 
 ```bash
 # 其余工作节点只需要安装了就可以了，不需要做配置
@@ -59,7 +60,7 @@ $ yum install -y nfs-utils
 ```
 
 ### 使用 NFS
-&emsp;&emsp;在声明 Pod 时，可以直接使用这个 NFS。
+&emsp;&emsp;在声明 Pod 时，可以直接使用这个 NFS 存储。
 
 ```yaml
 apiVersion: apps:/v1
@@ -83,12 +84,15 @@ spec:
 ```
 
 ### StorageClass
-&emsp;&emsp;Kubernetes 在私有部署时，没有包含内置的 NFS StorageClasse 提供程序，因此需要安装额外的 StorageClass。这里使用 NFS Subdirectory External Provisione[[链接](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)]。为了方便使用，在定义 StorageClass 的时候，将存储分为持久化存储和临时存储：
+&emsp;&emsp;Kubernetes 在私有部署时，没有包含内置的 NFS StorageClasse 提供程序，因此需要运维人员安装额外的 StorageClass。这里使用
+NFS Subdirectory External Provisione[[链接](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)]。
+为了方便开发者使用，在定义 StorageClass 时，将存储分为持久化存储和临时存储：
 
-- 持久化存储（`nfs-permanent`）：pvc 删除时，其申请的空间不会被删除，需要管理员手动删除目录。
-- 临时存储（`nfs-temporary`）：pvc 删除时，其申请的空间会被立即删除
+- 持久化存储（`nfs-permanent`）：pvc 删除时，其申请的空间会被立即回收，但不会被物理删除，需要管理员手动删除目录。
+- 临时存储（`nfs-temporary`）：pvc 删除时，其申请的空间会被立即回收、删除。
 
-&emsp;&emsp;注意，`nfs-permanent` 和 `nfs-temporary` 都是 nfs 存储，两者的区别是提前定义好了回收策略和 StorageClass 名称，其余配置都是一致的。使用 Helm 来安装两个 StorageClass。
+&emsp;&emsp;注意，`nfs-permanent` 和 `nfs-temporary` 都是 nfs 存储，两者的区别只是提前定义好了回收策略和 StorageClass
+名称，其余配置都是一致的。使用 Helm 来安装两个 StorageClass。
 
 ```bash
 # 安装 nfs-permanent
@@ -136,5 +140,6 @@ temporary             cluster.local/nfs-temporary   Delete          Immediate   
 ```
 
 ::: tip 提示
-&emsp;&emsp;nfs-subdir-external-provisioner 还提供了很多高级选项，包括 PV 回收策略、磁盘回收策略等等。可以通过 helm pull mirror/nfs-subdir-external-provisioner 将 helm 包拉取到本地后，解压查看 values.yaml 文件了解更多。
+&emsp;&emsp;nfs-subdir-external-provisioner 还提供了很多高级选项，包括 PV 回收策略、磁盘回收策略等等。可以通过 helm pull
+mirror/nfs-subdir-external-provisioner 将 helm 包拉取到本地后，解压查看 values.yaml 文件了解更多。
 :::
