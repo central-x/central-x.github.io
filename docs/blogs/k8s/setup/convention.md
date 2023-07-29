@@ -49,12 +49,10 @@ Context "kubernetes-admin@kubernetes" modified.
 
 ## 标签
 ### 节点（Node）标签
-&emsp;&emsp;Kubernetes 在完成 Pod 时调度工作时，一般通过标签（Label）进行管理。通过标签，可以标记节点的一些特殊属性，Pod
-就可以通过这些标签进行组合，从而找到最合适的节点部署 Pod。
+&emsp;&emsp;Kubernetes 在完成 Pod 时调度工作时，一般通过标签（Label）进行管理。通过标签，可以标记节点的一些特殊属性，Pod 就可以通过这些标签进行组合，从而找到最合适的节点部署 Pod。
 
 ::: tip 提示
-&emsp;&emsp;除了使用标签，还会使用污点（Taint）、容忍度（Toleration）、亲缘性（Affinity）等来完成更高级的调度管理，具体可以查看
-Kubernetes in Action 系列的调度管理[[链接](/blogs/k8s/action/advanced-scheduling)]。
+&emsp;&emsp;除了使用标签，还会使用污点（Taint）、容忍度（Toleration）、亲缘性（Affinity）等来完成更高级的调度管理，具体可以查看 Kubernetes in Action 系列的调度管理[[链接](/blogs/k8s/action/advanced-scheduling)]。
 :::
 
 &emsp;&emsp;常用于节点标签如下:

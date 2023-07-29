@@ -1,7 +1,6 @@
 # 安装 Dashboard
 ## 概述
-&emsp;&emsp;Kubernetes 官方提供了简单的图形式展示应用，可以用于展示集群中的各类资源，同时也可以通过 Dashboard 实时查看 Pod
-的日志和在容器中执行一些命令等。
+&emsp;&emsp;Kubernetes 官方提供了简单的图形式展示应用，可以用于展示集群中的各类资源，同时也可以通过 Dashboard 实时查看 Pod 的日志和在容器中执行一些命令等。
 
 ## 操作步骤
 ### 部署 dashboard
@@ -49,8 +48,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6Ii02b3dfODdLMHZqcEhwYV9FeTluS2Fzb0hpVkU0ZGNfR2JMZ0Ra
 > - Service Account Token Secrets（不建议）: 你可以手
 
 ### 访问 dashboard
-&emsp;&emsp;在集群的流量入口与出口章节中[[链接](/blogs/k8s/setup/network)]，我们提前定义了 Dashboard
-的流量入口，因此我们只需要直接访问该负载均衡器即可。
+&emsp;&emsp;在集群的流量入口与出口章节中[[链接](/blogs/k8s/setup/network)]，我们提前定义了 Dashboard 的流量入口，因此我们只需要直接访问该负载均衡器即可。
 
 ![](./assets/dashboard.png)
 

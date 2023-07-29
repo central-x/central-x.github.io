@@ -5,8 +5,7 @@
 - 普通模式：主节点只有一个，API Server 的入口地址就是这个节点的地址。
 - 高可用模式：主节点有多个，并提供一个主节点的负载入口地址，API Server 的入口地址就是这个负载地址，再由这个负载地址将请求转发到这些主节点上。
 
-&emsp;&emsp;个人建议统一按照高可用模式的方式去搭建 Kubernetes
-集群。如果主节点没有多个，那么负载地址只需要将流量直接转发给该节点即可。如果后续有更多的主机资源加入进来之后，可以随时加这些主机加入主节点集群，让主节点集群变成高可用状态。
+&emsp;&emsp;个人建议统一按照高可用模式的方式去搭建 Kubernetes 集群。如果主节点没有多个，那么负载地址只需要将流量直接转发给该节点即可。如果后续有更多的主机资源加入进来之后，可以随时加这些主机加入主节点集群，让主节点集群变成高可用状态。
 
 ## 搭建高可用入口
 &emsp;&emsp;搭建高可用集群需要 3 台或以上的主节点，并且提供 3 台主节点的统一访问入口。这个访问入口有多种实现思路，包括：
@@ -18,8 +17,7 @@
   会自动在节点间切换，因此一般也认为已经达到高可用状态。如果使用 Keepalived 作为高可用方案，一般还要配合 Nginx 或 HAProxy
   这些反向代理软件，将流量负载到所有主节点上，降低单点压力。
 
-&emsp;&emsp;对于以上三种方案，有条件的可以使用硬件负载；如果可以申请到虚拟 IP（有些环境不允许使用虚拟 IP），可以使用
-Keepalived；如果以上两个方案都没办法，可以选择使用软件负载器。
+&emsp;&emsp;对于以上三种方案，有条件的可以使用硬件负载；如果可以申请到虚拟 IP（有些环境不允许使用虚拟 IP），可以使用 Keepalived；如果以上两个方案都没办法，可以选择使用软件负载器。
 
 &emsp;&emsp;如果对高可用集群的拓扑结构还没有清晰认识的，可以回到概述文档[[链接](/blogs/k8s/setup/)]里回顾一下。
 
@@ -27,9 +25,7 @@ Keepalived；如果以上两个方案都没办法，可以选择使用软件负�
 > IP，这样将来高可用入口如果要发生变更的话，只需要修改一下 DNS 服务即可。
 
 ### Keepalived + Nginx
-&emsp;&emsp;Keepalived
-方案虽然可以达到高可用，但是该方案会将所有流量都流向一个节点，其余的节点将处于「无事可做」的状态。为了让节点间的压力平衡一点，一般还要在这些节点上搭建反向代理软件，将流量平均到各个节点上，降低单点压力。在本文档里，反向代理软件我们使用
-Nginx。
+&emsp;&emsp;Keepalived 方案虽然可以达到高可用，但是该方案会将所有流量都流向一个节点，其余的节点将处于「无事可做」的状态。为了让节点间的压力平衡一点，一般还要在这些节点上搭建反向代理软件，将流量平均到各个节点上，降低单点压力。在本文档里，反向代理软件我们使用 Nginx。
 
 #### 安装 Nginx
 
@@ -98,9 +94,7 @@ Connection closed by foreign host.
 ```
 
 #### 安装 Keepalived
-&emsp;&emsp;部署 Keepalived 后，会生成一个虚拟 IP，我们就可以通过这个虚似 IP 访问主节点，从而保证主节点的高可用。在本方案里，如果
-nginx 挂了，或者整个服务器挂了，Keepalived 会自动切换到其它的节点。更多关于 Keepalived
-的信息，可以参考我另一篇文档[[链接](/blogs/linux/keepalived)]。
+&emsp;&emsp;部署 Keepalived 后，会生成一个虚拟 IP，我们就可以通过这个虚似 IP 访问主节点，从而保证主节点的高可用。在本方案里，如果 nginx 挂了，或者整个服务器挂了，Keepalived 会自动切换到其它的节点。更多关于 Keepalived 的信息，可以参考我另一篇文档[[链接](/blogs/linux/keepalived)]。
 
 &emsp;&emsp;在三台主节点（master[x].cluster.k8s），执行以下命令，安装 Keepalived 服务。
 
@@ -128,8 +122,7 @@ fi
 $ chmod +x /etc/keepalived/check_alived.sh
 ```
 
-&emsp;&emsp;在三台主节点中，选取其中一台作为 Keepalived 的主节点，其余为备用节点。在这里我们选用 master1.cluster.k8s 作为
-Keepalived 的主节点，master2.cluster.k8s 和 master3.cluster.k8s 为备用节点。
+&emsp;&emsp;在三台主节点中，选取其中一台作为 Keepalived 的主节点，其余为备用节点。在这里我们选用 master1.cluster.k8s 作为 Keepalived 的主节点，master2.cluster.k8s 和 master3.cluster.k8s 为备用节点。
 
 &emsp;&emsp;修改 master1.cluster.k8s 节点的 Keepalived 配置文件。
 
@@ -240,8 +233,7 @@ Connection closed by foreign host.
 ```
 
 #### 修改 DNS 服务
-&emsp;&emsp;修改 svc.cluster.k8s 服务器上的 DNS 服务的 hosts 文件，将 master.cluster.k8s 映射为
-10.10.20.10，这样就可以直接通过域名来访问 Kubernetes 的主节点集群。
+&emsp;&emsp;修改 svc.cluster.k8s 服务器上的 DNS 服务的 hosts 文件，将 master.cluster.k8s 映射为 10.10.20.10，这样就可以直接通过域名来访问 Kubernetes 的主节点集群。
 
 ```bash
 # 修改 DNS 服务的 hosts 文件，添加一条 master.cluster.k8s 记录
@@ -262,8 +254,7 @@ Connection closed by foreign host.
 &emsp;&emsp;不同的硬件负载器有不同的配置方式，总体思路是将流量转发到 master[x].cluster.k8s 节点上即可。
 
 ### 软件负载器
-&emsp;&emsp;软件负载器相对基它方案来说，是最简单以及我们最熟悉的方案。本方案只需要找一台服务器部署 Nginx、HAProxy
-这些反向代理软件，将流量负载到主节点上，即可完成软件负载器的搭建工作。
+&emsp;&emsp;软件负载器相对基它方案来说，是最简单以及我们最熟悉的方案。本方案只需要找一台服务器部署 Nginx、HAProxy 这些反向代理软件，将流量负载到主节点上，即可完成软件负载器的搭建工作。
 
 &emsp;&emsp;由于所有流量都要通过该软件负载器所在的服务器，因此我们要尽可能保证该服务器的稳定性。如果该服务器宕机，可能会让集群无法正常工作，因此我们最好不要在这台服务器上部署一些高负载的应用，确保该服务器正常运行。
 
@@ -334,8 +325,7 @@ Connection closed by foreign host.
 ```
 
 #### 修改 DNS 服务
-&emsp;&emsp;修改 svc.cluster.k8s 服务器上的 DNS 服务的 hosts 文件，将 master.cluster.k8s 映射为 Nginx
-所在服务器，这样就可以直接通过域名来访问 Kubernetes 的主节点集群。
+&emsp;&emsp;修改 svc.cluster.k8s 服务器上的 DNS 服务的 hosts 文件，将 master.cluster.k8s 映射为 Nginx 所在服务器，这样就可以直接通过域名来访问 Kubernetes 的主节点集群。
 
 ```bash
 # 修改 DNS 服务的 hosts 文件
@@ -509,8 +499,7 @@ front-proxy-ca          Jul 23, 2033 20:13 UTC   9y              no
 ```
 
 ### 安装 Helm
-&emsp;&emsp;Helm 是 Kubernetes 的包管理器，通过 Helm 可以很方便地给集群安装或卸载资源包，后续部署包时，一般建议通过 helm
-来管理。一般情况下，我们需要将 Helm 部署到主节点上。
+&emsp;&emsp;Helm 是 Kubernetes 的包管理器，通过 Helm 可以很方便地给集群安装或卸载资源包，后续部署包时，一般建议通过 helm 来管理。一般情况下，我们需要将 Helm 部署到主节点上。
 
 ```bash
 # 将 helm 可执行文件下载到指定目录，并添加可执行权限
@@ -644,8 +633,7 @@ kube-scheduler-master3.cluster.k8s            1/1     Running   0               
 ```
 
 ### 命令过期处理
-&emsp;&emsp;因为主节点可以访问集群的敏感信息，因此主节点的 certificate-key 会在 2 个小时后过期，而 token 会在 24
-小时后过期。如果后续还有新的主节点想加入集群，就需要通过以下命令生成新的 certificate-key 和 token。
+&emsp;&emsp;因为主节点可以访问集群的敏感信息，因此主节点的 certificate-key 会在 2 个小时后过期，而 token 会在 24 小时后过期。如果后续还有新的主节点想加入集群，就需要通过以下命令生成新的 certificate-key 和 token。
 
 ```bash
 # 生成新的 certificate-key

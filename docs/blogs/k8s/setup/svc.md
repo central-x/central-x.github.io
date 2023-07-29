@@ -1,17 +1,12 @@
 # 搭建基础服务环境
 ## 概述
-&emsp;&emsp;在生产环境中，为了保证服务器在安全环境下运行，一般情况下不允许访问外部网络（或限制条件下访问），因此需要额外一台服务器
-svc.cluster.k8s，用于搭建 yum 源、registry 源，这样就可以在有网络的环境下将 rpm 包、docker 镜像下载下来之后，再上传到
-svc.cluster.k8s 服务器上供 Kubernetes 集群使用。
+&emsp;&emsp;在生产环境中，为了保证服务器在安全环境下运行，一般情况下不允许访问外部网络（或限制条件下访问），因此需要额外一台服务器 svc.cluster.k8s，用于搭建 yum 源、registry 源，这样就可以在有网络的环境下将 rpm 包、docker 镜像下载下来之后，再上传到 svc.cluster.k8s 服务器上供 Kubernetes 集群使用。
 
-&emsp;&emsp;DNS 服务主要用于集中管理所有服务器的 hostname 映射。搭建完 DNS 服务之后，将其它服务器的的 DNS 服务器地址指定为
-svc.cluster.k8s 节点的 IP 地址，后续就可以直接通过 hostname 访问其它服务器。如果不想搭建 DNS 服务，那么就需要修改所有服务器的
-hosts 文件，添加对应的 hostname 映射关系。
+&emsp;&emsp;DNS 服务主要用于集中管理所有服务器的 hostname 映射。搭建完 DNS 服务之后，将其它服务器的的 DNS 服务器地址指定为 svc.cluster.k8s 节点的 IP 地址，后续就可以直接通过 hostname 访问其它服务器。如果不想搭建 DNS 服务，那么就需要修改所有服务器的 hosts 文件，添加对应的 hostname 映射关系。
 
 ## 操作步骤
 ### 搭建 Docker 运行环境
-&emsp;&emsp;下面使用了 docker-compose 来快速搭建基础环境。首选需要将离线安装包里面的 svc.cluster.k8s
-目录下所有文件上传到服务器，然后执行以下命令，完成 Docker 运行环境的搭建:
+&emsp;&emsp;下面使用了 docker-compose 来快速搭建基础环境。首选需要将离线安装包里面的 svc.cluster.k8s 目录下所有文件上传到服务器，然后执行以下命令，完成 Docker 运行环境的搭建:
 
 ```bash
 # 修改服务器的 hostname
@@ -50,8 +45,7 @@ Docker Compose version v2.20.2
 ```
 
 ### 导入 Docker 镜像
-&emsp;&emsp;由于生产环境是离线环境，因此 Docker 是无法拉取镜像的。为了能顺利启动基础环境，我们需要手动将离线的 docker
-镜像导入进来。
+&emsp;&emsp;由于生产环境是离线环境，因此 Docker 是无法拉取镜像的。为了能顺利启动基础环境，我们需要手动将离线的 docker 镜像导入进来。
 
 ```bash
 # 导入镜像
@@ -136,8 +130,7 @@ $ curl http://mirror.cluster.k8s/v2/
 
 ## 运维工作
 ### 更新基础服务器的环境
-&emsp;&emsp;由于刚始时搭建 svc.cluster.k8s 服务器的时候，因为离线的原因，导致系统默认的 yum 源没办法使用，因此也没办法更新系统环境。但是当
-nexus3 环境搭建起来了之后，我们就可以通过 nexus3 提供的 yum 源来更新自身的环境了。
+&emsp;&emsp;由于刚始时搭建 svc.cluster.k8s 服务器的时候，因为离线的原因，导致系统默认的 yum 源没办法使用，因此也没办法更新系统环境。但是当 nexus3 环境搭建起来了之后，我们就可以通过 nexus3 提供的 yum 源来更新自身的环境了。
 
 ```bash
 # 删除系统自身的 yum 源
@@ -180,9 +173,7 @@ $ rm -f /etc/yum.repos.d/CentOS-*
 $ yum install -y nano net-tools wget bind-utils telnet
 ```
 
-&emsp;&emsp;另外，由于 firewalld 经常与 docker 冲突，因此在搭建环境时将 firewalld 删除了，这里我们需要将 iptables
-相关的服务安装上，后续将直接通过 iptables 来控制防火墙。关于 iptables
-更多相关操作，可以查看我另一篇文档[[链接](/blogs/linux/iptables)]。
+&emsp;&emsp;另外，由于 firewalld 经常与 docker 冲突，因此在搭建环境时将 firewalld 删除了，这里我们需要将 iptables 相关的服务安装上，后续将直接通过 iptables 来控制防火墙。关于 iptables 更多相关操作，可以查看我另一篇文档[[链接](/blogs/linux/iptables)]。
 
 ```bash
 # 安装 iptables
@@ -225,9 +216,7 @@ $ docker restart 530c034d9167
 ```
 
 ### 更新 yum 源
-&emsp;&emsp;这个包已经内置了 CentOS7 常用的 yum 包。如果后续发现服务器缺失了其它 rpm
-包，可以通过我另一篇文档[[链接](/blogs/linux/download-yum)]将相关的 rpm
-包下载到本地，然后再上传到服务器上。完成上传之后，其它的服务器就可以像有网络一样正常安装/更新软件了。
+&emsp;&emsp;这个包已经内置了 CentOS7 常用的 yum 包。如果后续发现服务器缺失了其它 rpm 包，可以通过我另一篇文档[[链接](/blogs/linux/download-yum)]将相关的 rpm 包下载到本地，然后再上传到服务器上。完成上传之后，其它的服务器就可以像有网络一样正常安装/更新软件了。
 
 &emsp;&emsp;下面的代码是通过通过 shell 脚本上传 rpm 包到 nexus 私库。
 
@@ -246,11 +235,9 @@ done
 ```
 
 ### 更新、发布 Docker 镜像
-&emsp;&emsp;在生产环境中，由于服务器是不能访问外部网络的，因此需要运维人员手动将 Docker 镜像导入到 nexus3 提供 Registry
-私库中，然后 Kubernetes 集群通过镜像加速服务从这个 Registry 私库中拉取并部署 Pod。
+&emsp;&emsp;在生产环境中，由于服务器是不能访问外部网络的，因此需要运维人员手动将 Docker 镜像导入到 nexus3 提供 Registry 私库中，然后 Kubernetes 集群通过镜像加速服务从这个 Registry 私库中拉取并部署 Pod。
 
-&emsp;&emsp;由于我们搭建的 nexus3 无法提供 https 访问协议，因此需要配置 docker 允许以不安全的方式访问 Registry
-私库，具体操作可以参考我另一篇文档[[链接](/blogs/docker/setup#访问-dokcer-私库)]
+&emsp;&emsp;由于我们搭建的 nexus3 无法提供 https 访问协议，因此需要配置 docker 允许以不安全的方式访问 Registry 私库，具体操作可以参考我另一篇文档[[链接](/blogs/docker/setup#访问-dokcer-私库)]
 
 &emsp;&emsp;完成上述的操作之后，就可以通过以下方式将 Docker 镜像上传到 Registry 私库。
 
@@ -277,6 +264,5 @@ $ docker push mirror.cluster.k8s/sonatype/nexus3:3.53.1
 ```
 
 ::: tip 注意
-&emsp;&emsp;一些 Docker 官方镜像如 `nginx:1.24.0`，如果想要上传到 mirror.cluster.k8s 做镜像加速的话，新的 tag
-名称应该是 `mirror.cluster.k8s/library/nginx:1.24.0`，而不能是 `mirror.cluster.k8s/nginx:1.24.0`。
+&emsp;&emsp;一些 Docker 官方镜像如 `nginx:1.24.0`，如果想要上传到 mirror.cluster.k8s 做镜像加速的话，新的 tag 名称应该是 `mirror.cluster.k8s/library/nginx:1.24.0`，而不能是 `mirror.cluster.k8s/nginx:1.24.0`。
 :::

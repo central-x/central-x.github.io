@@ -1,13 +1,10 @@
 # 安装 Ingress Controller
 ## 概述
-&emsp;&emsp;Kubernetes 集群默认没有部署 Ingress Controller，因此 Ingress 资源将无法正常工作。此时需要我们根据项目情况选择相关
-Ingress Controller 的实现部署到集群中。
+&emsp;&emsp;Kubernetes 集群默认没有部署 Ingress Controller，因此 Ingress 资源将无法正常工作。此时需要我们根据项目情况选择相关 Ingress Controller 的实现部署到集群中。
 
-&emsp;&emsp;Ingress Controller 有多种开源实现，包括 HAProxy、Treafik、Kubernetes 官方维护的 Nginx Controller、Nginx
-官方维护的开源版和商业版的 Nginx Controller。一般情况下，我们选择使用 Kubernetes 官方维护的 Nginx Controller 即可。
+&emsp;&emsp;Ingress Controller 有多种开源实现，包括 HAProxy、Treafik、Kubernetes 官方维护的 Nginx Controller、Nginx 官方维护的开源版和商业版的 Nginx Controller。一般情况下，我们选择使用 Kubernetes 官方维护的 Nginx Controller 即可。
 
-&emsp;&emsp;更多关于 Ingress 的信息，可以查看 Kubernetes in Action 系列文章的网络服务 Ingress
-章节[[链接](/blogs/k8s/action/service#ingress)]。
+&emsp;&emsp;更多关于 Ingress 的信息，可以查看 Kubernetes in Action 系列文章的网络服务 Ingress 章节[[链接](/blogs/k8s/action/service#ingress)]。
 
 ## 操作步骤
 ### 为节点打标签
@@ -26,8 +23,7 @@ node/node2.cluster.k8s labeled
 ::: tip 提示
 &emsp;&emsp;`cluster.k8s/ingress=enabled` 标签是运维规约[[链接](/blogs/k8s/setup/convention)]中的内容，更多信息可以查看该文档的内容。
 
-&emsp;&emsp;注意 Ingress Controller 前面应该还有一层负载均衡器 loadbalancer.cluster.k8s。一般情况下不要直接将 Ingress
-Controller 暴露给客户端。
+&emsp;&emsp;注意 Ingress Controller 前面应该还有一层负载均衡器 loadbalancer.cluster.k8s。一般情况下不要直接将 Ingress Controller 暴露给客户端。
 :::
 
 ### 部署 Ingress-Nginx
