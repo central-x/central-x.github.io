@@ -82,6 +82,23 @@ spec:
             path: /root/permanent
 ```
 
+&emsp;&emsp;物理/虚拟服务器如果想直接挂载 NFS，可以通过以下方式完成：
+
+```bash
+# 启动 rpcbind 服务
+$ systemctl enable rpcbind && systemctl start rpcbind
+
+# 挂载 nfs 到指定目录
+$ mkdir -p /nfs/permanent
+$ mount -t nfs 10.10.20.1:/root/permanent /nfs/permanent
+
+# 开机自动挂载 nfs
+# 修改以下文件，在该文件最后一行加入以下代码即可
+$ nano /etc/fstab
+
+10.10.20.1:/root/permanent   /nfs/permanent   nfs   efaults  0 0
+```
+
 ### StorageClass
 &emsp;&emsp;Kubernetes 在私有部署时，没有包含内置的 NFS StorageClasse 提供程序，因此需要运维人员安装额外的 StorageClass。这里使用 NFS Subdirectory External Provisione[[链接](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)]。为了方便开发者使用，在定义 StorageClass 时，将存储分为持久化存储和临时存储：
 
