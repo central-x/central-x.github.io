@@ -495,6 +495,7 @@ export default withMermaid(
                             {text: "搭建内网穿透代理", link: "/blogs/linux/frp-proxy"},
                             {text: "iptable 的使用", link: "/blogs/linux/iptables"},
                             {text: "Keepalived", link: "/blogs/linux/keepalived"},
+                            {text: "SSH Keys", link: "/blogs/linux/ssh-keys"},
                         ]
                     },
                     {
