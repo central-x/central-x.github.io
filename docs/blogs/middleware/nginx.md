@@ -12,7 +12,7 @@ $ rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7
 # 安装 Nginx
 $ yum install -y nginx
 
-# 添加系统服务，用于自启动
+# 添加系统服务，用于开机自启动
 $ systemctl start nginx && systemctl enable nginx
 
 # 获取 Nginx 配置文件位置
@@ -28,7 +28,7 @@ $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/
 # 安装 Nginx
 $ brew install nginx
 
-# 添加 Nginx 为服务，用于自启动
+# 添加 Nginx 为服务，用于开机自启动
 $ brew services start nginx
 
 # 获取 Nginx 配置文件位置
@@ -36,10 +36,12 @@ $ nginx -t
 ```
 
 ## 常用文件路径
+### 总配置文件（nginx.conf）
+&emsp;&emsp;这个文件主要用于总体配置 nginx 的规则。为了保证该文件的简洁性，不要将普通路由等信息写在这里。
+- Linux: `/etc/nginx/nginx.conf`
+- Mac: `/usr/local/etc/nginx/nginx.conf`
 
-- 总配置文件: 这个文件主要用于总体配置 nginx 的规则。注意不要将普通转发路由等信息写在这里
-   - Linux: `/etc/nginx/nginx.conf`
-   - Mac: `/usr/local/etc/nginx/nginx.conf`
+&emsp;&emsp;根据实践，推荐的 Nginx 总配置文件下：
 
 ```nginx
 user nginx;
@@ -56,35 +58,36 @@ events {
 
 # 请求转发 (7 层代理)
 http {
-    log_format  main    '$remote_addr -> $host [$time_local] "$request" '
-                        '$status $body_bytes_sent "$http_referer" '
-                        '"$http_user_agent" "$http_x_forwarded_for"';
+    # 注意，需要在每个 server 节点，或者 location 节点里面添加 $handler 变量，用于标记当前请求由哪个节点处理
+    log_format    main    '[$time_local] Handler=[$handler] $remote_addr -> "$request_method $scheme://$host$request_uri $status" '
+                          'Body-Length=[$body_bytes_sent] Referer=[$http_referer] '
+                          'User-Agent=[$http_user_agent] X-Forwarded-For=[$http_x_forwarded_for]';
 
-    access_log          /var/log/nginx/access.log  main;
+    access_log            /var/log/nginx/access.log  main;
 
-    sendfile            on;
-    tcp_nopush          on;
-    tcp_nodelay         on;
-    keepalive_timeout   65;
-    types_hash_max_size 4096;
+    sendfile              on;
+    tcp_nopush            on;
+    tcp_nodelay           on;
+    keepalive_timeout     65;
+    types_hash_max_size   4096;
 
-    include             /etc/nginx/mime.types;
-    default_type        application/octet-stream;
+    include               /etc/nginx/mime.types;
+    default_type          application/octet-stream;
 
-    server_tokens	    off;
+    server_tokens	      off;
 
     # 包含 conf.d 下所有以 .conf 结尾的配置
-    include             /etc/nginx/conf.d/*.conf;
+    include               /etc/nginx/conf.d/*.conf;
 }
 
 # 流转发 (3 层代理)
 stream {
-    log_format basic    '$remote_addr [$time_local] '
-                        '$protocol $status $bytes_sent $bytes_received '
-                        '$session_time';
-    access_log          /var/log/nginx/stream-access.log basic buffer=32k;
+    # 注意，需要在每个 server 节点，或者 location 节点里面添加 $handler 变量，用于标记当前请求由哪个节点处理
+    log_format   main   '[$time_local] Handler=[$handler] $remote_addr -> "$protocol://$server_port $status" '
+                        'Body-Length=[$bytes_sent] Response-Length=[$bytes_received] SessionTime=[$session_time]';
 
-    error_log           /var/log/nginx/stream-error.log notice;
+    access_log          /var/log/nginx/stream-access.log   main   buffer=32k;
+    error_log           /var/log/nginx/stream-error.log    notice;
 
     # 包含 conf.d 下所有以 .stream 结尾的配置
     include             /etc/nginx/conf.d/*.stream;
@@ -103,10 +106,12 @@ stream {
 
 ```nginx
 server {
+    set                $handler            "local.cluster.k8s";
+
     # 监听端口
-    listen                 80;
+    listen             80;
     # 监听域名
-    server_name            local.cluster.k8s;
+    server_name        local.cluster.k8s;
 
     # 转发代理信息
     proxy_set_header   X-Real-IP           $remote_addr;
@@ -267,9 +272,10 @@ server {
 ```nginx
 # 注意，这个 stream 节点在 http 节点下面，与 http 节点平级，不要写入 http 节点内
 stream {
+
     log_format basic '$remote_addr [$time_local] '
-                 '$protocol $status $bytes_sent $bytes_received '
-                 '$session_time';
+                     '$protocol $status $bytes_sent $bytes_received '
+                     '$session_time';
     access_log /var/log/nginx/stream-access.log basic buffer=32k;
 
     error_log  /var/log/nginx/stream-error.log notice;
