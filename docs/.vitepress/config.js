@@ -469,6 +469,7 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "Nginx", link: "/blogs/middleware/nginx"},
+                            {text: "OpenVPN", link: "/blogs/middleware/openvpn"},
                         ]
                     },
                     {
