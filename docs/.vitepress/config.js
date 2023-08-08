@@ -490,6 +490,7 @@ export default withMermaid(
                         collapsible: true,
                         collapsed: true,
                         items: [
+                            {text: "存储", link: "/blogs/linux/storage"},
                             {text: "下载 yum 的离线安装包", link: "/blogs/linux/download-yum"},
                             {text: "Linux 常用命令", link: "/blogs/linux/command"},
                             {text: "创建自签名 SSL 证书", link: "/blogs/linux/ssl"},
