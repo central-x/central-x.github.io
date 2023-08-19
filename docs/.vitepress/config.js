@@ -470,6 +470,9 @@ export default withMermaid(
                         items: [
                             {text: "Nginx", link: "/blogs/middleware/nginx"},
                             {text: "OpenVPN", link: "/blogs/middleware/openvpn"},
+                            {text: "Frp", link: "/blogs/middleware/frp"},
+                            {text: "Keepalived", link: "/blogs/middleware/keepalived"},
+                            {text: "SSL", link: "/blogs/middleware/ssl"},
                         ]
                     },
                     {
@@ -491,12 +494,11 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "存储", link: "/blogs/linux/storage"},
+                            {text: "网络", link: "/blogs/linux/network"},
+                            {text: "权限", link: "/blogs/linux/permission"},
                             {text: "下载 yum 的离线安装包", link: "/blogs/linux/download-yum"},
                             {text: "Linux 常用命令", link: "/blogs/linux/command"},
-                            {text: "创建自签名 SSL 证书", link: "/blogs/linux/ssl"},
-                            {text: "搭建内网穿透代理", link: "/blogs/linux/frp-proxy"},
                             {text: "iptable 的使用", link: "/blogs/linux/iptables"},
-                            {text: "Keepalived", link: "/blogs/linux/keepalived"},
                             {text: "SSH Keys", link: "/blogs/linux/ssh-keys"},
                         ]
                     },
