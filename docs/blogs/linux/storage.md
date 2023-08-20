@@ -701,7 +701,8 @@ $ blkid
 2. 为磁盘分区: 通过 `fdisk` 命令；
 3. 创建 PV: 通过 `pvcreate` 命令；
 4. 将新 PV 加入到 VG: 通过 `vgextend` 命令；
-5. 扩容 LV: 通过 `lvextend` 命令。
+5. 扩容 LV: 通过 `lvextend` 命令；
+6. 更新文件系统信息: 通过 `resize2fs`（ext4）或 `xfs_growfs`（xfs）命令。
 
 ```bash
 # 扩容前先查看当前的容量信息
@@ -724,7 +725,7 @@ $ lvextend -l +100%free /dev/mapper/data_lvm-data
   Size of logical volume data_lvm/data changed from <30.38 GiB (7777 extents) to 39.98 GiB (10236 extents).
   Logical volume data_lvm/data successfully resized.
 
-# 注意，lvextend 扩展 LV 的容量之后，此时的文件系统并未感知到，所以还需要使用 xfs_growfs、resize2fs 等命令来扩展文件系统
+# 注意，lvextend 扩展 LV 的容量之后，此时的文件系统并未感知到，所以还需要使用 xfs_growfs、resize2fs 等命令来更新文件系统
 # xfs_growfs 命令用于扩展 xfs 文件系统
 # resize2fs 命令用于扩展 ext4 文件系统
 # resize2fs /dev/mapper/data_lvm-data
@@ -758,7 +759,11 @@ tmpfs                        379M     0  379M    0% /run/user/0
 1. 卸载正在使用的逻辑卷：通过 `unmount` 命令；
 2. 检查逻辑卷的错误信息：通过 `e2fsck` 命令；
 3. 更新逻辑卷的文件系统的容量信息：通过 `resize2fs` 命令；
-4. 执行缩容操作。
+4. 执行 LV 缩容：通过 `lvresize` 命令；
+5. 执行 VG 缩容：通过 `vgreduce` 命令；
+6. 移除 PV：通过 `pvremove` 命令;
+7. 扩容 LV: 通过 `lvextend` 命令；
+8. 更新文件系统信息: 通过 `resize2fs`（ext4）或 `xfs_growfs`（xfs）命令。
 
 > 注意，以上操作是针对文件系统为 ext4 逻辑卷的操作。xfs 文件系统不支持缩容。
 
@@ -770,21 +775,56 @@ $ umount /dev/mapper/data_lvm-data
 $ e2fsck -f /dev/mapper/data_lvm-data
 
 # 更新逻辑卷的文件系统的容量信息
-$ resize2fs /dev/mapper/data_lvm-data 30G
+# 缩减文件系统的容量信息，注意应多缩减一些，以免 PV 没办法移除
+$ resize2fs /dev/mapper/data_lvm-data 25G
 
-# 执行缩容操作
-$ lvresize -L 30G /dev/mapper/data_lvm-data
+# 执行 LV 缩容
+# 缩减 LV 的容量，这里是直接设置 LV 的目标容量大小。注意这个目标容量大小应该比文件系统的容量信息要稍大一些。
+$ lvresize -L 28G /dev/mapper/data_lvm-data
+
+# 执行 VG 缩容
+$ vgreduce data_lvm /dev/sde1
+
+# 删除 PV，然后就可以卸载拔出磁盘了
+$ pvremove /dev/sde1
+
+# 将 data_lvm 里面空闲的空间扩容到 LV
+$ lvextend -l +100%free /dev/mapper/data_lvm-data
+
+# 更新文件系统
+$ resize2fs /dev/mapper/data_lvm-data
+
+# 重新挂载分区
+$ mount /dev/mapper/data_lvm-data /data
 ```
 
 ### 清除 LVM 信息
 &emsp;&emsp;如果不想使用 LVM，需要删除已创建的逻辑卷，应根据以下步骤依次删除：
 
-1. 卸载正在使用的逻辑卷：通过 `unmount` 命令；
+1. 卸载正在使用的逻辑卷：通过 `umount` 命令；
 2. 删除逻辑卷：通过 `lvremove` 命令；
 3. 删除卷组：通过 `vgremove` 命令；
 4. 删除物理卷：通过 `pvremove` 命令。
 
 ```bash
+# 卸载挂载信息
+$ umount /dev/mapper/data_lvm-data
+
+# 删除逻辑卷
+$ lvremove /dev/data_lvm/data
+Do you really want to remove active logical volume data_lvm/data? [y/n]: y
+  Logical volume "data" successfully removed
+
+# 删除卷组
+$ vgremove data_lvm
+  Volume group "data_lvm" successfully removed
+
+# 删除物理卷
+$ pvremove /dev/sde1 /dev/sdd1 /dev/sdc1 /dev/sdb1
+  Labels on physical volume "/dev/sde1" successfully wiped.
+  Labels on physical volume "/dev/sdd1" successfully wiped.
+  Labels on physical volume "/dev/sdc1" successfully wiped.
+  Labels on physical volume "/dev/sdb1" successfully wiped.
 ```
 
 ## 远程存储
