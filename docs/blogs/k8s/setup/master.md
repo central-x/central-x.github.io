@@ -94,7 +94,7 @@ Connection closed by foreign host.
 ```
 
 #### 安装 Keepalived
-&emsp;&emsp;部署 Keepalived 后，会生成一个虚拟 IP，我们就可以通过这个虚似 IP 访问主节点，从而保证主节点的高可用。在本方案里，如果 nginx 挂了，或者整个服务器挂了，Keepalived 会自动切换到其它的节点。更多关于 Keepalived 的信息，可以参考我另一篇文档[[链接](/blogs/linux/keepalived)]。
+&emsp;&emsp;部署 Keepalived 后，会生成一个虚拟 IP，我们就可以通过这个虚似 IP 访问主节点，从而保证主节点的高可用。在本方案里，如果 nginx 挂了，或者整个服务器挂了，Keepalived 会自动切换到其它的节点。更多关于 Keepalived 的信息，可以参考我另一篇文档[[链接](/blogs/middleware/keepalived)]。
 
 &emsp;&emsp;在三台主节点（master[x].cluster.k8s），执行以下命令，安装 Keepalived 服务。
 

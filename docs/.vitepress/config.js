@@ -493,7 +493,10 @@ export default withMermaid(
                         collapsible: true,
                         collapsed: true,
                         items: [
-                            {text: "存储", link: "/blogs/linux/storage"},
+                            {text: "存储", items: [
+                                    {text: "分区", link: "/blogs/linux/storage/partition"}
+                                ]
+                            },
                             {text: "网络", link: "/blogs/linux/network"},
                             {text: "权限", link: "/blogs/linux/permission"},
                             {text: "下载 yum 的离线安装包", link: "/blogs/linux/download-yum"},
