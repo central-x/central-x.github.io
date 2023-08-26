@@ -494,7 +494,8 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "存储", items: [
-                                    {text: "分区", link: "/blogs/linux/storage/partition"}
+                                    {text: "分区", link: "/blogs/linux/storage/partition"},
+                                    {text: "文件系统", link: "/blogs/linux/storage/filesystem"}
                                 ]
                             },
                             {text: "网络", link: "/blogs/linux/network"},
