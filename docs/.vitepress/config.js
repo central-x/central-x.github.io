@@ -493,7 +493,8 @@ export default withMermaid(
                         collapsible: true,
                         collapsed: true,
                         items: [
-                            {text: "存储", items: [
+                            {
+                                text: "存储", items: [
                                     {text: "分区", link: "/blogs/linux/storage/partition"},
                                     {text: "文件系统", link: "/blogs/linux/storage/filesystem"},
                                     {text: "挂载", link: "/blogs/linux/storage/mount"},
@@ -502,11 +503,14 @@ export default withMermaid(
                                     {text: "NFS", link: "/blogs/linux/storage/nfs"}
                                 ]
                             },
-                            {text: "网络", link: "/blogs/linux/network"},
+                            {
+                                text: "网络", items: [
+                                    {text: "iptable", link: "/blogs/linux/network/iptable"},
+                                ]
+                            },
                             {text: "权限", link: "/blogs/linux/permission"},
                             {text: "下载 yum 的离线安装包", link: "/blogs/linux/download-yum"},
                             {text: "Linux 常用命令", link: "/blogs/linux/command"},
-                            {text: "iptable 的使用", link: "/blogs/linux/iptables"},
                             {text: "SSH Keys", link: "/blogs/linux/ssh-keys"},
                         ]
                     },
