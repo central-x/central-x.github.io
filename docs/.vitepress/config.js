@@ -498,7 +498,8 @@ export default withMermaid(
                                     {text: "文件系统", link: "/blogs/linux/storage/filesystem"},
                                     {text: "挂载", link: "/blogs/linux/storage/mount"},
                                     {text: "RAID", link: "/blogs/linux/storage/raid"},
-                                    {text: "LVM", link: "/blogs/linux/storage/lvm"}
+                                    {text: "LVM", link: "/blogs/linux/storage/lvm"},
+                                    {text: "NFS", link: "/blogs/linux/storage/nfs"}
                                 ]
                             },
                             {text: "网络", link: "/blogs/linux/network"},
