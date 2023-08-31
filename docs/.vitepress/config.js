@@ -508,7 +508,11 @@ export default withMermaid(
                                     {text: "iptable", link: "/blogs/linux/network/iptable"},
                                 ]
                             },
-                            {text: "权限", link: "/blogs/linux/permission"},
+                            {
+                                text: "权限", items: [
+                                    {text: "文件", link: "/blogs/linux/permission/file"},
+                                ]
+                            },
                             {text: "下载 yum 的离线安装包", link: "/blogs/linux/download-yum"},
                             {text: "Linux 常用命令", link: "/blogs/linux/command"},
                             {text: "SSH Keys", link: "/blogs/linux/ssh-keys"},
