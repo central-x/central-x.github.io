@@ -500,7 +500,8 @@ export default withMermaid(
                                     {text: "挂载", link: "/blogs/linux/storage/mount"},
                                     {text: "RAID", link: "/blogs/linux/storage/raid"},
                                     {text: "LVM", link: "/blogs/linux/storage/lvm"},
-                                    {text: "NFS", link: "/blogs/linux/storage/nfs"}
+                                    {text: "NFS", link: "/blogs/linux/storage/nfs"},
+                                    {text: "磁盘缓存", link: "/blogs/linux/storage/cache"}
                                 ]
                             },
                             {
