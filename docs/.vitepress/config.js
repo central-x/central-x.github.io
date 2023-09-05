@@ -459,6 +459,7 @@ export default withMermaid(
                                     {text: "修改证书有效期", link: "/blogs/k8s/tips/kubeadm-certs"},
                                     {text: "Ingress 代理 https", link: "/blogs/k8s/tips/ingress-https"},
                                     {text: "Nginx 代理 Ingress", link: "/blogs/k8s/tips/nginx-ingress"},
+                                    {text: "Bash 自动补全", link: "/blogs/k8s/tips/bash-completion"},
                                 ]
                             }
                         ]
