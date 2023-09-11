@@ -482,12 +482,12 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "搭建 Docker 环境", link: "/blogs/docker/setup"},
-                            {text: "构建多指令集镜像", link: "/blogs/docker/multi-arch"},
+                            {text: "Docker Buildx", link: "/blogs/docker/buildx"},
+                            {text: "Docker Buildx Bake", link: "/blogs/docker/buildx-bake"},
                             {text: "搭建 DNS 服务", link: "/blogs/docker/dns"},
                             {text: "搭建 Clash 代理", link: "/blogs/docker/clash"},
                             {text: "搭建 Nexus3", link: "/blogs/docker/nexus3"},
                             {text: "代理下载镜像", link: "/blogs/docker/pull-image-from-proxy"},
-                            {text: "Docker Bake", link: "/blogs/docker/bake"},
                         ]
                     },
                     {
