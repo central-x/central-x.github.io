@@ -1,4 +1,4 @@
-# Docker Bake
+# Docker Buildx Bake
 ## 概述
 &emsp;&emsp;一般情况下，我们通常是使用 `docker build` 命令去构建 Docker 镜像。但是随着镜像的完善，我们需要面对多指令集的问题，于是就需要使用 `docker buildx` 命令去构建支持多指令集的 Docker 镜像[[链接](/blogs/docker/multi-arch)]。再随着微服务项目的发展，我们每次为项目构建 Docker 镜像时，不仅要考虑多指令集的问题，还要考虑如何进行整体镜像构建。
 
@@ -658,7 +658,7 @@ $ TAG=$(git rev-parse --short HEAD) docker buildx bake --print webapp
 
 - **准备构建环境（QEMU）**
 
-&emsp;&emsp;`tonistiigi/binfmt` 镜像主要用于交叉编译。该镜像提供了多种指命集的编译模拟器，因此在该镜像中可以编译出多种指令集的镜像。
+&emsp;&emsp;`tonistiigi/binfmt` 镜像主要用于交叉编译。该镜像提供了多种指令集的编译模拟器，因此在该镜像中可以编译出多种指令集的镜像。
 
 ```bash
 $ docker run --rm --privileged tonistiigi/binfmt:latest --install all

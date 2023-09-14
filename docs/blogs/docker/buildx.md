@@ -1,53 +1,46 @@
-# 构建多指令集镜像
+# Docker Buildx
 ## 概述
-&emsp;&emsp;目前，CPU 有多种指令集类型。有些软件（特别是使用 C、C++ 语言的）需要在不同的指令集硬件上运行时，需要编译成对应的可执行文件才行。而 Docker 镜像也面临着这种问题。
+&emsp;&emsp;Buildx 是 Docker 推出的高层级镜像构建工具，用于替换早期的镜像构建工具 `docker build`。在后面较新版本的 Docker Desktop 和 Docker Engine（23.0+）中，在执行 `docker build` 命令时，实际上也是通过 Buildx 工具来完成构建过程的。
 
-&emsp;&emsp;为此，Docker 推出了 buildx 工具，可以将镜像打包为多指令集镜像，开发者在不同指令集的硬件上拉取镜像时，就可以拉取对应的镜像。
+&emsp;&emsp;Buildx 不仅仅是 `build` 的升级版，而且包含了一系列工具去创建和管理构建工具。
 
-## 步骤
-### 拉取编译镜像
-&emsp;&emsp;在编译时，宿主机一般就只是某一种架构（如 x86），因此在一个宿主机是没办法编译出所有架构的，因此可以借助 Docker 的镜像来提供编译环境，做到类似交叉编译的效果。
+&emsp;&emsp;使用 Buildx 时，一般遵循以下流程：
+
+![](./assets/buildx.svg)
+
+## 构建镜像
+### 准备构建环境（QEMU）
+&emsp;&emsp;目前，市面上常用的 CPU 有多种指令集类型。有些软件（特别是使用 C、C++ 语言编写的）需要将源代码编译成对应指令集的可执行文件才可以对应的 CPU 上运行。而 Docker 镜像也面临着这种问题。
+
+&emsp;&emsp;在编译镜像时，如果这个镜像需要支持多指令集类型，那么就需要在各种指令集的编译环境下完成编译。`tonistiigi/binfmt` 镜像提供了多种指令集的编译摸拟器，因此可以在该镜像中编译出多种指令集的镜像。
 
 ```bash
-# 安装跨平台模拟器 QUME，后续构建时都需要依赖它
 # 本命令一般情况下只需要执行一次
 $ docker run --rm --privileged tonistiigi/binfmt:latest --install all
 ```
 
-### 编写 Dockerfile
-&emsp;&emsp;在编写 Dockerfile 时，需要通过 --platform=$TARGETPLATFORM 来获取当前编译环境的架构信息。这里以编译一个 java 的 Docker 镜像为例子。
-
-```docker
-FROM --platform=$TARGETPLATFORM centos:7.9.2009 as builder
-# 通过这个参数来获取当前架构信息
-# 一般取值为 linux/amd64、linux/arm64 这样
-ARG TARGETPLATFORM
-ENV LANG C.UTF-8
-
-MAINTAINER Alan Yeh "alan@yeh.cn"
-
-RUN rm -rf /usr/share/nginx/html
-
-ADD ./html.tar.gz /usr/share/nginx
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-### 构建并推送镜像
-&emsp;&emsp;在 Dockerfile 的相同目录下，执行以下命令，构建多指令集的镜像，并将其推送到 DockerHub。
+### 准备构建环境（Buildx）
+&emsp;&emsp;在执行 buildx 命令前，我们需要准备 buildx 的构建空间[[链接](https://docs.docker.com/engine/reference/commandline/buildx_create/)]。在创建这个构建空间时，我们需要指定相关驱动、配置信息等。
 
 ```bash
-# 在构建前，需要登录一下
-$ docker login
-
-# 新建 Builder 实例
-# 注意，<image-name> 需要更换为待编译的镜像的名称
-$ docker buildx create --use --name=<image-name> \
+$ docker buildx create --use --name=<context-name> \
   --driver docker-container \
   --driver-opt image=moby/buildkit:master \
   --driver-opt network=host
+```
 
+### 登录 Registry
+&emsp;&emsp;如果想在镜像构建完毕后自动推送到指定的镜像仓库，那么需要提前创建会话。
+
+```bash
+# 如果构建目标中包含多个 registry 的 tag，那么每个 registry 都需要执行登录操作
+$ docker login <registry> -u <username> -p <password>
+```
+
+### 执行构建
+&emsp;&emsp;完成以上准备工作后，即可开始构建镜像。
+
+```bash
 # 构建镜像并推送
 # 这里指定了需要构建 8 种指令集的镜像
 # 需要注意的时，这里需要参考 Dockerfile-alpine 的基础镜像可以支持哪些指令集。如果基础镜像不支持，那么你的镜像也是没办法支持的
@@ -59,13 +52,27 @@ $ docker buildx build \
   -t <repository>/<image-name>:latest \
   -t <repository>/<image-name>:<version> \
   . --push
-
-# 完成构建后，删除 Buidler 实例
-$ docker buildx rm <image-name>
 ```
 
-### 构建并推送镜像（私有仓库）
-&emsp;&emsp;如果你搭建的 Docker Registry 没办法提供 https 协议访问，那么使用上面的方式构建镜像时，会提示访问镜像仓库失败的问题。在这种情况下，我们需要提前创建构建镜像的配置文件 `/etc/buildkitd.toml`，文件内容如下：
+### 退出 Registry
+&emsp;&emsp;本步骤不是必要步骤，但是在做自动化构建时，应及时退出 Registry 以保证仓库的安全。
+
+```bash
+$ docker logout <registry>
+```
+
+### 清理构建资源
+&emsp;&emsp;完成构建之后，可以将相关构建资源清理和释放。
+
+```bash
+$ docker buildx rm <context-name>
+```
+
+## 常见问题
+### 无法推送到私有仓库
+&emsp;&emsp;一般情况下，为了方便工作及保证应用安全，我们不会将公司的应用发布到公有镜像托管服务，如 DockerHub、GitHub Packages。市面上有许多支持私有化部署的 Docker 镜像托管服务，如 Nexus3、Harber 等。如果你搭建的私有化镜像托管服务没有办法提供 https 协议访问时，那么使用上面的方式构建镜像时可能会提供镜像仓库访问失败的问题。
+
+&emsp;&emsp;在这种情况下，我们需要提前创建构建环境的配置文件 `/etc/buildkitd.toml`，文件内容如下：
 
 ```toml
 debug = true
@@ -82,24 +89,12 @@ debug = true
   insecure = true
 ```
 
-&emsp;&emsp;构建镜像时，需要使用以下命令来构建：
+&emsp;&emsp;在准备构建环境（Buildx）环节添加 `--config` 标识并指定上面的配置文件即可。
 
 ```bash
-# 新建 Builder 实例
-$ docker buildx create --use --name=<image-name> \
+$ docker buildx create --use --name=<context-name> \
   --driver docker-container \
   --driver-opt image=moby/buildkit:master \
   --driver-opt network=host \
   --config /etc/buildkitd.toml
-
-# 构建镜像并推送
-# 需要注意的时，这里需要参考 Dockerfile-alpine 的基础镜像可以支持哪些指令集。如果基础镜像不支持，那么你的镜像也是没办法支持的
-$ docker buildx build \
-  --platform linux/amd64,linux/arm64 \
-  -t <repository>/<image-name>:latest \
-  -t <repository>/<image-name>:<version> \
-  . --push
-
-# 完成构建后，删除 Buidler 实例
-$ docker buildx rm clash-dashboard
 ```
