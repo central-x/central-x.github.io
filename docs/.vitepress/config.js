@@ -482,6 +482,8 @@ export default withMermaid(
                         collapsed: true,
                         items: [
                             {text: "搭建 Docker 环境", link: "/blogs/docker/setup"},
+                            {text: "入门", link: "/blogs/docker/primer"},
+                            {text: "Dockerfile", link: "/blogs/docker/dockerfile"},
                             {text: "Docker Buildx", link: "/blogs/docker/buildx"},
                             {text: "Docker Buildx Bake", link: "/blogs/docker/buildx-bake"},
                             {text: "搭建 DNS 服务", link: "/blogs/docker/dns"},
