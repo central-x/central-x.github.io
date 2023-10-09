@@ -1,6 +1,6 @@
 # Docker Buildx Bake
 ## 概述
-&emsp;&emsp;一般情况下，我们通常是使用 `docker build` 命令去构建 Docker 镜像。但是随着镜像的完善，我们需要面对多指令集的问题，于是就需要使用 `docker buildx` 命令去构建支持多指令集的 Docker 镜像[[链接](/blogs/docker/multi-arch)]。再随着微服务项目的发展，我们每次为项目构建 Docker 镜像时，不仅要考虑多指令集的问题，还要考虑如何进行整体镜像构建。
+&emsp;&emsp;一般情况下，我们通常是使用 `docker build` 命令去构建 Docker 镜像。但是随着镜像的完善，我们需要面对多指令集的问题，于是就需要使用 `docker buildx` 命令去构建支持多指令集的 Docker 镜像[[链接](/blogs/docker/buildx)]。再随着微服务项目的发展，我们每次为项目构建 Docker 镜像时，不仅要考虑多指令集的问题，还要考虑如何进行整体镜像构建。
 
 &emsp;&emsp;这时，`docker buildx bake` [[链接](https://docs.docker.com/build/bake/)]工具应运而生。
 
