@@ -1,12 +1,10 @@
 # Dockerfile
 ## 概述
-&emsp;&emsp;Docker 镜像是 Docker 运行应用程序的基础，而 Dockerfile 用于描述 Docker 镜像的构建过程。Dockerfile
-文件里面保存了镜像编译过程中用到的所有指令。
+&emsp;&emsp;镜像(Image)是 Docker 运行可执行文件的基础，而 Dockerfile 用于描述镜像的构建过程，决定了可执行文件的运行环境和执行方式。Dockerfile 文件里面保存了镜像编译过程中用到的所有指令。
 
 &emsp;&emsp;本文档用于介绍编写 Dockerfile 文件时常用的指令。
 
-&emsp;&emsp;完成 Dockerfile 文件的编写后，可以通过 Docker Buildx [[链接](/blogs/docker/buildx)]或 Docker Buildx
-Bake [[链接](/blogs/docker/buildx-bake)]工具将镜像构建出来。
+&emsp;&emsp;完成 Dockerfile 文件的编写后，可以通过 Docker Buildx [[链接](/blogs/docker/buildx)]或 Docker Buildx Bake [[链接](/blogs/docker/buildx-bake)]工具将镜像构建出来。
 
 ## 格式
 &emsp;&emsp;我们来看看一个简单的 Dockerfile 示例：
@@ -27,8 +25,7 @@ CMD ["nginx", "-g", "daemon off;"]
 
 ## 指令
 ### FROM
-&emsp;&emsp;`FROM` 指令会初始化一个新的构建阶段，并为这个构建阶段设置基础镜像（Base Image）作为接下来的指令的运行环境。因此，一个有效的
-Dockerfile 文件必须以 `FROM` 指令开头。
+&emsp;&emsp;`FROM` 指令会初始化一个新的构建阶段，并为这个构建阶段设置基础镜像（Base Image）作为接下来的指令的运行环境。因此，一个有效的 Dockerfile 文件必须以 `FROM` 指令开头。
 
 ```txt
 FROM [--platform=<platform>] <image>[:<tag>|@<digest>] [AS <name>]
@@ -43,10 +40,8 @@ ARG IMAGE_VERSION=latest
 FROM base:${IMAGE_VERSION}
 ```
 
-- 在一个 Dockerfile 文件中，`FROM` 指令可以出现多次，用于多阶段构建。最后编译出来的镜像只与最后的 `FROM`
-  指令有前，前面的 `FROM` 指令主要用于辅助构建。
-- 可以通过 `AS name` 的方式为 `FROM`
-  指令创建的构建阶段命名。后续的指令可以通过这个名称引用该构建阶段，如 `COPY --from=name>` 从指定阶段中复制文件到当前构建阶段。
+- 在一个 Dockerfile 文件中，`FROM` 指令可以出现多次，用于多阶段构建。最后编译出来的镜像只与最后的 `FROM` 指令有前，前面的 `FROM` 指令主要用于辅助构建。
+- 可以通过 `AS name` 的方式为 `FROM` 指令创建的构建阶段命名。后续的指令可以通过这个名称引用该构建阶段，如 `COPY --from=name>` 从指定阶段中复制文件到当前构建阶段。
 - `tag` 和 `digest` 都是可选项。如果两者都没有指定，则默认使用 `latest` 标签。
 - 如果镜像存在多个指令集，可以通过 `--platform` 选项指定镜像的指令集。如果未指定该选项，则默认使用构建时当前的指令集类型。
 
@@ -72,13 +67,9 @@ RUN /bin/bash -c 'source $HOME/.bashrc && echo $HOME'
 RUN ["/bin/bash", "-c", "echo hello"]
 ```
 
-&emsp;&emsp;与 shell 格式命令不同的地方，exec 不会通过 shell 执行，这个意味着普通 shell 中的命令处理过程不会发生成 exec
-上。如 `RUN ["echo", "$HOME"]` 命令不会将 `$HOME` 替换为环境变量的值。如果你想 exec 格式的命令也可以处理 shell
-格式的命令，可以使用 `RUN ["sh", "-c", "echo $HOME"]` 这样的方式执行命令。这个替换过程是由 shell 执行的，而非 docker。
+&emsp;&emsp;与 shell 格式命令不同的地方，exec 不会通过 shell 执行，这个意味着普通 shell 中的命令处理过程不会发生成 exec 上。如 `RUN ["echo", "$HOME"]` 命令不会将 `$HOME` 替换为环境变量的值。如果你想 exec 格式的命令也可以处理 shell 格式的命令，可以使用 `RUN ["sh", "-c", "echo $HOME"]` 这样的方式执行命令。这个替换过程是由 shell 执行的，而非 docker。
 
-&emsp;&emsp;如果 `RUN` 命令没有变动，那么 `RUN` 命令会在接下来的构建中被缓存。如 `RUN apt-get dist-upgrade -y`
-命令会在下一次构建中继续使用，而非每次构建都重复执行，这将大大加速构建速度。如果你不想使用缓存，可以在构建时使用 `--no-cache`
-标识，如 `docker build --no-cache`。
+&emsp;&emsp;如果 `RUN` 命令没有变动，那么 `RUN` 命令会在接下来的构建中被缓存。如 `RUN apt-get dist-upgrade -y` 命令会在下一次构建中继续使用，而非每次构建都重复执行，这将大大加速构建速度。如果你不想使用缓存，可以在构建时使用 `--no-cache` 标识，如 `docker build --no-cache`。
 
 > 在 Dockerfile 最佳实践[[链接](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)]中查看更多关于 RUN 的推荐用法。
 
@@ -89,9 +80,7 @@ RUN ["/bin/bash", "-c", "echo hello"]
 - `CMD ["param1", "param2"]`: 作为 ENTRYPOINT 的默认参数
 - `CMD command param1 param2`: 以 shell 格式执行
 
-&emsp;&emsp;`CMD`
-指令的主要作用是为容器运行提供默认值。这些默认值包括可执行文件、相关参数。如果没有包含可执行文件，那么你还需要指定 `ENTRYPOINT`
-指令。
+&emsp;&emsp;`CMD` 指令的主要作用是为容器运行提供默认值。这些默认值包括可执行文件、相关参数。如果没有包含可执行文件，那么你还需要指定 `ENTRYPOINT` 指令。
 
 &emsp;&emsp;如果 `CMD` 指令用于向 `ENTRYPOINT` 指令传递默认参数，那么这两个指令都应该使用 JSON 数组格式。
 
@@ -131,16 +120,13 @@ $ docker image inspect --format='{{json .Config.Labels}}' <image-name>
 ```
 
 ### EXPOSE
-&emsp;&emsp;`EXPOSE` 指令用于通知 Docker 容器在运行时将监控指定的网络端口。你同时可以指定端口是监听 TCP 还是
-UDP。如果不指定协议，则默认监听 TCP 协议。`EXPOSE` 指令的格式如下：
+&emsp;&emsp;`EXPOSE` 指令用于通知 Docker 容器在运行时将监控指定的网络端口。你同时可以指定端口是监听 TCP 还是 UDP。如果不指定协议，则默认监听 TCP 协议。`EXPOSE` 指令的格式如下：
 
 ```dockerfile
 EXPOSE <port> [<port>/<protoccol>...]
 ```
 
-&emsp;&emsp;`EXPOSE`
-指令并不会正真监听或暴露一个端口，该指令的作用主要用于给使用这个镜像的用户提供文档性的指引，告诉用户本镜像将会监听哪些端口。正真暴露端口的时候，是通过在执行 `docker run`
-命令时添加 `-p` 参数完成的。
+&emsp;&emsp;`EXPOSE` 指令并不会正真监听或暴露一个端口，该指令的作用主要用于给使用这个镜像的用户提供文档性的指引，告诉用户本镜像将会监听哪些端口。正真暴露端口的时候，是通过在执行 `docker run` 命令时添加 `-p` 参数完成的。
 
 ```dockerfile
 # 以 udp 协议监听 80 端口
@@ -152,8 +138,7 @@ EXPOSE 80/udp
 ```
 
 ### ENV
-&emsp;&emsp;`ENV` 指令用通过用键 `<key>` 值 `<value>` 对的方式声明环境变量。这个环境变量会被接下来的指令所使用。`ENV`
-指令的格式如下：
+&emsp;&emsp;`ENV` 指令用通过用键 `<key>` 值 `<value>` 对的方式声明环境变量。这个环境变量会被接下来的指令所使用。`ENV` 指令的格式如下：
 
 ```dockerfile
 ENV MY_NAME="John Doe"
@@ -165,13 +150,11 @@ ENV MY_NAME="John Doe" MY_DOG=Rex\ The\ Dog \
     MY_CAT=fluffy
 ```
 
-&emsp;&emsp;使用 `ENV` 指令声明的环境变量，会持久化到镜像的运行时。通过 `docker inspect`
-命令查看镜像的环境变量，在运行镜像时可以通过 `docker run --env <key>=<value>` 的方式修改环境变量。
+&emsp;&emsp;使用 `ENV` 指令声明的环境变量，会持久化到镜像的运行时。通过 `docker inspect` 命令查看镜像的环境变量，在运行镜像时可以通过 `docker run --env <key>=<value>` 的方式修改环境变量。
 
 &emsp;&emsp;在构建过程中，构建阶段（stage）会继承所有的父阶段或先祖阶段使用 `ENV` 指令声明的环境变量。
 
-&emsp;&emsp;环境变量的持化久可能会引起不必要的副作用，比如 `ENV DEBIAN_FRONTEND=noninteractive` 会修改 `apt-get`
-的行为，这会造成使该镜像的用户产生疑惑。如果一个环境变量只在构建阶段使用，在运行时不需要的话，可以通过以下方式替换：
+&emsp;&emsp;环境变量的持化久可能会引起不必要的副作用，比如 `ENV DEBIAN_FRONTEND=noninteractive` 会修改 `apt-get` 的行为，这会造成使该镜像的用户产生疑惑。如果一个环境变量只在构建阶段使用，在运行时不需要的话，可以通过以下方式替换：
 
 ```dockerfile
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ...
@@ -190,9 +173,7 @@ ADD [--chown=<user>:<group>] [--chmod=<perms>] [--checksum=<checksum>] <src>... 
 
 > 注意，--chown 和 --chmod 功能仅支持 Linux 基础的镜像，不支持 Windows 基础的镜像。
 
-&emsp;&emsp;`ADD` 指令可以用于添加文件、文件夹或远程 URL。如果 `<src>`
-资源是本地文件或文件夹，应使用构建上下文的相对路径。`<src>` 还支持 Go 语言的
-filepath.Match[[链接](https://pkg.go.dev/path/filepath#Match)]的匹配规则。
+&emsp;&emsp;`ADD` 指令可以用于添加文件、文件夹或远程 URL。如果 `<src>` 资源是本地文件或文件夹，应使用构建上下文的相对路径。`<src>` 还支持 Go 语言的 filepath.Match[[链接](https://pkg.go.dev/path/filepath#Match)]的匹配规则。
 
 ```dockerfile
 # 添加所有以 hom 开头的文件
@@ -212,10 +193,7 @@ ADD test.txt relativeDir/
 ADD test.txt /absoluteDir/
 ```
 
-&emsp;&emsp;除非特别指定了 `--chown`，所有添加的文件、文件夹都是以 UID 为 0 的用户、GID 为 0 的分组身分创建的。`--chown`
-参数支持指定用户名（username）或分组名（groupname）字符串，或直接使用 UID、GID
-数字以两者的任意组合。如果是通过用户名（username）或分组名（groupname）来指定，则容器会通过 `/etc/passwd` 和 `/etc/group`
-文件将用户名和分组名翻译成对应的 UID 或 GID。以下的 `--chown` 的使用方法都是正确的：
+&emsp;&emsp;除非特别指定了 `--chown`，所有添加的文件、文件夹都是以 UID 为 0 的用户、GID 为 0 的分组身分创建的。`--chown` 参数支持指定用户名（username）或分组名（groupname）字符串，或直接使用 UID、GID 数字以两者的任意组合。如果是通过用户名（username）或分组名（groupname）来指定，则容器会通过 `/etc/passwd` 和 `/etc/group` 文件将用户名和分组名翻译成对应的 UID 或 GID。以下的 `--chown` 的使用方法都是正确的：
 
 ```dockerfile
 ADD --chown=55:mygroup files* /somedir/
@@ -225,23 +203,17 @@ ADD --chown=10:11 files* /somedir/
 ADD --chown=myuser:mygroup files* /somedir/
 ```
 
-&emsp;&emsp;如果在容器里找到不到 `/etc/passwd` 和 `/etc/group` 文件，或在这文件里面找到 `--chown` 指定的名称，`ADD`
-指令将执行失败。直接使用 UID、GID 不会依赖和查找上述两个文件。
+&emsp;&emsp;如果在容器里找到不到 `/etc/passwd` 和 `/etc/group` 文件，或在这文件里面找到 `--chown` 指定的名称，`ADD` 指令将执行失败。直接使用 UID、GID 不会依赖和查找上述两个文件。
 
-&emsp;&emsp;当 `<src>` 是远程文件 URL 时，下载回来的文件将被授到 `600` 权限。如果远程文件 URL 返回了 `Last-Modified`
-响应头，那么这个时间戳将作为文件的 `mtime` 值。
+&emsp;&emsp;当 `<src>` 是远程文件 URL 时，下载回来的文件将被授到 `600` 权限。如果远程文件 URL 返回了 `Last-Modified` 响应头，那么这个时间戳将作为文件的 `mtime` 值。
 
 &emsp;&emsp;除了以上内容，`ADD` 指令还遵循以下规则：
 
-- `<src>` 路径必须在构建上下文内，这意味着不支持 `ADD ../something /something` 这种操作。这是因为 `docker build`
-  的第一个步骤就是将上下文里面的文件复制到 docker 的守护进程中，然后再执行构建操作；
-- 如果 `<src>` 是一个 URL，并且 `<dest>`以 `/` 结束，那么将会从 URL 中去推断文件名并下载到 `<dest>/<filename>`
-  。例如 `ADD http://example.com/test.txt /workspace/` 将会创建 `/workspace/test/txt`；
+- `<src>` 路径必须在构建上下文内，这意味着不支持 `ADD ../something /something` 这种操作。这是因为 `docker build` 的第一个步骤就是将上下文里面的文件复制到 docker 的守护进程中，然后再执行构建操作；
+- 如果 `<src>` 是一个 URL，并且 `<dest>`以 `/` 结束，那么将会从 URL 中去推断文件名并下载到 `<dest>/<filename>`。例如 `ADD http://example.com/test.txt /workspace/` 将会创建 `/workspace/test/txt`；
 - 如果 `<src>` 是一个文件夹，那么整个文件夹包括文件元数据将会被完整拷贝（不包括 `<src>` 的文件元数据）；
-- 如果 `<src>` 是一个本地 tar 压缩包（常见的压缩格式，如 identity,gzip,bzip2 或 xz），那么在添加时将会被自动解压成文件夹。远程
-  URL 不会被自动解压；
-- 如果 `<src>` 是其它任意类型的文件，都只会只拷贝文件的数据而不拷贝文件的元数据。如果 `<dest>` 以 `/`
-  结束，那么将会把文件复制到 `<dest>/<src.filename>`；
+- 如果 `<src>` 是一个本地 tar 压缩包（常见的压缩格式，如 identity,gzip,bzip2 或 xz），那么在添加时将会被自动解压成文件夹。远程 URL 不会被自动解压；
+- 如果 `<src>` 是其它任意类型的文件，都只会只拷贝文件的数据而不拷贝文件的元数据。如果 `<dest>` 以 `/` 结束，那么将会把文件复制到 `<dest>/<src.filename>`；
 - 如果多个 `<src>` 被指定，无论是直接指定还是通过匹配符匹配，`<dest>` 必须是一个文件夹，也就是必须以 `/` 结束；
 - 如果 `<dest>` 没有以 `/` 结束，那么将认为这是一个常规文件，因此 `<src>` 的数据会直接写入到 `<dest>` 中；
 - 如果 `<dest>` 不存在，那么在复制的过程中会自动创建对应的文件夹及文件。
@@ -270,18 +242,12 @@ ENTRYPOINT command param1 param2
 ENTRYPOINT ["executable", "param1", "param2"]
 ```
 
-&emsp;&emsp;`docker run <image>` 的命令行参数会被追加到 exec 格式的 `ENTRYPOINT`，并覆盖所有 `CMD`
-传递的参数。如 `docker run <image> -d` 命令会将 `-d` 参数传递给 `ENTRYPOINT`。通过 `docker run --entrypoint`
-可以在运行时覆盖 `ENTRYPOINT` 指令。
+&emsp;&emsp;`docker run <image>` 的命令行参数会被追加到 exec 格式的 `ENTRYPOINT`，并覆盖所有 `CMD` 传递的参数。如 `docker run <image> -d` 命令会将 `-d` 参数传递给 `ENTRYPOINT`。通过 `docker run --entrypoint` 可以在运行时覆盖 `ENTRYPOINT` 指令。
 
-&emsp;&emsp;如果使用的是 shell 格式的 `ENTRYPOINT` 指令，那么 `CMD` 或 `docker run` 命令的参数将不会被传递给 `ENTRYPOINT`
-。除此之外，使用 shell 格式的 `ENTRYPOINT` 最终是以 `/bin/sh -c`
-的方式去运行程序的，这将导致程序无法接收信号量（signals）。这意味着可执行文件不会成为容器 `PID 1` 的进程，因此也就无法接收到
-Unix 信号，如可执行文件无法接收到 `docker stop <container>` 触发的 `SIGTERM` 信号量。
+&emsp;&emsp;如果使用的是 shell 格式的 `ENTRYPOINT` 指令，那么 `CMD` 或 `docker run` 命令的参数将不会被传递给 `ENTRYPOINT` 。除此之外，使用 shell 格式的 `ENTRYPOINT` 最终是以 `/bin/sh -c` 的方式去运行程序的，这将导致程序无法接收信号量（signals）。这意味着可执行文件不会成为容器 `PID 1` 的进程，因此也就无法接收到 Unix 信号，如可执行文件无法接收到 `docker stop <container>` 触发的 `SIGTERM` 信号量。
 
 #### exec 格式
-&emsp;&emsp;你可以使用 exec 格式的 `ENTRYPOINT` 去设置那些几乎固定的命令与参数去运行容器，然后再通过 `CMD`
-去设置那些容易变动的参数，如：
+&emsp;&emsp;你可以使用 exec 格式的 `ENTRYPOINT` 去设置那些几乎固定的命令与参数去运行容器，然后再通过 `CMD` 去设置那些容易变动的参数，如：
 
 ```dockerfile
 FROM ubuntu
@@ -464,8 +430,7 @@ MiB Swap:   1024.0 total,   1024.0 free,      0.0 used.   1639.8 avail Mem
     6 root      20   0    5956   3188   2768 R   0.0   0.2   0:00.00 top
 ```
 
-&emsp;&emsp;此时，执行 `docker stop test` 命令关闭容器时，会发现进程无法干净利落（超过了
-10s）地被关闭，而是因为操作超时被发送 `SIGKILL` 信号量继而被强制杀死进程。
+&emsp;&emsp;此时，执行 `docker stop test` 命令关闭容器时，会发现进程无法干净利落（超过了 10s）地被关闭，而是因为操作超时被发送 `SIGKILL` 信号量继而被强制杀死进程。
 
 ```bash
 $ docker exec -it test ps waux
