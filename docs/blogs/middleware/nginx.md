@@ -1,6 +1,6 @@
-# Nginx 的安装和使用
+# Nginx
 ## 概述
-&emsp;&emsp;记不住，写篇笔记。
+&emsp;&emsp;Nginx 是一个轻量级的高性能 HTTP 反向代理服务器，同时它也是一个通用类型的代理服务器，支持绝大部份协议，如 TCP、UDP、SMTP、HTTP、HTTPS 等。Nginx 是目前负载均衡技术中的主流方案，绝大多数的项目都会使用它。
 
 ## 安装步骤
 ### CentOS7
@@ -34,6 +34,26 @@ $ brew services start nginx
 # 获取 Nginx 配置文件位置
 $ nginx -t
 ```
+
+## 常用命令
+
+```bash
+# 启动 Nginx
+$ nginx -s
+
+# 检测当前 Nginx 配置是否正确
+$ nginx -t
+
+# 修改配置后重新加载
+$ nginx -s reload
+
+# 优雅关闭
+$ nginx -s quit
+
+# 强制终止
+$ nginx -s stop
+```
+
 
 ## 常用文件路径
 ### 总配置文件（nginx.conf）
@@ -101,8 +121,11 @@ stream {
    - Linux: `/var/log/nginx`
    - Mac: `/usr/local/var/log/nginx`
 
-## 请求代理
+## 常见使用场景
 ### 反向代理
+&emsp;&emsp;正常情况是客户端直接请求目标服务器，由目标服务器直接完成请求处理工作。但如果目标服务器存在多个时，客户就需要通过不同的地址去访问不同的业务系统。加入反向代理服务器后，所有的请求会先经过 Nginx，再由其根据分发规则转发到具体的服务器处理。服务器处理完请求后，将响应返回 Nginx，Nginx 处理后将最终的响应结果返回给客户端。
+
+![](./assets/nginx-reverse-proxy.svg)
 
 ```nginx
 server {
@@ -121,15 +144,15 @@ server {
     proxy_set_header   X-Forwarded-Proto   $scheme;
     proxy_set_header   X-Forwarded-Port    $server_port;
 
-    # 路径匹配到以 / 开头的全部转发到 http://10.10.2.2:8081 服务器上
+    # 路径匹配到以 / 开头的全部转发到 http://192.168.2.50:8081 服务器上
     location / {
-        proxy_pass         http://10.10.2.2:8081; 
+        proxy_pass         http://192.168.2.50:8081; 
         proxy_redirect     default;
     }
 
-    # 路径匹配到以 /app 开头的全部转发到 http://192.168.0.237:8082 服务器上
+    # 路径匹配到以 /app 开头的全部转发到 http://192.168.2.51:8082 服务器上
     location /app {
-        proxy_pass         http://192.168.0.237:8082; 
+        proxy_pass         http://192.168.2.51:8082; 
         proxy_redirect     default;
     }
 } 
