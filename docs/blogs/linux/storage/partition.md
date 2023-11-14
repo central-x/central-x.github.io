@@ -429,7 +429,9 @@ tmpfs                    783M     0  783M    0% /run/user/0
 ## parted
 &emsp;&emsp;由于旧版本的 `fdisk` 命令不支持 GPT 分区（新版本已支持），因此推出了 `parted` 命令。
 
-&emsp;&emsp;与 `fdisk` 命令不同，`parted` 命令的所有操作都是实时的，也就是说你执行了一个分区的命令，那磁盘就已经被分区了。因此在操作 `parted` 时需要非常谨慎。
+&emsp;&emsp;与 `fdisk` 命令不同，`parted` 命令的所有操作都是实时的，也就是说你执行了一个分区的命令，那磁盘就已经被分区了。因此在操作 `parted` 工具时需要非常谨慎。
+
+&emsp;&emsp;`fdisk` 创建的分区使用 `parted` 来管理，或 `parted` 创建的分区使用 `fdisk` 来管理都是允许的。
 
 ```bash
 $ parted /dev/sdb
