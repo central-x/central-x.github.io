@@ -32,21 +32,21 @@ set from=platform@minstone.com.cn
 account 126 {
     set smtp=smtps://smtp.126.com:465
     set smtp-auth=login
-    set smtp-auth-user=12345@126.com
-    set smtp-auth-password=passw0rd
+    set smtp-auth-user=<account>@126.com
+    set smtp-auth-password=<password>
     set ssl-verify=ignore
     set nss-config-dir=/etc/pki/nssdb
-    set from=12345@126.com
+    set from=<acount>@126.com
 }
 
 account qq {
     set smtp=smtp.qq.com
     set smtp-auth=login
-    set smtp-auth-user=12345@qq.com
-    set smtp-auth-password=passw0rd
+    set smtp-auth-user=<account>@qq.com
+    set smtp-auth-password=<password>
     set ssl-verify=ignore
     set nss-config-dir=/etc/pki/nssdb
-    set from=12345@qq.com
+    set from=<acount>@qq.com
 }
 ```
 
@@ -54,7 +54,7 @@ account qq {
 
 ```bash
 # 多帐户时，通过 -A 指定通过哪个帐户发送
-$ echo 'from 126' | mail -A 123 -s 'mail test' 12345@example.com
+$ echo 'from 126' | mail -A qq -s 'mail test' <account>@example.com
 
 # 查看发送队列
 $ mailq

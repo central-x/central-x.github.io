@@ -515,12 +515,18 @@ export default withMermaid(
                             },
                             {
                                 text: "权限", items: [
+                                    {text: "用户和用户组", link: "/blogs/linux/permission/user-and-group"},
                                     {text: "文件", link: "/blogs/linux/permission/file"},
                                 ]
                             },
-                            {text: "下载 yum 的离线安装包", link: "/blogs/linux/download-yum"},
-                            {text: "Linux 常用命令", link: "/blogs/linux/command"},
-                            {text: "SSH Keys", link: "/blogs/linux/ssh-keys"},
+                            {
+                                text: "其它", items: [
+                                    {text: "SSH Keys", link: "/blogs/linux/other/ssh-keys"},
+                                    {text: "发送邮件", link: "/blogs/linux/other/sendmail"},
+                                    {text: "下载 yum 的离线安装包", link: "/blogs/linux/other/download-yum"},
+                                    {text: "Linux 常用命令", link: "/blogs/linux/other/command"},
+                                ]
+                            },
                         ]
                     },
                     {

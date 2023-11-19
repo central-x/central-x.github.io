@@ -216,7 +216,7 @@ $ docker restart 530c034d9167
 ```
 
 ### 更新 yum 源
-&emsp;&emsp;这个包已经内置了 CentOS7 常用的 yum 包。如果后续发现服务器缺失了其它 rpm 包，可以通过我另一篇文档[[链接](/blogs/linux/download-yum)]将相关的 rpm 包下载到本地，然后再上传到服务器上。完成上传之后，其它的服务器就可以像有网络一样正常安装/更新软件了。
+&emsp;&emsp;这个包已经内置了 CentOS7 常用的 yum 包。如果后续发现服务器缺失了其它 rpm 包，可以通过我另一篇文档[[链接](/blogs/linux/other/download-yum)]将相关的 rpm 包下载到本地，然后再上传到服务器上。完成上传之后，其它的服务器就可以像有网络一样正常安装/更新软件了。
 
 &emsp;&emsp;下面的代码是通过通过 shell 脚本上传 rpm 包到 nexus 私库。
 
