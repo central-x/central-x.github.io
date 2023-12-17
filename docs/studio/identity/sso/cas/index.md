@@ -21,8 +21,8 @@
 
 - **接口设计不好**
 
-&emsp;&emsp;比如单点退出接口[[链接](/studio/security/sso/cas/logout)]，竟然是让认证中心请求应用系统的任意接口。参数更是骚包，竟然是发起一个 Content-Type 为 application/x-www-form-urlencoded 的 POST 请求，请求参数名叫 `logoutRequest`，请求参数值竟然是一个 XML！简直雷到我了。
+&emsp;&emsp;比如单点退出接口[[链接](./logout)]，竟然是让认证中心请求应用系统的任意接口。参数更是骚包，竟然是发起一个 Content-Type 为 application/x-www-form-urlencoded 的 POST 请求，请求参数名叫 `logoutRequest`，请求参数值竟然是一个 XML！简直雷到我了。
 
-&emsp;&emsp;又比如服务认证接口[[链接](/studio/security/sso/cas/service-validate)]，是通过请求参数 `format` 来控制响应体的格式的。其实这个用 HTTP 协议里面的请求头 `Accept` 就可以解决了，完全没有必要再加个参数。
+&emsp;&emsp;又比如服务认证接口[[链接](./service-validate)]，是通过请求参数 `format` 来控制响应体的格式的。其实这个用 HTTP 协议里面的请求头 `Accept` 就可以解决了，完全没有必要再加个参数。
 
 &emsp;&emsp;反正个人是比较不喜欢 CAS 协议的，只不过这个协议应用比较广泛，有很多开源的应用系统、类库都支持了这个协议，因此认证中心也实现了这个协议。

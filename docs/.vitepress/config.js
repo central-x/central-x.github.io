@@ -56,7 +56,7 @@ export default withMermaid(
                         {text: "Central Studio", link: "/studio/"},
                         // {text: "Central Dashboard", link: "/studio/dashboard/"},
                         {text: "Central Gateway", link: "/studio/gateway/"},
-                        {text: "Central Security", link: "/studio/security/"},
+                        {text: "Central Identity", link: "/studio/identity/"},
                         {text: "Central Storage", link: "/studio/storage/"},
                         {text: "Central Multicast", link: "/studio/multicast/"},
                         {text: "Central Logging", link: "/studio/logging/"},
@@ -206,48 +206,48 @@ export default withMermaid(
                         collapsible: true,
                         collapsed: true,
                         items: [
-                            {text: "Summary", link: "/studio/security/"},
+                            {text: "Summary", link: "/studio/identity/"},
                             {
                                 text: "REST API",
                                 items: [
-                                    {text: "获取登录选项", link: "/studio/security/api/get-login-option"},
-                                    {text: "获取验证码", link: "/studio/security/api/get-captcha"},
-                                    {text: "登录", link: "/studio/security/api/login"},
-                                    {text: "退出登录", link: "/studio/security/api/logout"},
+                                    {text: "获取登录选项", link: "/studio/identity/api/get-login-option"},
+                                    {text: "获取验证码", link: "/studio/identity/api/get-captcha"},
+                                    {text: "登录", link: "/studio/identity/api/login"},
+                                    {text: "退出登录", link: "/studio/identity/api/logout"},
                                 ]
                             },
                             {
                                 text: "SSO",
                                 items: [
-                                    {text: "Summary", link: "/studio/security/sso/"},
+                                    {text: "Summary", link: "/studio/identity/sso/"},
                                     {
                                         text: "CAS",
                                         items: [
-                                            {text: "Summary", link: "/studio/security/sso/cas/"},
-                                            {text: "登录入口", link: "/studio/security/sso/cas/login"},
-                                            {text: "服务认证", link: "/studio/security/sso/cas/service-validate"},
-                                            {text: "退出登录入口", link: "/studio/security/sso/cas/logout"}
+                                            {text: "Summary", link: "/studio/identity/sso/cas/"},
+                                            {text: "登录入口", link: "/studio/identity/sso/cas/login"},
+                                            {text: "服务认证", link: "/studio/identity/sso/cas/service-validate"},
+                                            {text: "退出登录入口", link: "/studio/identity/sso/cas/logout"}
                                         ]
                                     },
                                     {
                                         text: "OAuth2.0",
                                         items: [
-                                            {text: "Summary", link: "/studio/security/sso/oauth/"},
-                                            {text: "获取授权码", link: "/studio/security/sso/oauth/authorize"},
-                                            {text: "获取访问凭证", link: "/studio/security/sso/oauth/access-token"},
-                                            {text: "获取当前用户信息", link: "/studio/security/sso/oauth/user"}
+                                            {text: "Summary", link: "/studio/identity/sso/oauth/"},
+                                            {text: "获取授权码", link: "/studio/identity/sso/oauth/authorize"},
+                                            {text: "获取访问凭证", link: "/studio/identity/sso/oauth/access-token"},
+                                            {text: "获取当前用户信息", link: "/studio/identity/sso/oauth/user"}
                                         ]
                                     }
                                 ]
                             }
-                            // {text: "Integration", link: "/studio/security/integration"},
+                            // {text: "Integration", link: "/studio/identity/integration"},
                             // {
                             //     text: "Deployment",
                             //     items: [
-                            //         {text: "Summary", link: "/studio/security/deployment/"},
-                            //         {text: "Environment", link: "/studio/security/deployment/environment"},
-                            //         {text: "Steps", link: "/studio/security/deployment/steps"},
-                            //         {text: "FAQ", link: "/studio/security/deployment/faq"}
+                            //         {text: "Summary", link: "/studio/identity/deployment/"},
+                            //         {text: "Environment", link: "/studio/identity/deployment/environment"},
+                            //         {text: "Steps", link: "/studio/identity/deployment/steps"},
+                            //         {text: "FAQ", link: "/studio/identity/deployment/faq"}
                             //     ]
                             // },
                         ]

@@ -8,19 +8,19 @@
 ### 请求方法及地址
 
 ```
-GET {schema}://{ip}:{port}/security/sso/cas/logout
+GET {schema}://{ip}:{port}/identity/sso/cas/logout
 ```
 
 ### 请求参数（Query）
 
-| 参数名  | 类型   | 可空 | 默认值 | 说明                                                                                                          |
-|---------|--------|------|--------|---------------------------------------------------------------------------------------------------------------|
-| service | String | 否   | 无     | &emsp;&emsp;服务地址。URL 格式，认证中心在完成退出登录之后，会重定向回该地址。该服务地址必须已经在租户中心中注册。 |
+| 参数名     | 类型     | 可空 | 默认值 | 说明                                                                |
+|---------|--------|----|-----|-------------------------------------------------------------------|
+| service | String | 否  | 无   | &emsp;&emsp;服务地址。URL 格式，认证中心在完成退出登录之后，会重定向回该地址。该服务地址必须已经在租户中心中注册。 |
 
 ### 请求示例
 
 ```
-GET {schema}://{ip}:{port}/security/sso/cas/logout?service=https%3A%2F%2Fyour.service%2Fsso%2Fcallback
+GET {schema}://{ip}:{port}/identity/sso/cas/logout?service=https%3A%2F%2Fyour.service%2Fsso%2Fcallback
 ```
 
 &emsp;&emsp;注意，这里是指客户端需要重定向到该地址，而不是通过 ajax 访问接口。

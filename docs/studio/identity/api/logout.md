@@ -6,7 +6,7 @@
 ### 请求方法及地址
 
 ```
-GET {schema}://{ip}:{port}/security/api/logout
+GET {schema}://{ip}:{port}/identity/api/logout
 ```
 
 ### 响应示例
