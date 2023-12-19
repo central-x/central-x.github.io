@@ -121,6 +121,18 @@ stream {
    - Linux: `/var/log/nginx`
    - Mac: `/usr/local/var/log/nginx`
 
+### 域名配置文件
+&emsp;&emsp;在上一步中，我们建议不要在总配置文件 `nginx.conf` 中添加路由信息，将路由配置信息放在 `conf.d` 目录下。除了以上要求，建议将不同的域名的路由放在不同的配置文件中，这样可以方便后续的配置管理。如：
+
+```text
+<nginx>
+  ├── nginx.conf                     # 总配置文件
+  └── conf.d
+      ├── 192.168.0.2.conf           # 保存使用 IP 访问服务器的路由信息
+      ├── develop.example.com.conf   # 保存使用 develop.example.com 域名访问服务器的路由信息
+      └── example.com.conf           # 保存使用 example.com 域名访问服务器的路由信息
+```
+
 ## 常见使用场景
 ### 反向代理
 &emsp;&emsp;正常情况是客户端直接请求目标服务器，由目标服务器直接完成请求处理工作。但如果目标服务器存在多个时，客户就需要通过不同的地址去访问不同的业务系统。加入反向代理服务器后，所有的请求会先经过 Nginx，再由其根据分发规则转发到具体的服务器处理。服务器处理完请求后，将响应返回 Nginx，Nginx 处理后将最终的响应结果返回给客户端。
@@ -196,9 +208,63 @@ server {
 
     # 托管 /usr/share/nginx/www 目录下的静态文件
     location / {
-        root /usr/share/nginx/www;
+        # 访问 / 时默认解析首页
         index index.htm index.html;
+        # 静态资源存放的路径
+        root /usr/share/nginx/www;
     }
+}
+```
+
+### 资源压缩
+&emsp;&emsp;在静态文件托管的基础上，可以为静态资源添加压缩选项。压缩后，一方面可以节省带宽资源，另一方面也可以加快响应速度并提升系统整体吞吐。但是压缩需要耗费一定量的服务器 CPU 资源。
+
+&emsp;&emsp;Nginx 提供了三个支持资源压缩的模块，分别是 `ngx_http_gzip_module`、`ngx_http_gzip_static_module`、`ngx_http_gunzip_module`，其中 `ngx_http_gzip_module` 属于内置模块。后续的资源压缩操作都是基于该模块。
+
+| 参数项               | 说明                               | 参数值                                  |
+|-------------------|----------------------------------|--------------------------------------|
+| gzip              | 开启或关闭压缩机制                        | on/off                               |
+| gzip_types        | 根据文件类型选择性开启压缩机制                  | image/png、application/javascript、... |
+| gzip_comp_level   | 设置压缩级别，级别越高压缩效果越好，也越耗性能          | 1~9                                  |
+| gzip_vary         | 设置是否返回 Vary: Accept-Encoding 响应头 | on/off                               |
+| gzip_buffers      | 设置处理压缩请求的缓冲区数量和大小                | 数量 大小，32 16k;                        |
+| gzip_disable      | 针对不同客户端的请求设置是否关闭压缩（一些浏览器不支持压缩）   | 如 "MSIE [1-6]\."                     |
+| gzip_http_version | 指定支持压缩所需要的最低 HTTP 请示版本           | 如 1.1                                |
+| gzip_min_length   | 设置低于指定大小的文件关闭压缩机制                | 如 512k                               |
+| gzip_proxied      | 设置代理请求是否开启压缩                     | off、expired、no-cache、...             |
+
+&emsp;&emsp;`gzip_proxied` 选项可以根据系统的实际情况选择以下选项:
+
+- `off`: 关闭 Nginx 对代理响应结果进行压缩
+- `expired`: 如果响应头中包含 `Cache-Control: no-cache` 信息，则开启压缩
+- `no-cache`: 如果响应头中包含 `Cache-Control: no-store` 信息，则开启压缩
+- `private`: 如果响应头中包含 `Cache-Control: private` 信息，则开启压缩
+- `no_last_modified`: 如果响应头中包含 `Last-Modified` 信息，则开启压缩
+- `no_etag`: 如果响应头中包含 `ETag` 信息，则开启压缩
+- `auth`: 如果响应头中包含 `Authorization` 信息，则开启压缩
+- `any`: 无条件对代理响应结果进行压缩
+
+```nginx
+http {
+    # 开启压缩机制
+    gzip on;
+    # 指定压缩的文件类型
+    gzip_types text/plain application/javascript text/css application/xml text/javascript image/jpeg image/gif image/png;
+    # 设置压缩级别，越高资源消耗越大，但压缩效果越好
+    gzip_comp_level 5;
+    # 在头部中添加 Vary: Accept-Encoding（建议开启）
+    gzip_vary on;
+    # 处理压缩请求的缓冲区数量和大小
+    gzip_buffers 32 16k;
+    # 对于不支持压缩功能的客户端请求不开启压缩机制
+    # 低版本的IE浏览器不支持压缩
+    gzip_disable "MSIE [1-6]\.";
+    # 设置压缩响应所支持的HTTP最低版本
+    gzip_http_version 1.1;
+    # 设置触发压缩的最小阈值
+    gzip_min_length 2k;
+    # 关闭对后端服务器的响应结果进行压缩
+    gzip_proxied off;
 }
 ```
 

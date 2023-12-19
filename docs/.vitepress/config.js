@@ -511,6 +511,7 @@ export default withMermaid(
                             {
                                 text: "网络", items: [
                                     {text: "iptable", link: "/blogs/linux/network/iptables"},
+                                    {text: "firewall", link: "/blogs/linux/network/firewall"},
                                 ]
                             },
                             {
