@@ -1,11 +1,11 @@
 # central-x.com
 
-This site is build with [VitePress](https://vitepress.vuejs.org). Site content is written in markdown format located in `docs`.
+This site is build with [VitePress](https://vitepress.dev). 
 
-Use `yarn install` to install dependencies.
+Use `npm install` to install dependencies.
 
-Use `yarn docs:dev` to boot up dev environment.
+Use `npm run docs:dev` to boot up dev environment.
 
-Use `yarn docs:buid` to generate static html files.
+Use `npm run docs:buid` to generate static html files.
 
-See [VitePress](https://vitepress.vuejs.org) for more information.
+See [VitePress](https://vitepress.dev) for more information.

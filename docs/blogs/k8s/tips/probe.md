@@ -5,7 +5,7 @@
 &emsp;&emsp;不同的探针的主要区别是执行时机与影响不同，但它们的配置都是相同的，如下：
 
 - exec: 命令探针，在容器内执行任意命令，并检查命令的退出状态码。如果状态码返回 0 则探测成功。
-  - exec.command（String[]）: 待执行命令，该命令将在根目录（`/`）下执行。注意，这个命令是通过 exec 来执行，因此 shell 相关功能是不能起作用的。
+  - exec.command（String[]）: 待执行命令，该命令将在根目录（`/`）下执行。注意，这个命令是通过 exec 来执行，因此 shell 相关功能（如通过 `$` 替换环境变量）是不能起作用的。
 - httpGet: Http Get 探针，对容器的 IP 地址（你指定的端口和路径）执行 HTTP GET 请求。如果探测器收到响应，且状态码在 200 ~ 399 区间范围内，则认为探测成功。
   - httpGet.port（IntOrString, required）: 端口名或端口号
   - httpGet.host（String）: 访问该地址时的域名（也可以在 Header 中添加 Host 请求头）
