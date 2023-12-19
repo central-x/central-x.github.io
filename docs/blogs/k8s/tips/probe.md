@@ -14,7 +14,7 @@
     - httpGet.httpHeaders.value (String, required): 请求头值
   - httpGet.path (String): 请求路径
   - httpGet.scheme (String): 请求协议，默认使用 HTTP 协议。
-- tcpSocket: 套接字探针，尝试与容器指定的端口建立 TCP连接。如果连接成功则认为控测成功。
+- tcpSocket: 套接字探针，尝试与容器指定的端口建立 TCP连接。如果连接成功则认为探测成功。
   - tcpSocket.port (IntOrString, required): 端口名或端口号
   - tcpSocket.host (String): 连接时的域名，默认是 Pod 的 IP
 - grpc: gRPC 探针。服务返回 SERVING 状态码表示检查成功
@@ -61,12 +61,12 @@
 
 &emsp;&emsp;若容器没有提供启动探针，则默认启动状态为成功。
 
-&emsp;&emsp;启动探针对于那些持有需要长时间启动的容器的 Pod 较为有用。你可以配置一个单独的配置用于在容器启动时控测，而不是设置一个长间隔的存活探针。设计启动探针时应遵循以下设计原则：
+&emsp;&emsp;启动探针对于那些持有需要长时间启动的容器的 Pod 较为有用。你可以配置一个单独的配置用于在容器启动时探测，而不是设置一个长间隔的存活探针。设计启动探针时应遵循以下设计原则：
 
 - 如果容器的启动时间超过 `initialDelaySeconds + failureThreshold x periodSeconds`，那么建议设置启动探针；
 - 启动探针的探测点一般与存活探针一致；
 - `failureThreshold` 应该设置到足够大的时间，以保证容器能正常启动；
-- 启动探针在成功之前，容器的状态为 NOTREADY，此时 Pod 不会被加入 Endpoint 列表中，因此请求也不会转发给这个 Pod
+- 启动探针在成功之前，容器的状态为 NOTREADY，此时 Pod 不会被加入 Endpoint 列表中，因此请求也不会转发给这个 Pod。其行为与就绪探针一致。
 
 ## 设计
 ### 精简设计
@@ -89,7 +89,7 @@ spec:
       protocol: TCP
     # 启动探针，给应用的启动时间为 (10 + 5 * 10) = 60 秒时间
     # 如果应用在 60 秒内无法完成启动，Kubernetes 将杀死该 Pod 并创建新的 Pod
-    # 因此需要保证应用有充足的时间启动
+    # 因此启动探针应根据应用实际情况调整时间，保证应用有充足的时间启动
     startupProbe:
       httpGet:
         port: http
@@ -100,7 +100,7 @@ spec:
     
     # 存活探针，在启动探针成功一次之后激活
     # 如果应用在 30 秒内都无法响应存活探针的探测，那么 Kubernetes 将杀死该 Pod 并创建新的 Pod
-    # 业务系统需要根据自身对可用性的要求调整探测频率和失败阈值
+    # 应用系统需要根据自身对可用性的要求调整探测频率和失败阈值
     livenessProbe: # HTTP GET 存活探针
       httpGet:
         port: http
@@ -127,7 +127,7 @@ spec:
       protocol: TCP
     # 启动探针，给应用的启动时间为 (10 + 5 * 10) = 60 秒时间
     # 如果应用在 60 秒内无法完成启动，Kubernetes 将杀死该 Pod 并创建新的 Pod
-    # 因此需要保证应用有充足的时间启动
+    # 因此启动探针应根据应用实际情况调整时间，保证应用有充足的时间启动
     startupProbe:
       httpGet:
         port: http
@@ -138,7 +138,7 @@ spec:
     
     # 存活探针，在启动探针成功一次之后激活
     # 如果应用在 120 秒内都无法响应存活探针的探测，那么 Kubernetes 将杀死该 Pod 并创建新的 Pod
-    # 业务系统需要根据自身对可用性的要求调整探测频率和失败阈值
+    # 应用系统需要根据自身对可用性的要求调整探测频率和失败阈值
     livenessProbe: # HTTP GET 存活探针
       httpGet:
         port: http
@@ -149,7 +149,7 @@ spec:
     # 就绪探针，在启动探针成功一次之后激活
     # 如果启用在 30 秒内都无法响应就绪探针的探测，那么 Kubernetes 会把 Pod 的状态改为 NotReady，并将该 Pod 从 Endpoint 列表中移除
     # 如果在达到存活探针的失败阈值之前，程序恢复响应了，那么 Pod 将恢复工作，因此 Pod 不需要被重启
-    # 如果想确保当前 Pod 可以正常提供服务，可以调整成功阈值（successThreshold），如成功响应 3 次之后才认为 Pod 恢复正常
+    # 如果想确保当前 Pod 可以正常提供服务，可以调整成功阈值（successThreshold），例如成功响应 3 次之后才认为 Pod 恢复正常
     # 就绪探针只影响该 Pod 是否加入 Endpoint 列表，不影响存活探针判断是否对其重启，两者独立工作
     readinessProbe:
       httpGet:
