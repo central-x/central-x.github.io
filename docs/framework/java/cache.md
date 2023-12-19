@@ -36,26 +36,7 @@ public class YourApplication {
 
 #### 执行顺序
 
-```mermaid
-sequenceDiagram
-
-actor 客户端
-participant @Cacheable
-participant @CacheEvict
-participant Service
-
-客户端->>@Cacheable: 发起请求
-@Cacheable->>@Cacheable: 是否存在缓存？
-@Cacheable-->>客户端: 返回缓存
-@Cacheable->>@CacheEvict: 没有缓存，执行下一切面
-@CacheEvict->>@CacheEvict: 清除缓存（beforeInvocation=true）
-@CacheEvict->>Service: 执行
-Service-->>@CacheEvict: 返回结果
-@CacheEvict->>@CacheEvict: 清除缓存（beforeInvocation=false）
-@CacheEvict-->>@Cacheable: 返回结果
-@Cacheable->>@Cacheable: 更新缓存
-@Cacheable-->>客户端: 返回结果
-```
+![](./assets/cache.svg)
 
 #### @Cachable
 &emsp;&emsp;本注解主要用于在没有缓存时生成缓存，有缓存时直接返回结果。

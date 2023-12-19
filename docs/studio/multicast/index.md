@@ -8,20 +8,4 @@
 - 百度云推送（Android）: 将将消息通过百度云推送到 Android 应用软件中。(实现中)
 - 百度云推送（iOS）: 将将消息通过百度云推送到 iOS 应用软件中。(实现中)
 
-```mermaid
-flowchart LR
-
-SVC1[Service 1]
-SVC2[Service 2]
-SVCN[Service ...]
-API{{Multicast API}}
-B1[Email]
-B2[百度云推送]
-
-SVC1 --> |推送消息| API
-SVC2 --> |推送消息| API
-SVCN --> |推送消息| API
-
-API --> B1
-API --> B2
-```
+![](./assets/topology.svg)

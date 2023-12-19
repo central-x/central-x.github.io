@@ -7,28 +7,4 @@
 
 &emsp;&emsp;Central Provider 内部使用 GraphQL 对数据进行组织，对外暴露统一的 GraphQL 接口，各微服务需要通过 GraphQL 来消费数据。
 
-```mermaid
-flowchart TD
-
-Security[Security]
-Gateway[Gateway]
-Storage[Storage]
-Multicast[Multicast]
-Dashboard[Dashboard]
-Logging[Logging]
-Provider{{Central Provider}}
-TenantA[(Tenant A)]
-TenantB[(Tenant B)]
-TenantN[(Tenant ...)]
-
-Security --> Provider
-Gateway --> Provider
-Storage --> Provider
-Multicast --> Provider
-Dashboard --> Provider
-Logging --> Provider
-
-Provider --> TenantA
-Provider --> TenantB
-Provider --> TenantN
-```
+![](./assets/topology.svg)

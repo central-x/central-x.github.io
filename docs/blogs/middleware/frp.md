@@ -2,29 +2,11 @@
 ## 概述
 &emsp;&emsp;在开发阶段，为了方便开发，我们有时需要像以下搭建开发环境。
 
-```mermaid
-flowchart LR
-Client[客户端]
-Server{{Nginx}}
-Developer[研发人员个人电脑]
-
-Client --> |访问|Server
-Server --> |转发|Developer
-```
+![](./assets/frp_01.svg)
 
 &emsp;&emsp;正常情况下，上述的开发环境都是能满足工作需求的。但是如果远程办公时，那么这个开发环境就出现问题了。远程办公时，研发人员的个人电脑是通过 VPN 的方式连接，此时服务器就无法将请求转发到研发人员的个人电脑了（VPN 播号时，VPN 会给外部设备分配虚拟 IP，内部网络是不能直接访问这个虚拟 IP 的）。为了解决这个问题，则需要使用内网穿透，此时的开发环境如下图:
 
-```mermaid
-flowchart LR
-Client[客户端]
-Server{{Nginx}}
-Proxy{{Proxy}}
-Developer[研发人员个人电脑]
-
-Client --> |访问|Server
-Server --> |转发|Proxy
-Proxy --> |代理|Developer
-```
+![](./assets/frp_02.svg)
 
 &emsp;&emsp;研发人员的个人电脑通过和代理建立了一条 Socket，因此代理就可以将流量转发给员工的个人电脑了。市面上目前可以使用公网的 ngrok 代理服务[[链接](https://ngrok.com)]，也可以自己搭建一个内网穿透代理。这里选用 frp 代理（主要是 ngrok 2.0 之后就闭源了，1.x 已经不维护了，源代码编译都困难）。
 
@@ -124,21 +106,4 @@ $ ./frpc -c frpc.ini
 
 &emsp;&emsp;完整的流程图如下：
 
-```mermaid
-sequenceDiagram
-
-actor 浏览器
-participant 客户端
-participant 服务器端
-
-alt 准备阶段
-    服务器端 ->> 服务器端: 启动 frps 服务
-    客户端 -) 服务器端: 启动 frpc 服务，建立 socket
-end
-
-浏览器 ->> 服务器端: 访问 6500 端口
-服务器端 ->> 客户端: 转发流量到 8848 端口
-客户端 -->> 服务器端: 返回数据
-服务器端 -->> 浏览器: 返回数据
-
-```
+![](./assets/frp_03.svg)
