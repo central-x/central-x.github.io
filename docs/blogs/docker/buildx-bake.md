@@ -717,7 +717,7 @@ $ docker buildx rm <context-name>
 #################################################################
 # Azul Zulu OpenJDK
 # https://www.azul.com
-name: Build and push OpenJDK images
+name: Release OpenJDK images
 
 on:
   push:
@@ -728,7 +728,7 @@ jobs:
   #################################################################
   # OpenJDK 8
   openjdk8:
-    name: Build and push OpenJDK 8 images
+    name: Release OpenJDK 8 images
     runs-on: ubuntu-latest
     env:
       OPENJDK_FULL_VERSION: 8.0.392
@@ -750,7 +750,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build and push OpenJDK 8(Alpine)
+      - name: Release OpenJDK 8(Alpine)
         uses: docker/bake-action@v4
         with:
           targets: openjdk-alpine
