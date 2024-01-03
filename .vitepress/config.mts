@@ -84,6 +84,7 @@ export default defineConfig({
             { text: "central-starter-graphql-stub", link: "/framework/java/graphql-stub" },
             { text: "central-starter-identity", link: "/framework/java/identity" },
             { text: "central-starter-logging", link: "/framework/java/logging" },
+            { text: "central-starter-probe", link: "/framework/java/probe" },
           ]
         },
         {
