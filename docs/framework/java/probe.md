@@ -2,6 +2,10 @@
 ## 概述
 &emsp;&emsp;Central Starter Probe 主要用于为应用提供探测入口，主要用于监控应用当前是否稳定可用。
 
+&emsp;&emsp;使用 Kubernetes 部署应用时，Kubernetes 一般通过监探容器的进程来判断容器是否还在正常工作。但是有时候 Web 容器的进程还在，但是却无法再接受外部请求，此时应用可能更希望 Kubernetes 通过重启的方式让应用恢复正常。
+
+&emsp;&emsp;本类库提供了轻量级的应用探测功能，通过简单的配置完成应用的探测功能。
+
 ## 集成
 ### Maven 座标
 
@@ -215,6 +219,26 @@ central:
 ::: tip 提示
 &emsp;&emsp;由于 FixedAuthorizer 是采用静态密钥的方式鉴权，因此建议鉴权密钥的长度不要设置得过短（如设置 64 位随机字符串），提高破解难度。
 :::
+
+### 缓存
+&emsp;&emsp;正常情况下探测接口返回的数据<font color=red>不应被缓存</font>，因为这样有可能会导致无法正常探测应用真实的运行情况。
+
+&emsp;&emsp;但是在一些情况下，探针间可能产生依赖，如在 Central Studio[[链接](/studio/)]中，Gateway、Identity、Storage、Multicast、Storage 等都必须在 Provider 存活的情况下才能正常运行，因此这些应用的探针会去探测 Provider 是否存活，也就是这些应用的探针会探测 Provider 的探针（通过 HttpEndpoint），这就导致了 Provider 的探针在高频率的探测下工作，继而产生不良后果。
+
+&emsp;&emsp;为了解决这个问题，可以在 Provider 中启用探测缓存，在缓存失效前产生的探测行为都将返回上一次探测结果，这样就可以大大降低 Provider 的探测压力了。但是在设置缓存有效期时，需要注意的是该<font color=red>缓存的有效期应略低于于自身探测周期</font>。如 Kubernetes 的探测间隔如果是 10s 的话，那么 Provider 的缓存失效时间可以设置为 9s，这样就可以保证 Provider 自身的探测都是有效且真实的。
+
+&emsp;&emsp;开启探针缓存只需要在配置文件中添加以下配置信息:
+
+```yaml
+central:
+  probe:
+    cache:
+      enabled: true
+      timeout: 9000
+```
+
+- `enabled`: 启用探针缓存功能。默认为 false。
+- `timeout`: 缓存有效期（毫秒）
 
 ## 技巧
 &emsp;&emsp;在配置数据源探测点（DataSourceEndpoint）或 Redis 探测点（RedisEndpoint）时，需要提供连接信息，这些信息一般与对应的数据源配置或 Redis 配置是相同的，这样就导致我们需要配置两次。如果后续需要修改配置时，容易出现修改漏的问题。因此可以通过 Spring 的占位符来解决这个问题，如:
