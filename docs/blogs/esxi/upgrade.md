@@ -8,12 +8,12 @@
 
 &emsp;&emsp;下载完成之后，将该软件包上传到 ESXi 的存储里，如下图所示。
 
-![](./assets/upgrade_01.png)
+![](assets/upgrade_01.png)
 
 ### 远程登录到服务器
 &emsp;&emsp;在默认情况下，ESXi 是不允许使用 SSH 远程登录到服务器的，因此需要先启用 Secure Shell。在首面中执行以下操作，即可启用远程 SSH 远程登录功能。
 
-![](./assets/upgrade_02.png)
+![](assets/upgrade_02.png)
 
 &emsp;&emsp;然后在命令行工具里，就可以执行远程操作了。
 

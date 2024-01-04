@@ -1,4 +1,4 @@
-# 创建 EXSi 系统模板
+# 创建 ESXi 系统模板
 ## 概述
 &emsp;&emsp;家里有个服务器，装了 Exsi 7.0 系统。由于在学习 Kubernetes，需要经常装虚拟机，因此这里记录一下创建 CentOS7 系统模板的过程。
 
@@ -11,49 +11,49 @@
 ### 安装操作系统
 &emsp;&emsp;选择创建/注册虚拟机。
 
-![](./assets/template_00.png)
+![](assets/template_00.png)
 
 &emsp;&emsp;选择创建新虚拟机，并填定虚拟机名称、操作系统、系统版本等信息。
 
-![](./assets/template_01.png)
+![](assets/template_01.png)
 
 &emsp;&emsp;保存到指定的存储中。
 
-![](./assets/template_02.png)
+![](assets/template_02.png)
 
 &emsp;&emsp;调整虚拟机的配置信息，主要包括 CPU 核心、内存大小、硬盘大小、网络适配器，注意，CD/DVD 驱动器 1 应选择 CentOS7 的系统安装镜像。
 
-![](./assets/template_03.png)
+![](assets/template_03.png)
 
 &emsp;&emsp;最后点击下一步和完成。开机，选择 Install CentOS7。
 
-![](./assets/template_04.png)
+![](assets/template_04.png)
 
 &emsp;&emsp;语言选择建议选择英语，因为中文有时会出现一些编码问题。
 
-![](./assets/template_05.png)
+![](assets/template_05.png)
 
 &emsp;&emsp;在这个步骤，需要调整三个位置。
 
-![](./assets/template_06.png)
+![](assets/template_06.png)
 
 - `INSTALLATION DESTINATION`：点进去直接选 Done 就好了。
 
-![](./assets/template_07.png)
+![](assets/template_07.png)
 
 - `NETWORK & HOST NAME`：这个步骤建议将 Host name 修改为 tempalte，Ethernet（ens192）打开，并调整为手动（Manual）配置 IPv4 信息。
 
-![](./assets/template_08.png)
+![](assets/template_08.png)
 
-![](./assets/template_09.png)
+![](assets/template_09.png)
 
 - `DATE & TIME`：调整时区（Shanghai/Asia）和 NTP 服务器（ntp.aliyun.com）。
 
-![](./assets/template_10.png)
+![](assets/template_10.png)
 
 &emsp;&emsp;最后点击 Begin Installation。设置 root 用户密码。最后等待安装完毕，重启。
 
-![](./assets/template_11.png)
+![](assets/template_11.png)
 
 ### 更新操作系统
 
@@ -104,7 +104,7 @@ $ yum install -y nano net-tools wget bind-utils
 ### 导出系统
 &emsp;&emsp;将已经制作好的模板系统导出。
 
-![](./assets/template_12.png)
+![](assets/template_12.png)
 
 &emsp;&emsp;导出之后，得到了三个文件：
 
@@ -118,23 +118,23 @@ $ yum install -y nano net-tools wget bind-utils
 ### 创建新虚拟机
 &emsp;&emsp;点击创建/注册虚拟机，选择从 OVF 或 OVA 文件部署虚拟机后，点击下一步。
 
-![](./assets/template_13.png)
+![](assets/template_13.png)
 
 &emsp;&emsp;输入新虚拟机的名称，并将刚才下载的 template-1.vmdk 文件和 template.ovf 文件拖到框里。
 
-![](./assets/template_14.png)
+![](assets/template_14.png)
 
 &emsp;&emsp;选择将新虚拟机保存到指定的存储中。
 
-![](./assets/template_15.png)
+![](assets/template_15.png)
 
 &emsp;&emsp;为其指定网络映射。点击下一步。
 
-![](./assets/template_16.png)
+![](assets/template_16.png)
 
 &emsp;&emsp;点击完成即可。警告可忽略。
 
-![](./assets/template_17.png)
+![](assets/template_17.png)
 
 &emsp;&emsp;点击完成之后，Exsi 会在后台启动上传任务，注意不要刷新浏览器。上传完毕后，Exsi 会自动将虚拟机开机。
 
