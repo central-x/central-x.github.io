@@ -59,6 +59,7 @@ Context "kubernetes-admin@kubernetes" modified.
 
 - `cluster.k8s/ingress=enabled`：标识该节点为集群流量入口。
 - `cluster.k8s/egress=enabled`：标识该节点为集群流量出口。
+- `node.kubernetes.io/namespace=<namespace>`: 标识该节点归属的环境。一般情况下，生产环境（prod）和预发布环境（pre）可以在一个 Kubernetes 集群中管理，但是部署应用时，建议通过节点选择器将应用部署到对应环境的节点上，将两个环境的应用隔离开，避免不稳定的预发布环境的应用影响到生产环境的稳定性。
 - 待补充
 
 ### 资源标签

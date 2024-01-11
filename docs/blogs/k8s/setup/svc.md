@@ -6,7 +6,7 @@
 
 ## 操作步骤
 ### 搭建 Docker 运行环境
-&emsp;&emsp;下面使用了 docker-compose 来快速搭建基础环境。首选需要将离线安装包里面的 svc.cluster.k8s 目录下所有文件上传到服务器，然后执行以下命令，完成 Docker 运行环境的搭建:
+&emsp;&emsp;下面使用了 docker-compose 来快速搭建基础环境。首先需要将离线安装包里面的 svc.cluster.k8s 目录下所有文件上传到服务器，然后执行以下命令，完成 Docker 运行环境的搭建:
 
 ```bash
 # 修改服务器的 hostname

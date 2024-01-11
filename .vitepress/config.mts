@@ -146,7 +146,7 @@ export default defineConfig({
                         // {text: "Service Specification", link: "/studio/service-specification"},
                         // {text: "Tenant Specification", link: "/studio/tenant-specification"},
                         // {text: "Deployment", link: "/studio/deployment"},
-                        {text: "Changelog", link: "/studio/changelog"},
+                        {text: "What's New", link: "/studio/changelog"},
                     ]
                 },
                 // {
@@ -406,14 +406,14 @@ export default defineConfig({
                 {
                     text: "Kubernetes",
                     collapsible: true,
-                    collapsed: true,
+                    collapsed: false,
                     items: [
                         {
                             text: "Kubernetes in Setup",
                             collapsiable: true,
                             collpased: true,
                             items: [
-                                {text: "概述", link: "/blogs/k8s/setup/index"},
+                                {text: "概述", link: "/blogs/k8s/setup/"},
                                 {text: "搭建基础服务环境", link: "/blogs/k8s/setup/svc"},
                                 {text: "通用步骤", link: "/blogs/k8s/setup/steps"},
                                 {text: "初始化主节点", link: "/blogs/k8s/setup/master"},
