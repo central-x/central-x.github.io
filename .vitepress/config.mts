@@ -64,7 +64,7 @@ export default defineConfig({
                     {text: "Docker", link: "/blogs/docker/setup"},
                     {text: "Middleware", link: "/blogs/middleware/nginx"},
                     {text: "Linux", link: "/blogs/linux/storage/partition"},
-                    {text: "ESXi", link: "/blogs/esxi/template"},
+                    {text: "VMware", link: "/blogs/vmware/esxi/template"},
                     {text: "Java", link: "/blogs/java/jsch-scp"},
                     {text: "Web", link: "/blogs/web/favicon"},
                     {text: "Android", link: "/blogs/android/junit-custom-application"},
@@ -192,7 +192,6 @@ export default defineConfig({
                 // },
                 {
                     text: "Central Gateway",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "Summary", link: "/studio/gateway/"},
@@ -210,7 +209,6 @@ export default defineConfig({
                 },
                 {
                     text: "Central Security",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "Summary", link: "/studio/identity/"},
@@ -261,7 +259,6 @@ export default defineConfig({
                 },
                 {
                     text: "Central Storage",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "Summary", link: "/studio/storage/"},
@@ -301,7 +298,6 @@ export default defineConfig({
                 },
                 {
                     text: "Central Multicast",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "Summary", link: "/studio/multicast/"},
@@ -332,7 +328,6 @@ export default defineConfig({
                 },
                 {
                     text: "Central Logging",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "Summary", link: "/studio/logging/"},
@@ -350,7 +345,6 @@ export default defineConfig({
                 },
                 {
                     text: "Central Provider",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "Summary", link: "/studio/provider/"},
@@ -405,13 +399,11 @@ export default defineConfig({
             "/blogs/": [
                 {
                     text: "Kubernetes",
-                    collapsible: true,
-                    collapsed: false,
+                    collapsed: true,
                     items: [
                         {
                             text: "Kubernetes in Setup",
-                            collapsiable: true,
-                            collpased: true,
+                            collapsed: true,
                             items: [
                                 {text: "概述", link: "/blogs/k8s/setup/"},
                                 {text: "搭建基础服务环境", link: "/blogs/k8s/setup/svc"},
@@ -428,8 +420,7 @@ export default defineConfig({
                             ]
                         }, {
                             text: "Kubernetes in Action",
-                            collapsiable: true,
-                            collpased: true,
+                            collapsed: true,
                             items: [
                                 {text: "Pod", link: "/blogs/k8s/action/pod"},
                                 {text: "无状态应用管理", link: "/blogs/k8s/action/stateless"},
@@ -447,8 +438,7 @@ export default defineConfig({
                             ]
                         }, {
                             text: "Tips",
-                            collapsiable: true,
-                            collpased: true,
+                            collapsed: true,
                             items: [
                                 {text: "本地控制远端 Kubernetes 集群", link: "/blogs/k8s/tips/remote-control"},
                                 {text: "kubectl explain", link: "/blogs/k8s/tips/kubectl-explain"},
@@ -467,7 +457,6 @@ export default defineConfig({
                 },
                 {
                     text: "Docker",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "搭建 Docker 环境", link: "/blogs/docker/setup"},
@@ -483,7 +472,6 @@ export default defineConfig({
                 },
                 {
                     text: "Middleware",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "Nginx", link: "/blogs/middleware/nginx"},
@@ -495,11 +483,12 @@ export default defineConfig({
                 },
                 {
                     text: "Linux",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {
-                            text: "存储", items: [
+                            text: "存储",
+                            collapsed: true,
+                            items: [
                                 {text: "分区", link: "/blogs/linux/storage/partition"},
                                 {text: "文件系统", link: "/blogs/linux/storage/filesystem"},
                                 {text: "挂载", link: "/blogs/linux/storage/mount"},
@@ -510,19 +499,25 @@ export default defineConfig({
                             ]
                         },
                         {
-                            text: "网络", items: [
+                            text: "网络",
+                            collapsed: true,
+                            items: [
                                 {text: "iptable", link: "/blogs/linux/network/iptables"},
                                 {text: "firewall", link: "/blogs/linux/network/firewall"},
                             ]
                         },
                         {
-                            text: "权限", items: [
+                            text: "权限",
+                            collapsed: true,
+                            items: [
                                 {text: "用户和用户组", link: "/blogs/linux/permission/user-and-group"},
                                 {text: "文件", link: "/blogs/linux/permission/file"},
                             ]
                         },
                         {
-                            text: "其它", items: [
+                            text: "其它",
+                            collapsed: true,
+                            items: [
                                 {text: "SSH Keys", link: "/blogs/linux/other/ssh-keys"},
                                 {text: "发送邮件", link: "/blogs/linux/other/sendmail"},
                                 {text: "下载 yum 的离线安装包", link: "/blogs/linux/other/download-yum"},
@@ -532,17 +527,20 @@ export default defineConfig({
                     ]
                 },
                 {
-                    text: "ESXi",
-                    collapsible: true,
+                    text: "VMware",
                     collapsed: true,
-                    items: [
-                        {text: "创建 ESXi 系统模板", link: "/blogs/esxi/template"},
-                        {text: "使用命令升级 ESXi", link: "/blogs/esxi/upgrade"},
+                    items: [{
+                        text: "ESXi",
+                        collapsed: true,
+                        items: [
+                            {text: "创建 ESXi 系统模板", link: "/blogs/vmware/esxi/template"},
+                            {text: "使用命令升级 ESXi", link: "/blogs/vmware/esxi/upgrade"},
+                        ]
+                    }
                     ]
                 },
                 {
                     text: "Java",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "基于 JSch 实现 Scp 文件传输", link: "/blogs/java/jsch-scp"},
@@ -551,7 +549,6 @@ export default defineConfig({
                 },
                 {
                     text: "Web",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "快速生成 favicon", link: "/blogs/web/favicon"},
@@ -559,7 +556,6 @@ export default defineConfig({
                 },
                 {
                     text: "Android",
-                    collapsible: true,
                     collapsed: true,
                     items: [
                         {text: "JUnit 自定义 Application", link: "/blogs/android/junit-custom-application"}

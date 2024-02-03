@@ -1,6 +1,6 @@
 # 搭建 Docker 环境
 ## 概述
-&emsp;&emsp;记录一下在 CentOS7 环境下的 Docker 搭建过程。注意，在开始搭建 Docker 环境前，可以参考另一篇笔记[[链接](/blogs/esxi/template)]来完成 CentOS7 的初始化、更新工作。
+&emsp;&emsp;记录一下在 CentOS7 环境下的 Docker 搭建过程。注意，在开始搭建 Docker 环境前，可以参考另一篇笔记[[链接](/blogs/vmware/esxi/template)]来完成 CentOS7 的初始化、更新工作。
 
 ## 搭建步骤
 ### 配置基础环境

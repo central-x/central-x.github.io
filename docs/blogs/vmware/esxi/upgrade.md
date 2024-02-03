@@ -27,20 +27,18 @@ $ ssh root@vm.yeh.cn
 ```bash
 # 获取当前 ESXi 的版本信息
 $ vmware -vl
-VMware ESXi 7.0.3 build-19482537
-VMware ESXi 7.0 Update 3
+VMware ESXi 8.0.1 build-21813344
+VMware ESXi 8.0 Update 1
 
 # 获取升级包里的版本信息
-$ esxcli software sources profile list -d /vmfs/volumes/60c77ad2-588faa10-ca5b-b47af13738aa/Images/VMware-ESXi-7.0U3d-19482537-depot.zip
-Name                            Vendor        Acceptance Level  Creation Time        Modification Time
-------------------------------  ------------  ----------------  -------------------  -----------------
-ESXi-7.0U3sd-19482531-standard  VMware, Inc.  PartnerSupported  2022-03-29T00:00:00  2022-03-29T00:00:00
-ESXi-7.0U3sd-19482531-no-tools  VMware, Inc.  PartnerSupported  2022-03-29T00:00:00  2022-03-11T13:53:29
-ESXi-7.0U3d-19482537-standard   VMware, Inc.  PartnerSupported  2022-03-29T00:00:00  2022-03-29T00:00:00
-ESXi-7.0U3d-19482537-no-tools   VMware, Inc.  PartnerSupported  2022-03-29T00:00:00  2022-03-11T15:01:02
+$ esxcli software sources profile list -d /vmfs/volumes/64872291-989989bc-5cdb-b47af13738aa/Images/VMware-ESXi-8.0U2-22380479-depot.zip 
+Name                          Vendor        Acceptance Level  Creation Time        Modification Time
+----------------------------  ------------  ----------------  -------------------  -----------------
+ESXi-8.0U2-22380479-standard  VMware, Inc.  PartnerSupported  2023-09-21T00:00:00  2023-09-21T00:00:00
+ESXi-8.0U2-22380479-no-tools  VMware, Inc.  PartnerSupported  2023-09-21T00:00:00  2023-09-04T22:07:43
 
 # 执行升级，-p 后面的参数就是上面命令获取的信息
-$ esxcli software profile update -d /vmfs/volumes/60c77ad2-588faa10-ca5b-b47af13738aa/Images/VMware-ESXi-7.0U3d-19482537-depot.zip -p ESXi-7.0U3d-19482537-standard
+$ esxcli software profile update -d /vmfs/volumes/64872291-989989bc-5cdb-b47af13738aa/Images/VMware-ESXi-8.0U2-22380479-depot.zip -p ESXi-8.0U2-22380479-standard
 
 # 升级完之后重启即可
 $ reboot
