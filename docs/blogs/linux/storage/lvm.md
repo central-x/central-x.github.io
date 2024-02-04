@@ -315,7 +315,7 @@ $ blkid
 2. 为磁盘分区: 通过 `fdisk` 命令；
 3. 创建 PV: 通过 `pvcreate` 命令；
 4. 将新 PV 加入到 VG: 通过 `vgextend` 命令；
-5. 扩容 LV: 通过 `lvextend` 命令；
+5. 扩容 LV: 通过 `lvextend` 命令（不需要 umount）；
 6. 更新文件系统信息: 通过 `resize2fs`（ext4）或 `xfs_growfs`（xfs）命令。
 
 ```bash
