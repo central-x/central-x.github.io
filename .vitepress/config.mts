@@ -85,6 +85,7 @@ export default defineConfig({
                         {text: "Summary", link: "/framework/java/"},
                         {
                             text: "central-stdlib",
+                            collapsed: true,
                             items: [
                                 {text: "Summary", link: "/framework/java/stdlib/"},
                                 {text: "Http", link: "/framework/java/stdlib/http"},
@@ -111,6 +112,7 @@ export default defineConfig({
                         {text: "Summary", link: "/framework/android/"},
                         {
                             text: "Core",
+                            collapsed: true,
                             items: [
                                 {
                                     text: "Dependency Injection",
@@ -125,6 +127,7 @@ export default defineConfig({
                         },
                         {
                             text: "Bridge",
+                            collapsed: true,
                             items: [
                                 {text: "Component", link: "/framework/android/bridge/component"},
                             ]
@@ -141,6 +144,7 @@ export default defineConfig({
             "/studio/": [
                 {
                     text: "Central Studio",
+                    collapsed: true,
                     items: [
                         {text: "Summary", link: "/studio/"},
                         // {text: "Service Specification", link: "/studio/service-specification"},
@@ -208,12 +212,13 @@ export default defineConfig({
                     ]
                 },
                 {
-                    text: "Central Security",
+                    text: "Central Identity",
                     collapsed: true,
                     items: [
                         {text: "Summary", link: "/studio/identity/"},
                         {
                             text: "REST API",
+                            collapsed: true,
                             items: [
                                 {text: "获取登录选项", link: "/studio/identity/api/get-login-option"},
                                 {text: "获取验证码", link: "/studio/identity/api/get-captcha"},
@@ -223,10 +228,12 @@ export default defineConfig({
                         },
                         {
                             text: "SSO",
+                            collapsed: true,
                             items: [
                                 {text: "Summary", link: "/studio/identity/sso/"},
                                 {
                                     text: "CAS",
+                                    collapsed: true,
                                     items: [
                                         {text: "Summary", link: "/studio/identity/sso/cas/"},
                                         {text: "登录入口", link: "/studio/identity/sso/cas/login"},
@@ -236,6 +243,7 @@ export default defineConfig({
                                 },
                                 {
                                     text: "OAuth2.0",
+                                    collapsed: true,
                                     items: [
                                         {text: "Summary", link: "/studio/identity/sso/oauth/"},
                                         {text: "获取授权码", link: "/studio/identity/sso/oauth/authorize"},
@@ -264,6 +272,7 @@ export default defineConfig({
                         {text: "Summary", link: "/studio/storage/"},
                         {
                             text: "REST API",
+                            collapsed: true,
                             items: [
                                 {text: "接口总体说明", link: "/studio/storage/api/"},
                                 {text: "上传文件", link: "/studio/storage/api/upload"},
@@ -275,6 +284,7 @@ export default defineConfig({
                                 {text: "下载文件", link: "/studio/storage/api/download"},
                                 {
                                     text: "分片上传文件",
+                                    collapsed: true,
                                     items: [
                                         {text: "创建分片任务", link: "/studio/storage/api/multipart/create"},
                                         {text: "上传分片", link: "/studio/storage/api/multipart/upload"},
@@ -303,6 +313,7 @@ export default defineConfig({
                         {text: "Summary", link: "/studio/multicast/"},
                         {
                             text: "REST API",
+                            collapsed: true,
                             items: [
                                 {text: "接口总体说明", link: "/studio/multicast/api/"},
                                 {text: "广播消息", link: "/studio/multicast/api/publish"}
@@ -310,6 +321,7 @@ export default defineConfig({
                         },
                         {
                             text: "广播器",
+                            collapsed: true,
                             items: [
                                 {text: "邮件广播", link: "/studio/multicast/broadcaster/email-smtp"}
                             ]
@@ -350,6 +362,7 @@ export default defineConfig({
                         {text: "Summary", link: "/studio/provider/"},
                         {
                             text: "GraphQL",
+                            collapsed: true,
                             items: [
                                 {text: "Summary", link: "/studio/provider/api/"}
                             ]
