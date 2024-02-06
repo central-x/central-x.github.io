@@ -528,6 +528,13 @@ export default defineConfig({
                             ]
                         },
                         {
+                            text: "驱动",
+                            collapsed: true,
+                            items: [
+                                {text: "Nvidia 驱动", link: "/blogs/linux/driver/nvidia"}
+                            ]
+                        },
+                        {
                             text: "其它",
                             collapsed: true,
                             items: [
@@ -548,6 +555,7 @@ export default defineConfig({
                         items: [
                             {text: "创建 ESXi 系统模板", link: "/blogs/vmware/esxi/template"},
                             {text: "使用命令升级 ESXi", link: "/blogs/vmware/esxi/upgrade"},
+                            {text: "GPU 直通", link: "/blogs/vmware/esxi/gpu-pass-through"},
                         ]
                     }
                     ]

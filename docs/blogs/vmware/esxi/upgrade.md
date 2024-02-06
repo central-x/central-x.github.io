@@ -19,7 +19,7 @@
 
 ```bash
 # 远程登录到 ESXi 服务器
-$ ssh root@vm.yeh.cn
+$ ssh root@10.10.10.1
 ```
 
 ### 执行升级操作

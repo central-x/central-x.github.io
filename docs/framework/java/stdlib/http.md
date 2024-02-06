@@ -146,7 +146,7 @@ public interface ServerApi {
                 // 指定服务器地址
                 .baseUrl("http://127.0.0.1:8080")
                 // 指定缓存目录
-                .tmp(new File("./.tmp"))
+                .tmp(new File("./cache"))
                 // 指定使用 Spring 注解
                 .contact(new SpringContract())
                 // 添加切面处理器
