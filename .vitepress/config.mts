@@ -495,6 +495,13 @@ export default defineConfig({
                     ]
                 },
                 {
+                    text: "Environment",
+                    collapsed: true,
+                    items: [
+                        {text: "Python", link: "/blogs/environment/python"},
+                    ]
+                },
+                {
                     text: "Linux",
                     collapsed: true,
                     items: [
