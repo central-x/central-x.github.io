@@ -63,6 +63,7 @@ export default defineConfig({
                     {text: "Kubernetes", link: "/blogs/k8s/setup/"},
                     {text: "Docker", link: "/blogs/docker/setup"},
                     {text: "Middleware", link: "/blogs/middleware/nginx"},
+                    {text: "Environment", link: "/blogs/environment/python"},
                     {text: "Linux", link: "/blogs/linux/storage/partition"},
                     {text: "VMware", link: "/blogs/vmware/esxi/template"},
                     {text: "Java", link: "/blogs/java/jsch-scp"},
@@ -564,8 +565,7 @@ export default defineConfig({
                             {text: "使用命令升级 ESXi", link: "/blogs/vmware/esxi/upgrade"},
                             {text: "GPU 直通", link: "/blogs/vmware/esxi/gpu-pass-through"},
                         ]
-                    }
-                    ]
+                    }]
                 },
                 {
                     text: "Java",
@@ -587,6 +587,20 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         {text: "JUnit 自定义 Application", link: "/blogs/android/junit-custom-application"}
+                    ]
+                },
+                {
+                    text: "AIGC",
+                    collapsed: true,
+                    items: [
+                        {text: "PyTorch", link: "/blogs/aigc/pytorch"},
+                        {
+                            text: "Chat",
+                            collapsed: true,
+                            items: [
+                                {text: "ChatGLM3-6B", link: "/blogs/aigc/chat/chatglm3-6b"},
+                            ]
+                        }
                     ]
                 }
             ]
