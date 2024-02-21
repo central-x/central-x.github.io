@@ -33,4 +33,6 @@
 ### 安装驱动
 &emsp;&emsp;完成以上操作后，保存已修改的配置，开机即可。Windows 下只需要到显卡对应的网站下载并安装相关驱动即可正常使用。
 
-&emsp;&emsp;关于在 Linux 下安装 NVIDIA 显卡驱动请参考另一篇文档[[链接](/blogs/linux/driver/nvidia)]。
+&emsp;&emsp;关于在 Linux 下安装 NVIDIA 显卡驱动请参考以下文档：
+
+- Ubuntu Desktop [[链接](/blogs/linux/ubuntu/nvidia-driver)]

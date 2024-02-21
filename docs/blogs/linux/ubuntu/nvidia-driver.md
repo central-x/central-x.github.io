@@ -1,9 +1,10 @@
 # Nvidia 驱动
 ## 概述
-&emsp;&emsp;本文档主要记录一下在各个 Linux 发行版下安装 Nvidia 驱动和 CUDA 的过程。
+&emsp;&emsp;本文档主要记录一下在 Ubuntu Desktop 下安装 Nvidia 驱动和 CUDA 的过程。
 
 ## 环境
 
+- 操作系统：Ubuntu Desktop 22.04.3
 - ESXi: 8.0 Update 2
 - 显卡：NVIDIA GeForce RTX 4090
 
@@ -11,7 +12,7 @@
 &emsp;&emsp;在 ESXi 的虚拟机里安装 Nvidia 驱动，需确保已关闭虚拟机配置`引导选项`里的 `启用 UEFI 安全引导`，否则可能会出现正常安装驱动后，但无法找到显卡的问题。详细操作请参考 GPU 直通文档[[链接](/blogs/vmware/esxi/gpu-pass-through)]。
 :::
 
-## Ubuntu Desktop 22.04.3
+## 操作
 ### 更新依赖
 &emsp;&emsp;打开终端（Terminal），更新系统依赖。
 

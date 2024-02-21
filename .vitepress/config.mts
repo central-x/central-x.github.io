@@ -69,6 +69,7 @@ export default defineConfig({
                     {text: "Java", link: "/blogs/java/jsch-scp"},
                     {text: "Web", link: "/blogs/web/favicon"},
                     {text: "Android", link: "/blogs/android/junit-custom-application"},
+                    {text: "AIGC", link: "/blogs/aigc/pytorch"},
                 ]
             }
         ],
@@ -539,7 +540,22 @@ export default defineConfig({
                             text: "驱动",
                             collapsed: true,
                             items: [
-                                {text: "Nvidia 驱动", link: "/blogs/linux/driver/nvidia"}
+                            ]
+                        },
+                        {
+                            text: "Ubuntu",
+                            collapsed: true,
+                            items: [
+                                {text: "远程桌面", link: "/blogs/linux/ubuntu/remote-desktop"},
+                                {text: "OpenSSH Server", link: "/blogs/linux/ubuntu/openssh-server"},
+                                {text: "Nvidia 驱动", link: "/blogs/linux/ubuntu/nvidia-driver"}
+                            ]
+                        },
+                        {
+                            text: "CentOS",
+                            collapsed: true,
+                            items: [
+                                {text: "下载 yum 的离线安装包", link: "/blogs/linux/centos/download-yum"},
                             ]
                         },
                         {
@@ -548,7 +564,6 @@ export default defineConfig({
                             items: [
                                 {text: "SSH Keys", link: "/blogs/linux/other/ssh-keys"},
                                 {text: "发送邮件", link: "/blogs/linux/other/sendmail"},
-                                {text: "下载 yum 的离线安装包", link: "/blogs/linux/other/download-yum"},
                                 {text: "Linux 常用命令", link: "/blogs/linux/other/command"},
                             ]
                         },

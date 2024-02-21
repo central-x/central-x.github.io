@@ -24,15 +24,15 @@
 
 ## 安装
 ```bash
-# 拉取 ChatGLM3-6B 仓库
-$ git clone https://github.com/THUDM/ChatGLM3
-
-$ cd ChatGLM3
-
 # 创建一个 conda 环境并安装所需依赖
 # ChatGLM3-6B 需要 Python 3.10 或更高版本
 $ conda create -n chatglm3 python=3.10
 $ conda activate chatglm3
+
+# 拉取 ChatGLM3-6B 仓库
+$ git clone https://github.com/THUDM/ChatGLM3
+
+$ cd ChatGLM3
 
 # 安装项目依赖
 $ pip install -r requirements.txt
@@ -53,3 +53,15 @@ $ streamlit run main.py
 ```
 
 ![](./assets/chatglm3-6b_00.png)
+
+## 补充说明
+### 从本地加载模型
+&emsp;&emsp;在运行 Web Demo 时，`transformers` 会自动下载模型实现和参数。可以将模型下载到本地，然后从本地加载
+
+```bash
+$ git clone https://huggingface.co/THUDM/chatglm3-6b
+```
+
+::: tip 提示
+&emsp;&emsp;注意，克隆 HuggingFace 模型仓库时，需要提前安装 `git lfs`。如果未安装，可以参考文档[[链接](https://docs.github.com/zh/repositories/working-with-files/managing-large-files/installing-git-large-file-storage)]完成安装过程。
+:::
