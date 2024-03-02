@@ -440,3 +440,179 @@ rm: 无法删除"yan.txt": 不允许的操作
 
 &emsp;&emsp;注意，粘滞位不影响文件的读取、写入或执行权限，它仅影响这个目录下的所有文件/子目录的删除和重命名操作（不包括子目录）。
 :::
+
+### setuid/setgid
+&emsp;&emsp;在 Linux 系统中，可以通过 `chmod u+s` 或 `chmod g+s` 命令为<font color=red>可执行文件</font>设置执行时使用的用户/用户组。`setuid`/`setgid` 是一种特殊权限，当设置了该权限的文件被执行时，它会以文件的所属用户/所属组的身份运行，而不是以启动该文件的用户的身份运行。
+
+&emsp;&emsp;以上特性提供了一种机制，让普通用户可以以 root 的身份去执行一些程序，如 `/usr/bin/passwd`。
+
+```bash
+# 为可执行文件添加可执行权限
+$ chmod +x <executable>
+# 设置可执行文件以文件所属用户身份运行
+$ chmod u+s <executable>
+# 设置可执行文件以文件所属组身份运行
+$ chmod g+s <executable>
+```
+
+::: warning 警告
+&emsp;&emsp;`setuid` 和 `setgid` 可以同时生效，也可以只使用其中一种。滥用 `setuid`/`setgid` 可能导致严重的安全问题，因此应谨慎使用，并确保只在你完全信任的程序上使用它。
+:::
+
+&emsp;&emsp;通过以下的例子来理解 `setuid`/`setgid`。
+
+#### 准备工作
+&emsp;&emsp;准备一个可执行文件:
+
+```c
+// executable.c
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+int main() {
+    // 当前生效的 uid
+    printf("Effective UID: %d\n", geteuid());
+    // 启动可执行文件的 uid
+    printf("Real UID: %d\n", getuid());
+    
+    // 当前生效的 gid
+    printf("Effective GID: %d\n", getegid());
+    // 启用可执行文件的 gid
+    printf("Real GID: %d\n", getgid());
+
+    // 在当前目录下创建 test.txt 文件，并写入 Hello World
+    FILE *file = fopen("/data/test.txt", "w");
+    fputs("Hello World", file);
+    fclose(file);
+
+    return EXIT_SUCCESS;
+}
+```
+
+```bash
+# 以下命令均使用 root 用户执行
+
+# 创建测试用的目录，允许所有用户读写该目录
+$ mkdir /data
+$ chmod 777 /data
+$ cd /data
+
+# 将上面的代码编译为可执行文件
+$ gcc executable.c -o executable
+```
+
+#### 正常执行
+&emsp;&emsp;不为可执行文件添加任何 `setuid`/`setgid` 权限位，使用普通用户身份执行。
+
+```bash
+# 查看可执行文件所属用户/所属组
+# 当前可执行文件 executable 的所属用户和所属组为 root:root
+$ ls -all
+总用量 20
+drwxrwxrwx.  2 root root     60 3月   2 21:00 .
+dr-xr-xr-x. 20 root root    266 3月   2 21:00 ..
+-rwxr-xr-x.  1 root root   8728 3月   2 21:00 executable
+-rw-r--r--.  1 root root    589 3月   2 21:00 executable.c
+
+# 切换 alan 用户，执行可执行文件
+# 当前生效的 uid 和 gid 为 1000
+$ su alan
+$ ./executable
+Effective UID: 1000
+Real UID: 1000
+Effective GID: 1000
+Real GID: 1000
+
+# 查看可执行文件创建的文件属性
+# 可执行文件创建出来的 test.txt 文件的所属用户和所属组为 alan:normal
+$ ls -all
+总用量 20
+drwxrwxrwx.  2 root root     60 3月   2 21:00 .
+dr-xr-xr-x. 20 root root    266 3月   2 21:00 ..
+-rwxr-xr-x.  1 root root   8728 3月   2 21:00 executable
+-rw-r--r--.  1 root root    589 3月   2 21:00 executable.c
+-rw-r--r--.  1 alan normal   11 3月   2 21:00 test.txt
+```
+
+&emsp;&emsp;通过上面的执行结果可知，如果不为可执行文件设置 `setuid`/`setgid`，那么可执行文件将通过启动它的用户的身份执行。
+
+#### setuid
+&emsp;&emsp;为可执行文件添加 `setuid` 权限位，使用普通用户身份执行。
+
+```bash
+# 为可执行文件添加 setuid 权限件
+$ chmod u+s ./executable
+
+# 查看可执行文件所属用户/所属组
+# 当前可执行文件 executable 的所属用户和所属组为 root:root
+# 注意，当前可执行文件的权限已变更为 rwsr-xr-x
+$ ls -all
+总用量 16
+drwxrwxrwx.  2 root root   44 3月   2 21:00 .
+dr-xr-xr-x. 20 root root  266 3月   2 21:00 ..
+-rwsr-xr-x.  1 root root 8728 3月   2 21:00 executable
+-rw-r--r--.  1 root root  589 3月   2 21:00 executable.c
+
+# 切换 alan 用户，执行可执行文件
+# 发现当前生效的 uid 为 0，也就是当前正在以 root 用户身份执行
+# Real UID 为启用该可执行文件的用户
+$ su alan
+$ ./executable 
+Effective UID: 0
+Real UID: 1000
+Effective GID: 1000
+Real GID: 1000
+
+# 查看可执行文件创建的文件属性
+# 可执行文件创建出来的 test.txt 文件的所属用户变更为 root，但所属组为 normal
+$ ls -all
+总用量 20
+drwxrwxrwx.  2 root root     60 3月   2 21:00 .
+dr-xr-xr-x. 20 root root    266 3月   2 21:00 ..
+-rwsr-xr-x.  1 root root   8728 3月   2 21:00 executable
+-rw-r--r--.  1 root root    589 3月   2 21:00 executable.c
+-rw-r--r--.  1 root normal   11 3月   2 21:00 test.txt
+```
+
+&emsp;&emsp;通过上面的执行结果可知，如果为可执行文件设置了 `setuid`，那么它将通过所属用户而非当前用户执行。由于没有设置 `setgid`，因此它将仍然通过当前用户组的身份执行。
+
+#### setgid
+&emsp;&emsp;为可执行文件添加 `setgid` 权限位，使用普通用户身份执行。
+
+```bash
+# 为可执行文件添加 setgid 权限件
+$ chmod g+s ./executable
+
+# 查看可执行文件所属用户/所属组
+# 当前可执行文件 executable 的所属用户和所属组为 root:root
+# 注意，当前可执行文件的权限已变更为 rwxr-sr-x
+$ ls -all
+总用量 16
+drwxrwxrwx.  2 root root   44 3月   2 21:00 .
+dr-xr-xr-x. 20 root root  266 3月   2 21:00 ..
+-rwxr-sr-x.  1 root root 8728 3月   2 21:00 executable
+-rw-r--r--.  1 root root  589 3月   2 21:00 executable.c
+
+# 切换 alan 用户，执行可执行文件
+# 发现当前生效的 gid 为 0，也就是当前正在以 root 用户组身份执行
+# Real GID 为启用该可执行文件的用户组
+$ su alan
+$ ./executable 
+Effective UID: 1000
+Real UID: 1000
+Effective GID: 0
+Real GID: 1000
+
+# 查看可执行文件创建的文件属性
+# 可执行文件创建出来的 test.txt 文件的所属用户组变更为 root，但所属用户为 alan
+$ ls -all
+总用量 20
+drwxrwxrwx.  2 root root   60 3月   2 21:00 .
+dr-xr-xr-x. 20 root root  266 3月   2 21:00 ..
+-rwxr-sr-x.  1 root root 8728 3月   2 21:00 executable
+-rw-r--r--.  1 root root  589 3月   2 21:00 executable.c
+-rw-r--r--.  1 alan root   11 3月   2 21:00 test.txt
+```
+
+&emsp;&emsp;通过上面的执行结果可知，如果为可执行文件设置了 `setgid`，那么它将通过所属用户组而非当前用户组执行。由于没有设置 `setuid`，因此它将仍然通过当前用户的身份执行。
