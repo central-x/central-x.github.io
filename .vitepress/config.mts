@@ -530,11 +530,7 @@ export default defineConfig({
                         },
                         {
                             text: "权限",
-                            collapsed: true,
-                            items: [
-                                {text: "用户和用户组", link: "/blogs/linux/permission/user-and-group"},
-                                {text: "文件", link: "/blogs/linux/permission/file"},
-                            ]
+                            link: "/blogs/linux/permission"
                         },
                         {
                             text: "驱动",
