@@ -494,6 +494,7 @@ export default defineConfig({
                         {text: "Frp", link: "/blogs/middleware/frp"},
                         {text: "Keepalived", link: "/blogs/middleware/keepalived"},
                         {text: "SSL", link: "/blogs/middleware/ssl"},
+                        {text: "Let's Encrypt", link: "/blogs/middleware/letsencrypt"},
                     ]
                 },
                 {
