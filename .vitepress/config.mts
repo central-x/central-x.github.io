@@ -526,7 +526,7 @@ export default defineConfig({
                             collapsed: true,
                             items: [
                                 {text: "iptable", link: "/blogs/linux/network/iptables"},
-                                {text: "firewall", link: "/blogs/linux/network/firewall"},
+                                {text: "firewalld", link: "/blogs/linux/network/firewalld"},
                             ]
                         },
                         {
