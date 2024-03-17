@@ -1,6 +1,8 @@
 # firewalld
 ## 概述
-&emsp;&emsp;由于 iptables 相对来说配置起来比较复杂，因此在 CentOS 7 后新推出并默认使用 firewalld 防火墙[[链接](https://firewalld.org)]，用于减化防火墙的配置工作。firewalld 和 iptables 一样，本身不具备防火墙功能，他们的作用都是用于维护规则，而真正使用规则干活的是内核的 netfilter。
+&emsp;&emsp;由于 iptables 相对来说配置起来比较复杂，因此新推出了 firewalld 防火墙[[链接](https://firewalld.org)]，用于减化防火墙的配置工作。
+
+&emsp;&emsp;firewalld 和 iptables 一样，本身不具备防火墙功能，他们的作用都是用于维护规则，而真正使用规则干活的是内核的 netfilter。
 
 &emsp;&emsp;本文档主要用于记录如何使用 firewalld 管理防火墙。
 
@@ -8,6 +10,7 @@
 ### 安装与启动
 
 ```bash
+# CentOS 7 以后，默认已安装并使用 firewalld，因此不需要以下操作
 $ yum update -y
 $ yum install -y firewalld
 $ systemctl start firewalld
@@ -47,6 +50,8 @@ $ firewall-cmd --check-config
 
 ### 区域操作
 &emsp;&emsp;在 firewalld 中，区域（zones）是一个非常重要的概念。区域为网络提供了安全等级，不同的网络或接口可以分配到不同的区域，从而对它们应用不同的安全策略。区域定义了对进入的流量的处理方式，每个区域都定义了自己允许进入的流量和可提供的服务。
+
+![](./assets/firewalld.svg)
 
 &emsp;&emsp;在 firewalld 中，预定义了多个区域，其作用分别如下：
 
@@ -97,14 +102,24 @@ $ firewall-cmd --reload
 ```
 
 ### 高级规则
-&emsp;&emsp;firewalld 支持使用 rich rule 来创建更复杂的规则，例如创建一条规则来阻止来自特定机器的某种类型的流量。
+&emsp;&emsp;firewalld 支持使用 rich rule 来创建更复杂的规则，例如创建一条规则来阻止来自特定计算机的某种类型的流量、只允许特定网段的计算机流访问某个端口等。通过高级规则可以更好地保障服务器的安全。
 
-&emsp;&emsp;rich rule 的规则非常复杂，本文档只是例举了一些最常用的选项，更详细规则需要查看 firewalld 文档[[链接](https://firewalld.org/documentation/man-pages/firewalld.richlanguage.html)]。
+&emsp;&emsp;firewalld 常用的高级规则命令如下：
 
 ```bash
+# 查看指定区域下已创建的高级规则
+$ firewall-cmd --zone=<zone> --list-rich-rules
+
+# 删除指定区域下已创建的高级规则
+$ firewall-cmd --zone=<zone> --remove-rich-rule='[RULE]'
+
 # 在指定区域下创建高级规则
 $ firewall-cmd --zone=<zone> --add-rich-rule="[RULE]"
+```
 
+&emsp;&emsp;由于 rich rule 的规则非常复杂，本文档只例举了一些最常用的场景，更详细规则需要查看 firewalld 文档[[链接](https://firewalld.org/documentation/man-pages/firewalld.richlanguage.html)]。
+
+```bash
 # 只允许指定网段下的计算机访问指定端口
 $ firewall-cmd --zone=public --add-rich-rule='rule family=ipv4 source address=192.168.0.1/24 port port=3000 protocol=tcp accept'
 
@@ -130,13 +145,13 @@ $ firewall-cmd --zone=public --add-rich-rule='rule family=ipv4 source address=19
 &emsp;&emsp;在选择使用 `reject` 还是 `drop` 时，需要根据具体使用场景和需求进行权衡。
 :::
 
-&emsp;&emsp;如果一个区域下有多个 rich rule 时，那么防火墙会根据规则的优先级执行这些规则。与我们想像中根据规则定义的顺序执行所不同，firewalld 使用以下优先级规则：
+&emsp;&emsp;如果一个区域下有多个 rich rule 时，那么防火墙会根据规则的优先级执行这些规则。与我们想像中根据规则定义的先后依次执行所不同，firewalld 使用以下优先级规则：
 
 - 日志规则：无论日志规则被定义在哪里，优先执行日志规则；
 - drop/reject 规则：永远优先 accept 规则；
 - accept 规则：优先级最低。
 
-&emsp;&emsp;为了解决这个问题，我们可以通过为 rich rule 添加优先级顺序。
+&emsp;&emsp;由于默认排序规则优先级，我们可以通过为 rich rule 添加优先级顺序参数，从而解决默认排序规则问题。
 
 ```bash
 # priority 越小优先级越高
