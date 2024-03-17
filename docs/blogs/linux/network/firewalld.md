@@ -151,7 +151,7 @@ $ firewall-cmd --zone=public --add-rich-rule='rule family=ipv4 source address=19
 - drop/reject 规则：永远优先 accept 规则；
 - accept 规则：优先级最低。
 
-&emsp;&emsp;由于默认排序规则优先级，我们可以通过为 rich rule 添加优先级顺序参数，从而解决默认排序规则问题。
+&emsp;&emsp;为了避免默认优先级给我们带来未知的影响，我们可以通过为 rich rule 添加优先级顺序参数，从而强制让 rich rule 根据我们期望的顺序执行：
 
 ```bash
 # priority 越小优先级越高
