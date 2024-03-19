@@ -525,7 +525,7 @@ export default defineConfig({
                             text: "网络",
                             collapsed: true,
                             items: [
-                                {text: "iptable", link: "/blogs/linux/network/iptables"},
+                                {text: "iptables", link: "/blogs/linux/network/iptables"},
                                 {text: "firewalld", link: "/blogs/linux/network/firewalld"},
                             ]
                         },
