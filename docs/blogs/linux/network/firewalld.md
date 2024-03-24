@@ -23,7 +23,7 @@ $ systemctl status firewalld
 ```bash
 $ systemctl stop firewalld
 $ systemctl disable firewalld
-$ yum -y remove firewalld
+$ yum remove -y firewalld
 ```
 
 ## 修改规则
