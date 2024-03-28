@@ -194,3 +194,106 @@ Chain INPUT (policy ACCEPT 377 packets, 34100 bytes)
 - **policy**: 表示链的默认策略，意思是如果包没有匹配上规则时默认执行的动作。在上面的案例中，INPUT 链默认策略是 `ACCEPT`，意思是默认发行。这种情况代表的 INPUT 链执行的是`黑名单`机制，默认所有包都能通过，只有指定的包不能通过；
 - **packets**: 表示当前链默认策略匹配到的包的数量；
 - **bytes**: 表示当前链默认策略匹配到的所有包的大小总和。
+
+## 高级用法
+### 基础匹配条件
+&emsp;&emsp;iptables 的匹配条件分为基础匹配条件和扩展匹配条件。基础匹配条件是 iptables 内置的，可以直接使用，而扩展匹配条件需要依赖一些扩展模块，一般需要通过 `-m` 选项指定扩展模块。
+
+&emsp;&emsp;接下来先介绍基础匹配条件。
+
+#### 源地址匹配
+&emsp;&emsp;在上面的创建规则时，我们使用 `-s` 作为匹配条件，可以匹配包的源地址，通过以下方式，也可以有更多的用法：
+
+```bash
+# 匹配单个 IP
+$ iptables -t filter -I INPUT -s 10.10.5.2 -j DROP
+
+# 匹配多个 IP，使用 , 隔开
+$ iptables -t filter -I INPUT -s 10.10.5.2,10.10.5.3 -j DROP
+
+# 匹配一个网段
+$ iptables -t filter -I INPUT -s 10.10.5.0/24 -j REJECT
+
+# 可以对匹配条件取反
+$ iptables -t filter -I INPUT ! -s 10.10.5.2 -j ACCEPT
+```
+
+::: warning 警告
+&emsp;&emsp;在上面的示例中，使用 `! -s 10.10.5.2` 表示对 `-s 10.10.5.2` 这个条件取反，表示源地址 IP 只要不为 `10.10.5.2` 即满足条件执行放行动作。可能很多人可能认为这条规则也可以理解为“只要是 10.10.5.2 的报文，那么就不接受”，虽然含义上相不多，但是在执行上是完全不一样的。因为上面的条件只表达了其它除了 10.10.5.2 以外的 IP 包的处理动作，但是却没指定 10.10.5.2 的处理动作，可以同样是 ACCEPT，可以 DROP，也可以是 REJECT。
+:::
+
+#### 目标地址匹配
+&emsp;&emsp;通过 `-d` 来创建目标匹配条件，与 `-s` 的用法基本一致。
+
+```bash
+# 匹配单个 IP
+$ iptables -t filter -I INPUT -d 10.10.5.2 -j DROP
+
+# 匹配多个 IP，使用 , 隔开
+$ iptables -t filter -I INPUT -d 10.10.5.2,10.10.5.3 -j DROP
+
+# 匹配一个网段
+$ iptables -t filter -I INPUT -d 10.10.5.0/24 -j REJECT
+
+# 可以对匹配条件取反
+$ iptables -t filter -I INPUT ! -d 10.10.5.2 -j ACCEPT
+```
+
+::: tip 提示
+&emsp;&emsp;目标地址匹配一般用在以下两个场景：
+
+1. 当前主机有两个网卡，通过防火墙想对其中一个网卡添加规则；
+2. 当前主机是网关，通过防火墙对内部主机添加规则。
+:::
+
+#### 协议类型匹配
+&emsp;&emsp;通过 `-p` 选项来添加需要匹配的协议类型。`-p` 选项支持以下二人协议:
+
+- tcp
+- udp
+- udplite
+- icmp
+- icmpv6
+- esp
+- ah
+- sctp
+- mh
+
+```bash
+# 拒绝来自 10.10.5.2 的 icmp 协议的包
+# ping 命令使用 icmp 协议，也就是此时 10.10.5.2 将无法 ping 通本机
+$ iptables -t filter -I INPUT -s 10.10.5.2 -p icmp -j REJECT
+```
+
+::: tip 提示
+&emsp;&emsp;在添加规则时，指定多个匹配条件时，这些条件之间默认存在 `与` 关系。
+:::
+
+#### 网卡/接口匹配
+&emsp;&emsp;通过 `-i` 或 `-o` 选项添加网卡/接口匹配规则。`-i` 表示包从哪个网卡流入本机，`-o` 表示从哪块网卡流出本机。当本机有多个网卡时，可以使用此选项添加网卡/接口匹配条件。
+
+```bash
+# 获取本机网卡信息
+$ ifconfig
+ens192: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.10.4.1  netmask 255.255.0.0  broadcast 10.10.255.255
+        inet6 fe80::7dcd:991d:a8dc:1ac1  prefixlen 64  scopeid 0x20<link>
+        ether 00:50:56:aa:d9:58  txqueuelen 1000  (Ethernet)
+        RX packets 39683  bytes 37554827 (35.8 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 15318  bytes 992553 (969.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+...
+
+# 添加入站规则
+$ iptables -t filter -I INPUT -i ens192 -p icmp -j DROP
+
+# 添加出库规则
+$ iptables -t filter -I OUTPUT -o ens192 -j DROP
+```
+
+::: tip 提示
+&emsp;&emsp;回顾概念章节里面的 iptables 报文流向图，可以发现有的报文件别的主机发到本机的，有的报文是本机发送给其它主机的。因此我们可以得出以下结论：
+- `-i` 选项只能用于 `PREROUTING`、`INPUT`、`FORWARD` 这三条链
+- `-o` 选项只能用于 `FORWARD`、`OUTPUT`、`POSTROUTING` 这三条链。
+:::
