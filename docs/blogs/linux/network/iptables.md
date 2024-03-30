@@ -297,3 +297,30 @@ $ iptables -t filter -I OUTPUT -o ens192 -j DROP
 - `-i` 选项只能用于 `PREROUTING`、`INPUT`、`FORWARD` 这三条链
 - `-o` 选项只能用于 `FORWARD`、`OUTPUT`、`POSTROUTING` 这三条链。
 :::
+
+### 扩展匹配条件
+&emsp;&emsp;上面的章节已经完成基础匹配条件的介绍，那么接下来我们介绍一下扩展匹配条件。
+
+#### icmp
+&emsp;&emsp;ICMP（Internet Control Message Protocol，互联网控制报文协议）主要用于探测网络上的主机是否可用、目标是否可达、网络是否通畅、路由是否可用等等，最常用的 `traceroute`、`ping` 命令使用的就是 ICMP 协议。
+
+&emsp;&emsp;使用 ping 命令 ping 某主机时，如果主机可达，对应主机会对该 ping 请求做出回应（此处不考虑禁 ping 等情况）。根据 RFC792 标准[[链接](https://www.rfc-editor.org/rfc/inline-errata/rfc792.html)]，ping 请求报文属于类型 `8/0` 的 ICMP 报文，而响应报文属于类型 `0/0` 的响应报文，具体如下：
+
+![](./assets/iptables-icmp.jpg)
+
+&emsp;&emsp;icmp 模块可以用于匹配指定 `type`、`code` 的报文：
+
+- `--icmp-type`：匹配指定类型的 ICMP 报文
+
+```bash
+# 禁止所有 icmp 类型的报文进入本机
+# 以下命令虽然可以禁止别的主机向本机发送 ping 请求，但同时也会造成本主机无法 ping 别的主机（因为响应报文被 REJECT）
+$ iptables -t filter -I INPUT -p icmp -j REJECT
+
+# 由于响应报文的标识为 8/0（type 为 8，code 为 0），因此可以只拒绝请求报文
+# 这样当前主机就可以正常使用 ping 命令了
+$ iptables -t filter -I INPUT -p icmp --icmp-type 8/0 -j REJECT
+
+# 也可以使用报文名称去匹配对应类型的报文
+$ iptables -t filter -I INPUT -p icmp --icmp-type "echo-request" -j REJECT
+```
