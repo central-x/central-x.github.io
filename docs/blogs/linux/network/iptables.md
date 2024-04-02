@@ -324,3 +324,103 @@ $ iptables -t filter -I INPUT -p icmp --icmp-type 8/0 -j REJECT
 # 也可以使用报文名称去匹配对应类型的报文
 $ iptables -t filter -I INPUT -p icmp --icmp-type "echo-request" -j REJECT
 ```
+
+#### tcp/udp
+&emsp;&emsp;基础匹配条件里，没有提供`源端口`和`目标端口`这两个匹配条件。如果需要对端口进行匹配，则需要借助 tcp/udp 扩展模块。
+
+&emsp;&emsp;tcp/udp 模块支持以下配匹配条件：
+
+- `--sport`：添加源端口匹配条件，支持取反操作；
+- `--dport`：添加目标端口匹配条件，支持取反操作；
+- `--tcp-flags`：<font color=red>只能用于 tcp 协议</font>，根据 tcp 报文类型作为匹配条件；
+- `--syn`：<font color=red>只能用于 tcp 协议</font>，用于匹配 tcp 新建连接的请求报文，相当于 `--tcp-flags SYN,RST,ACK,FIN SYN`。
+
+```bash
+# 拒绝来自 10.10.5.2 的 ssh 请求
+# 使用 --dport 时，必须事先指定使用了哪种协议，即必须先使用 -p 选项
+# 确认了协议之后，则需要使用 -m 选项指定扩展模块
+$ iptables -t filter -I INPUT -s 10.10.5.2 -p tcp -m tcp --dport 22 -j REJECT
+
+# 拒绝目标端口不是 22 的所有报文
+$ iptables -t filter -I INPUT -s 10.10.5.2 -p tcp !--dport 22 -j REJECT
+
+# 可以指定一个端口范围
+# 拒绝目标端口范围为 [22, 25] 的所有报文，也就是拒绝目标端口为 22、23、24、25 的所有报文
+# 如果端口范围写成 :22 代表匹配 [0, 22] 的端口
+# 如果端口范围写成 80: 代理匹配 [80, 65535] 的端口
+$ iptables -t filter -I INPUT -s 10.10.5.2 -p tcp --dport 22:25 -j REJECT
+```
+
+::: tip 提示
+&emsp;&emsp;在上面的案例中，可以忽略 `-m` 选项。当使用了 `-p` 选项时，如果没有使用 `-m` 指定使用哪个扩展模块，iptables 会默认使用与协议名称相同的模块。
+:::
+
+&emsp;&emsp;`--tcp-flags` 主要用于匹配 TCP 报头里面的标志位，用于匹配特定的传输报文。
+
+```bash
+# 以下命令的意思是需要匹配 SYN,ACK,FIN,RST,URG,PSH 这 6 个标志位信息，其中 SYN 必须为 1，其余必须为 0
+# 也就是 TCP 三次握手里面的第一次握手的情况
+# 拒绝第一次握手即表示拒绝建立 TCP 连接
+$ iptables -t filter -I INPUT -p tcp -m tcp --dport 22 --tcp-flags SYN,ACK,FIN,RST,URG,PSH SYN -j REJECT
+
+# 以下命令的意思是需要匹配 SYN,ACK,FIN,RST,URG,PSH 这 6 个标志位信息，其中 SYN、ACK 必须为 1，其余必须为 0
+# 也就是 TCP 三次握手里面的第二次握手的情况
+$ iptables -t filter -I INPUT -p tcp -m tcp --dport 22 --tcp-flags SYN,ACK,FIN,RST,URG,PSH SYN,ACK -j REJECT
+
+# 还可以简写为以下
+$ iptables -t filter -I INPUT -p tcp -m tcp --dport 22 --tcp-flags ALL SYN -j REJECT
+
+# tcp 模块还贴心地提供了第一次握手的简写
+$ iptables -t filter -I INPUT -p tcp -m tcp --dport 22 --syn -j REJECT
+```
+
+#### state
+&emsp;&emsp;在 icmp 章节中，如果我们直接禁用 icmp 类型的报文，则不仅其它主机无法 ping 本机，本机也无法 ping 其它主机。为了解决这个问题，我们需要区分 icmp 报文的类型，只拒绝 `8/0` 类型的报文，放行其它类型的 icmp 报文，才能让本机的 ping 命令正常工作。
+
+&emsp;&emsp;同理，在 tcp/udp 协议中，当我们通过 http 访问服务器的时候，客户端向服务器的 80 端口发起请求，服务端再通过 80 端口响应我们的请求，于是作为客户端，我们应当需要放行 80 端口，以便服务端的响应报文可以进入到客户端主机。但如果这样的话，那么其它主机如果通过 80 端口主动向客户端主机发送数据时，由于客户端的主机因为已经放行了 80 端口，那么就客户端主机就可以可以接收到这些数据，这样就会造成客户端产生一定的风险。
+
+&emsp;&emsp;为了解决这个问题，客户端可以选择针对已知安全的主机放行对应的端口，其他 IP 一律拒绝来保证客户端主机的安全。但是随着主机越来越多，这样的放行规则就越来越多，配置越来越复杂，从而产生维护困难等问题。如果通过 `--tcp-flags` 选项将外来的“第一次握手”的请求拒绝，那对方仍然可以通过 UDP、ICMP 协议等向客户端发送数据，仍然无法保证客户端主机的安全。
+
+&emsp;&emsp;iptables 的 state 模块可以方便的解决以上问题。<font color=red>state 模块可以让 iptables 实现“连接追踪”机制</font>。在 TCP/IP 协议簇中，UDP 和 ICMP 是没有连接的，但对于 state 模块来说，tcp 报文、udp 报文、icmp 报文都是有连接状态的，只要两台主机在“你来我往”地通信，就算建立起连接。
+
+&emsp;&emsp;对于 state 模块的连接而言，报文可以分为 5 种状态：
+
+- `NEW`：连接中的第一个包，状态就是 NEW，可以理解为新连接的第一个包的状态为 NEW；
+- `ESTABLISHED`：NEW 状态包后面的包的状态为 ESTABLISHED，表示连接已建立；
+- `RELATED`：如果两个连接有关联关系，则其中一个连接会被标为 RELATED；
+- `INVALID`：如果一个包没有办法被识别，或者这个包没有任何状态，那么这个包的状态就是 INVALID
+- `UNTRACKED`：报文未被追踪，通常表示报文无法找到相关连的连接。
+
+&emsp;&emsp;解决以上问题的关键在于如何区分报文是否为了回应之前发出去的报文。那么通过 state 模块，可以将 `ESTABLISHED`、`RELATED` 状态的报文放行即可，表示放行回应我们的的报文。
+
+&emsp;&emsp;state 模块支持以下参数：
+
+- `--state`：匹配指定状态的报文，多种状态使用 , 连接。
+
+```bash
+# 放行连接状态为 ESTABLISHED、RELATED 的报文
+$ iptables -t filter -I INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+# 拒绝所有报文
+$ iptables -t filter -A INPUT -j REJECT
+
+# 使用 ssh 访问其它服务器，可以正常工作
+$ ssh root@10.10.5.2
+root@10.10.5.2's password: 
+```
+
+```bash
+# 在其它主机上访问 10.10.4.1 时，无法正常连接
+$ ssh root@10.10.4.1
+ssh: connect to host 10.10.4.1 port 22: Connection refused
+
+# 也无法 ping 通 10.10.4.1
+$ ping 10.10.4.1 -c4
+PING 10.10.4.1 (10.10.4.1) 56(84) bytes of data.
+From 10.10.4.1 icmp_seq=1 Destination Port Unreachable
+From 10.10.4.1 icmp_seq=2 Destination Port Unreachable
+From 10.10.4.1 icmp_seq=3 Destination Port Unreachable
+From 10.10.4.1 icmp_seq=4 Destination Port Unreachable
+
+--- 10.10.4.1 ping statistics ---
+4 packets transmitted, 0 received, +4 errors, 100% packet loss, time 3000ms
+```
