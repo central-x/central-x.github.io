@@ -424,3 +424,36 @@ From 10.10.4.1 icmp_seq=4 Destination Port Unreachable
 --- 10.10.4.1 ping statistics ---
 4 packets transmitted, 0 received, +4 errors, 100% packet loss, time 3000ms
 ```
+
+#### multiport
+&emsp;&emsp;tcp/udp 扩展模块只能匹配连续的端口范围，如果需要指定多个离散的、不连续的端口，则需要借助 multiport 模块。
+
+&emsp;&emsp;multiport 模块支持以下参数：
+
+- `--sports`：源端口
+- `--dports`：目标端口
+
+```bash
+# 拒绝目标端口为 22、80、443 端口的报文
+$ iptables -t filter -I INPUT -s 10.10.5.2 -p tcp -m multiport --dports 22,80,443 -j REJECT
+
+# 在 multiport 模块，也可以指定端口范围
+$ iptables -t filter -I INPUT -s 10.10.5.2 -p tcp -m multiport --dports 22,80,1000: -j REJECT
+```
+
+::: warning 警告
+&emsp;&emsp;multiport 扩展模块只能用于 tcp 协议和 udp 协议，即需要配合 `-p tcp` 或 `-p udp` 使用。
+:::
+
+#### iprange
+&emsp;&emsp;在上面的章节中，我们只能使用 `-s` 或 `-d` 表示源地址与目标地址，可以同时指定多个 IP（每个 IP 用 , 隔开），也可以指事实上一个网段（10.10.5.0/24），但是不能一次性指定一段连续的 IP 地址范围。如果我们需要指定一段连续的 IP 地址范围，那么需要借助 `iprange` 扩展模块。
+
+&emsp;&emsp;通过 iprange 的 `--src-range` 选项指定源地址范围，使用 `--dst-range` 选项指定目标地址范围
+
+```bash
+# 丢弃源 IP 地址在 10.10.5.[2, 100] 范围的报文
+$ iptables -t filter -I INPUT -m iprange --src-range 10.10.5.2-10.10.5.100 -j DROP
+
+# 可以对 IP 范围进行取反
+$ iptables -t filter -I INPUT -m iprange !--src-range 10.10.5.2-10.10.5.100 -j DROP
+```
