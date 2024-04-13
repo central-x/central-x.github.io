@@ -496,3 +496,70 @@ $ iptables -t filter -I OUTPUT -p tcp --dport 80 -m time --monthdays 22,23 -j RE
 # 2024 年 1 月 22 日到 2025 年 1 月 22 日不能访问 80 端口
 $ iptables -t filter -I OUTPUT -p tcp --dport 80 -m time --datestart 2024-01-22 --datestop 2025-01-22 -j REJECT
 ```
+
+#### connlimit
+&emsp;&emsp;使用 connlimit 扩展模块，可以限制每个 IP 地址同时连接到 server 端的连接数量。如果不指定 IP，则默认针对`每个客户端 IP`，即对单个 IP 的并发连接数限制。
+
+&emsp;&emsp;使用 connlimit 模块时，支持以下选项：
+
+- `--connlimit-above`：限制每个 IP 地址最多占用链接数。对其取反，则与 `--connlimit-opto` 含义相同；
+- `--connlimit-opto`：每个 IP 的连接数不超过指定链接数，则允许链接。CentOS 7 以后才可以使用；
+- `--connlimit-mask`：限制网段的连接数量。根据连接进来的 IP 计算网段。
+
+```bash
+# 每个 IP 地址只能占用两个 ssh 连接
+$ iptables -t filter -I INPUT -p tcp --dport 22 -m connlimit --connlimit-above 2 -j REJECT
+
+# 如果 IP 地址占用链接数不超过 2 个，则接受
+# 注意，此规则不代表 IP 地址占用链接超过 2 个就拒绝
+# 因为 connlimit 的目标是限制链接数量，因此取反操作相对比较少用
+$ iptables -t filter -I INPUT -p tcp --dport 22 -m connlimit --connlimit-above 2 -j ACCEPT
+
+# 根据连接进来的 IP 计算网段，相同网段的 IP 共用连接数
+# 如 192.168.101.173 访问，则以下规则的意思是 192.168.101.0/24 这个网段下所有的 IP 共用 2 个链接数
+# 如果其中一台主机占用了 2 个链接数，则其余所有的 IP 都无法连接
+$ iptables -t filter -I INPUT -p tcp --dport 22 -m connlimit --connlimit-above 2 --connlimit-mask 24 -j REJECT
+```
+
+#### limit
+&emsp;&emsp;使用 limit 扩展模块，可以限制单位时间内流入的包的数量，从而限制流量速率。limit 扩展模块使用 `令牌桶` 算法进行限流。
+
+&emsp;&emsp;使用 limit 模块时，支持以下选项：
+
+- `--limit`：速率限制。如 `10/minute`。可选单位有 `/second`、`/minute`、`/hour`、`/day`。
+- `--limit-burst`：令牌桶容量，默认为 5。
+
+```bash
+# 每分钟释放 10 个令牌（也就是每 6 秒一个令牌）
+$ iptables -t filter -I INPUT -p icmp -m limit --limit 10/minute -j ACCEPT
+
+# 注意，limit 模块只是说以 10/minute 速率接收，不代表其余的会被拒绝
+# 由于 INPUT 链的默认规则是 ACCEPT，因此未被这个规则匹配上的报文也会被 ACCEPT
+# 为了让上面的限流生效，可以修改链的默认策略
+$ iptables -t filter -A INPUT -p icmp -j REJECT
+```
+
+```bash
+# 在其它主机使用 ping 命令测试令牌桶
+$ ping 10.10.4.1
+PING 10.10.4.1 (10.10.4.1) 56(84) bytes of data.
+64 bytes from 10.10.4.1: icmp_seq=1 ttl=64 time=0.252 ms
+64 bytes from 10.10.4.1: icmp_seq=2 ttl=64 time=0.577 ms
+64 bytes from 10.10.4.1: icmp_seq=3 ttl=64 time=0.550 ms
+64 bytes from 10.10.4.1: icmp_seq=4 ttl=64 time=0.491 ms
+64 bytes from 10.10.4.1: icmp_seq=5 ttl=64 time=0.661 ms
+From 10.10.4.1 icmp_seq=6 Destination Port Unreachable
+64 bytes from 10.10.4.1: icmp_seq=7 ttl=64 time=0.254 ms
+From 10.10.4.1 icmp_seq=8 Destination Port Unreachable
+From 10.10.4.1 icmp_seq=9 Destination Port Unreachable
+From 10.10.4.1 icmp_seq=10 Destination Port Unreachable
+From 10.10.4.1 icmp_seq=11 Destination Port Unreachable
+From 10.10.4.1 icmp_seq=12 Destination Port Unreachable
+64 bytes from 10.10.4.1: icmp_seq=13 ttl=64 time=0.588 ms
+From 10.10.4.1 icmp_seq=14 Destination Port Unreachable
+From 10.10.4.1 icmp_seq=15 Destination Port Unreachable
+```
+
+::: tip 提示
+&emsp;&emsp;注意，如果令牌桶的容量空了，那么 limit 会根据速度定速向令牌桶添加领牌。超过令牌桶容量的令牌将被丢弃。
+:::
