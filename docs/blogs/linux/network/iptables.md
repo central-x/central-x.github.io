@@ -457,3 +457,42 @@ $ iptables -t filter -I INPUT -m iprange --src-range 10.10.5.2-10.10.5.100 -j DR
 # 可以对 IP 范围进行取反
 $ iptables -t filter -I INPUT -m iprange !--src-range 10.10.5.2-10.10.5.100 -j DROP
 ```
+
+#### string
+&emsp;&emsp;使用 string 扩展模块可以用于指定需要匹配的字符串，如报文中包含对应的字符串，则命中匹配条件。
+
+&emsp;&emsp;使用 string 模块时，我们需要指定以下两个选项：
+
+- `--algo`：必选项，指定匹配算法。可选算法有 `bm` 与 `kmp`；
+- `--string`: 必须项，指定待匹配字符串。
+
+```bash
+# 拒绝报文中存在 test 的报文
+$ iptables -t filter -I INPUT -m string --alog bm --string "test" -j REJECT
+```
+
+#### time
+&emsp;&emsp;使用 time 扩展模块，可以根据时间段匹配报文。如果报文到达时间在指定时间范围，则命中匹配条件。
+
+&emsp;&emsp;使用 time 模块时，支持以下选项：
+
+- `--timestart`：可选项，指定起始时间，时间格式为 `HH:mm:ss`
+- `--timestop`：可选项，指定结束时间，时间格式为 `HH:mm:ss`
+- `--weekdays`：可选项，指定每个星期的哪些天。可以通过数字 1～7 表示，也可以通过 Mon, Tue, Wed, Thu, Fri, Sat, Sun 表示。支持取反操作
+- `--monthdays`：可选项，指定每月的哪些天。支持取反操作
+- `--datestart`：可选项，指定开始日期，时间格式为 `yyyy-MM-dd`
+- `--datestop`：可选项，指定结束日期，时间格式为 `yyyy-MM-dd`
+
+```bash
+# 指定时间范围
+$ iptables -t filter -I OUTPUT -p tcp --dport 80 -m time --timestart 09:00:00 --timestop 18:00:00 -j REJECT
+
+# 周六、日不能访问 80 端口
+$ iptables -t fitler -I OUTPUT -p tcp --dport 80 -m time --weekdays 6,7 -j REJECT
+
+# 每月 22、23 号不能访问 80 端口
+$ iptables -t filter -I OUTPUT -p tcp --dport 80 -m time --monthdays 22,23 -j REJECT
+
+# 2024 年 1 月 22 日到 2025 年 1 月 22 日不能访问 80 端口
+$ iptables -t filter -I OUTPUT -p tcp --dport 80 -m time --datestart 2024-01-22 --datestop 2025-01-22 -j REJECT
+```
