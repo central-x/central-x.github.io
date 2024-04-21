@@ -563,3 +563,74 @@ From 10.10.4.1 icmp_seq=15 Destination Port Unreachable
 ::: tip 提示
 &emsp;&emsp;注意，如果令牌桶的容量空了，那么 limit 会根据速度定速向令牌桶添加领牌。超过令牌桶容量的令牌将被丢弃。
 :::
+
+### 自定义链
+&emsp;&emsp;在上面的章节中，我们一般都是在 iptables 的默认链中定义规则。但随着定义的规则越来越多，默认链上的规则将会混杂着各种类型的规则，非常不利用日常运维。iptables 通过自定义链，将规则分类归集到不同的链上进行处理，从而解决以上问题。
+
+```bash
+# 清空规则
+$ iptables -F
+
+# 在 filter 表上创建一条名为 IN_HTTP 的链
+# IN_HTTP 链用于集中保存与 HTTP 协议有关的规则
+$ iptables -t filter -N IN_HTTP
+
+# 查看 filter 表
+$ iptables -nvL
+Chain INPUT (policy ACCEPT 37 packets, 2440 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain OUTPUT (policy ACCEPT 18 packets, 2044 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain IN_HTTP (0 references)
+ pkts bytes target     prot opt in     out     source               destination  
+```
+
+&emsp;&emsp;在上面案例中，可以看到已创建了 IN_HTTP 链，同时可以发现后面跟着 `(0 references)`。在 iptables 中，自定义链是不能直接使用的，必须被默认链引用才能够使用。
+
+```bash
+# 向 IN_HTTP 链添加规则
+$ iptables -t filter -I IN_HTTP -s 10.10.5.2 -j REJECT
+
+# 向 INPUT 添加规则，将访问本机 80 端口的 tcp 报文交给 IN_HTTP 处理
+# 注意，之前的章节中，-j 参数用于直接指定 ACCEPT、REJECT、DROP 等动作，这里将自定义链作为动作
+$ iptables -I INPUT -p tcp --dport 80 -j IN_HTTP
+
+# 查看 filter 表
+# 可以看到 IN_HTTP 链引用数量变为 1
+$ iptables -nvL
+Chain INPUT (policy ACCEPT 6 packets, 384 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 IN_HTTP    tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:80
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain OUTPUT (policy ACCEPT 3 packets, 320 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain IN_HTTP (1 references)
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 REJECT     all  --  *      *       10.10.5.2            0.0.0.0/0            reject-with icmp-port-unreachable
+```
+
+::: tip 提示
+&emsp;&emsp;可以在 `10.10.5.2` 主机上访问本主机，确认规则是否生效。
+:::
+
+&emsp;&emsp;自定义的其它操作：
+
+```bash
+# 重命名自定义链
+$ iptables -E IN_HTTP HTTP
+
+# 删除自定义链
+# 注意，删除自定义链时，需要以下事项:
+# 1. 删除自定义链的所有引用，引用为 0 时才能删除，否则会报 Too many links 错误
+# 2. 先清空自定义链下的规则，否则会报 Directory not empty 错误
+$ iptables -X HTTP
+```
