@@ -635,6 +635,9 @@ $ iptables -E IN_HTTP HTTP
 $ iptables -X HTTP
 ```
 
+### 黑白名单机制
+&emsp;&emsp;在
+
 ## 网络防火墙
 ### 环境准备
 &emsp;&emsp;在概念章节中，我们提及到防火墙分为主机防火墙与网络防火墙。在上面的章节中，iptables 基本都是作为主机防火墙的角色工作的，那么接下来介绍 iptables 作为网络防火墙应该如何工作。
@@ -655,13 +658,129 @@ $ iptables -X HTTP
 
 &emsp;&emsp;如上图所示，已知以下信息：
 
-- 准备两个网段，分别是 `192.168.0.1/24` 和 `10.0.0.1/24`，两个网段相互隔离；
-- 主机 A 需要通过主机 B 访问主机 C，因此主机 A 在配置网络的时候，需要将网关配置为主机 B 的 IP 地址 `192.168.0.200`；
-- 主机 B 充当了网络防火墙的角色，在该主机上有两块网卡，其中网卡 1 的 IP 地址为 `192.168.0.200`，连接到网段 `192.168.0.1/24`，网卡 2 的 IP 为 `10.0.0.10`，连接到网段 `10.0.0.1/24`；
-- Linux 系统默认情况下是不会转发报文的，因此主机 B 需要要开通过报文转发功能；
+- 准备两个网段，分别是 `172.16.0.0/24` 和 `10.10.0.0/24`，两个网段相互隔离；
+- 主机 B 有两张网卡，其中一张位于 `172.16.0.0/24` 网段，IP 为 `172.16.0.2`；另一张位于 `10.10.0.0/24` 网段，IP 为 `10.10.0.2`；
+- 主机 B 充当了 `10.10.0.0/24` 网段的网络防火墙的角色，因此需将主机 C 的网关设置为主机 B 的 IP `10.10.0.2`<sup><font color=red>[1]</font></sup>;
+- Linux 主机默认没有启用报文转发功能，因此主机 B 需要启用报文转发功能<sup><font color=red>[2]</font></sup>；
+- 主机 A 需要访问主机 C，因此我们通过 `route add -net 10.10.0.0/24 gw 10.10.0.2` 命令<sup><font color=red>[3]</font></sup>设置路由。
 
 ::: tip 提示
-&emsp;&emsp;使用命令 `cat /proc/sys/net/ipv4/ip_forward` 查看当前主机是否启用了报文转发功能，如果内容为 `0` 则表示当前主机不支持转发。通过命令 `echo 1 > /proc/sys/net/ipv4/ip_forward` 可以临时开启报文转发功能（重启后失效）。
-
-&emsp;&emsp;如果需要永久生效，则需要设置 `/etc/sysctl.conf`（CentOS 7 使用 `/usr/lib/sysctl.d/00-system.conf`）文件，添加/修改配置项 `net.ipv4.ip_forward = 1` 即可。
+1. 在 CentOS 7，可以通过修改 `/etc/sysconfig/network-scripts/ifcfg-ens192` 的 `GATEWAY` 属性设置；
+2. 使用命令 `cat /proc/sys/net/ipv4/ip_forward` 查看当前主机是否启用了报文转发功能，如果内容为 `0` 则表示当前主机不支持转发。通过命令 `echo 1 > /proc/sys/net/ipv4/ip_forward` 可以临时开启报文转发功能（重启后失效）。如果需要永久生效，则需要设置 `/etc/sysctl.conf`（CentOS 7 使用 `/usr/lib/sysctl.d/00-system.conf`）文件，添加/修改配置项 `net.ipv4.ip_forward = 1` 即可；
+3. 在 CentOS 7，需要安装 `net-tools` 之后才能使用 route 命令。
 :::
+
+```bash
+# 完成以上的配置之后，在主机 A ping 主机 C
+# 可以发现现在虽然主机 A 是 172.16.0.0/24 网段，但是仍能访问 10.10.0.10 主机
+$ ping 10.10.0.10 -c 4
+PING 10.10.0.10 (10.10.0.10) 56(84) bytes of data.
+64 bytes from 10.10.0.10: icmp_seq=1 ttl=63 time=0.650 ms
+64 bytes from 10.10.0.10: icmp_seq=2 ttl=63 time=0.454 ms
+64 bytes from 10.10.0.10: icmp_seq=3 ttl=63 time=1.02 ms
+64 bytes from 10.10.0.10: icmp_seq=4 ttl=63 time=0.902 ms
+
+--- 10.10.0.10 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3001ms
+rtt min/avg/max/mdev = 0.454/0.758/1.029/0.225 ms
+```
+
+### 添加规则
+&emsp;&emsp;现在在网关主机 B上添加规则：
+
+```bash
+###############################################
+# 主机 B（172.16.0.2 / 10.10.0.2）
+###############################################
+# 在 FORWARD 链新增规则，拒绝所有报文
+$ iptables -A FORWARD -j REJECT
+
+###############################################
+# 主机 A（172.16.0.10）
+###############################################
+# 测试是否还能访问主机 C（10.10.0.10）
+# 可以发现现在已经无法 ping 通了
+$ ping 10.10.0.10 -c 4
+PING 10.10.0.10 (10.10.0.10) 56(84) bytes of data.
+From 172.16.0.2 icmp_seq=1 Destination Port Unreachable
+From 172.16.0.2 icmp_seq=2 Destination Port Unreachable
+From 172.16.0.2 icmp_seq=3 Destination Port Unreachable
+From 172.16.0.2 icmp_seq=4 Destination Port Unreachable
+
+--- 10.10.0.10 ping statistics ---
+4 packets transmitted, 0 received, +4 errors, 100% packet loss, time 2999ms
+
+###############################################
+# 主机 B（172.16.0.2 / 10.10.0.2）
+###############################################
+# 查看 iptables 规则详情，发现已匹配并处理了 4 个包
+# 因此可以确认主机 A 的报文是可以通过主机 B 的转发到达主机 C 的
+$ iptables -nvL
+Chain INPUT (policy ACCEPT 14 packets, 1760 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    4   336 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            reject-with icmp-port-unreachable
+
+Chain OUTPUT (policy ACCEPT 12 packets, 1760 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+# 添加一条规则，放行来自 172.16.0.0/24 ，访问目标端口为 80 的 tcp 协议报文
+$ iptables -I FORWARD -s 172.16.0.0/24 -p tcp --dport 80 -j ACCEPT
+
+###############################################
+# 主机 A（172.16.0.10）
+###############################################
+# 主机 A 访问主机 C 提供的 http 服务
+# 从结果可以得知，虽然在网关主机 B 放行了来自 172.16.0.0/24 的 tcp 协议报文，但是主机 A 还是无法访问主机 C 提供的 http 服务
+# 这是因为主机 B 虽然放行了来自 172.16.0.0/24 的请求报文，但是却还是拦截了主机 C 的响应报文
+# 因此请求已到达主机 C，但是获取不到响应
+$ curl http://10.10.0.10
+
+###############################################
+# 主机 B（172.16.0.2 / 10.10.0.2）
+###############################################
+# 添加一条规则，放行响报文
+# 注意，这里使用的是 -d 和 --sport 参数来匹配响应报文
+$ iptables -I FORWARD -d 172.16.0.0/24 -p tcp --sport 80 -j ACCEPT
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+```
+
+&emsp;&emsp;由上面的案例中，我们可以得知，当 iptables 作为网络防火墙时，在配置规则时往往需要考虑双向性。对此，我们也可以对规则进行优化，放行所有`响应报文`，这样就不需要每次写两条规则了。
+
+```bash
+###############################################
+# 主机 B（172.16.0.2 / 10.10.0.2）
+###############################################
+# 删除第 1 条规则，也就是我们放行响应的规则
+$ iptables -D FORWARD 1
+
+# 添加规则，入行所有响应报文
+$ iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+```
+
+&emsp;&emsp;通过以上防火墙主机 B 的规则，现在只能是 `172.16.0.0/24` 网段的主机访问位于网段 `10.10.0.0/24` 的主机 C 了，因此可以起到一定的保护作用了。
