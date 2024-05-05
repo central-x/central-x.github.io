@@ -636,7 +636,81 @@ $ iptables -X HTTP
 ```
 
 ### 黑白名单机制
-&emsp;&emsp;在
+&emsp;&emsp;在规则管理的查询规则章节，我们提及到，链具有默认策略(`policy`)，比如 `FILTER` 表的 `INPUT` 链的默认策略为 `ACCEPT`，即如果报文没有匹配上所有规则时，则执行默认策略（放行）。由于默认策略为 ACCEPT，那么在设置规则的时候，链中的规则对应的动作应该为 DROP 或 REJECT，表示只有匹配到规则的报文才会被拒绝，没有被规则匹配到的报文都会被默认接受，因此这就是<font color=red>黑名单机制</font>。
+
+&emsp;&emsp;同理，当链的默认策略为 `DROP` 或 `REJECT` 时，链中的规则对应的动作应该为 `ACCEPT`，表示只有匹配到规则的报文才会被接受，没有被规则匹配到的报文都会被默认丢弃/拒绝，这就是<font color=red>白名单机制</font>
+
+&emsp;&emsp;iptables 支持修改链的默认策略，如下：
+
+```bash
+# 为了防止服务器断开连接，提前在 INPUT 未尾添加一个接受所有包的规则
+$ iptables -A INPUT -j ACCEPT
+
+# 设置 FILTER 表的 INPUT 链的默认策略为 DROP
+$ iptables -P INPUT DROP
+
+# 再次查询 INPUT 链
+# 可以发现 policy 已变更主国 DROP 了
+# 注意，此时千万不要执行 iptables -F 命令，因为清空规则后，如果报文没有被规则匹配上时，会被默认丢弃
+$ iptables -nvL INPUT
+Chain INPUT (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+   26  1752 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           
+```
+
+### 动作
+&emsp;&emsp;在前面的文档里，有提及到 `ACCEPT`、`DROP`、`REJECT` 等动作，其中 `ACCEPT` 和 `DROP` 动作比较简单，这里对其它动作作一些补充。
+
+#### REJECT
+&emsp;&emsp;在使用 `REJECT` 时，可以通过 `--reject-with` 选项设置拒绝信息，可选项如下：
+
+- `icmp-port-unreachable`(默认)
+- `icmp-net-unreachable`
+- `icmp-host-unreachable`
+- `icmp-proto-unreachable`
+- `icmp-net-prohibited`
+- `icmp-host-pro-hibited`
+- `icmp-admin-prohibited`
+
+```bash
+# 添加规则，拒绝所有 icmp 协议的报文，拒绝信息为 icmp-host-unreachable
+$ iptables -I INPUT -p icmp -j REJECT --reject-with icmp-host-unreachable
+
+# 在另一台电脑执行 ping 命令
+# 可以发现之前错误信息已变更为 Destination Host Unreachable
+$ ping 10.10.0.2 -c 4
+PING 10.10.0.2 (10.10.0.2) 56(84) bytes of data.
+From 10.10.0.2 icmp_seq=1 Destination Host Unreachable
+From 10.10.0.2 icmp_seq=2 Destination Host Unreachable
+From 10.10.0.2 icmp_seq=3 Destination Host Unreachable
+From 10.10.0.2 icmp_seq=4 Destination Host Unreachable
+
+--- 10.10.0.2 ping statistics ---
+4 packets transmitted, 0 received, +4 errors, 100% packet loss, time 3000ms
+```
+
+#### LOG
+&emsp;&emsp;使用 `LOG` 指令可以记录报文的相关信息到日志文件 `/var/log/message` 文件中<sup><font color=red>1</font></sup>。`LOG` 动作支持以下选项：
+
+- `--log-level`：指定记录日志的日志级别，可用级别有 `emerg`、`alert`、`crit`、`error`、`warning`、`notice`、`info`、`debug`；
+- `--log-prefix`：在日志头部添加标签，用于区分日志是由哪些规则产生的。最长不能超过 29 个字符。
+
+::: tip 提示
+1. 可以通过修改 `/etc/rsyslog.conf` 或 `/etc/syslog.conf` 配置文件修改日志文件的位置，添加 `kern.warning /var/log/iptables.log` 选项，并通过 `service rsyslog restart` 命令重启服务即可。
+:::
+
+```bash
+# 添加日志
+$ iptables -I INPUT -p icmp -j LOG --log-prefix [ICMP]
+
+# 访问后再查看日志
+# 可以发现产生了带 [ICMP] 前缀的报文日志
+$ tail -f /var/log/message
+May  8 15:28:19 centos7 kernel: [ICMP]IN=ens192 OUT= MAC=00:50:56:aa:d9:58:00:50:56:aa:75:e1:08:00 SRC=10.10.0.10 DST=10.10.0.2 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=29828 DF PROTO=ICMP TYPE=8 CODE=0 ID=3368 SEQ=1 
+May  8 15:28:20 centos7 kernel: [ICMP]IN=ens192 OUT= MAC=00:50:56:aa:d9:58:00:50:56:aa:75:e1:08:00 SRC=10.10.0.10 DST=10.10.0.2 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=30321 DF PROTO=ICMP TYPE=8 CODE=0 ID=3368 SEQ=2 
+May  8 15:28:21 centos7 kernel: [ICMP]IN=ens192 OUT= MAC=00:50:56:aa:d9:58:00:50:56:aa:75:e1:08:00 SRC=10.10.0.10 DST=10.10.0.2 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=30669 DF PROTO=ICMP TYPE=8 CODE=0 ID=3368 SEQ=3 
+May  8 15:28:22 centos7 kernel: [ICMP]IN=ens192 OUT= MAC=00:50:56:aa:d9:58:00:50:56:aa:75:e1:08:00 SRC=10.10.0.10 DST=10.10.0.2 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=30834 DF PROTO=ICMP TYPE=8 CODE=0 ID=3368 SEQ=4
+```
 
 ## 网络防火墙
 ### 环境准备
