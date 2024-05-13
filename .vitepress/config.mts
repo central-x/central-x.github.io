@@ -517,6 +517,7 @@ export default defineConfig({
                                 {text: "RAID", link: "/blogs/linux/storage/raid"},
                                 {text: "LVM", link: "/blogs/linux/storage/lvm"},
                                 {text: "NFS", link: "/blogs/linux/storage/nfs"},
+                                {text: "iSCSI", link: "/blogs/linux/storage/iscsi"},
                                 {text: "磁盘缓存", link: "/blogs/linux/storage/cache"}
                             ]
                         },
