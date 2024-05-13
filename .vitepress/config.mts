@@ -492,7 +492,6 @@ export default defineConfig({
                         {text: "Nginx", link: "/blogs/middleware/nginx"},
                         {text: "OpenVPN", link: "/blogs/middleware/openvpn"},
                         {text: "Frp", link: "/blogs/middleware/frp"},
-                        {text: "Keepalived", link: "/blogs/middleware/keepalived"},
                         {text: "SSL", link: "/blogs/middleware/ssl"},
                         {text: "Let's Encrypt", link: "/blogs/middleware/letsencrypt"},
                     ]
@@ -527,6 +526,7 @@ export default defineConfig({
                             items: [
                                 {text: "iptables", link: "/blogs/linux/network/iptables"},
                                 {text: "firewalld", link: "/blogs/linux/network/firewalld"},
+                                {text: "keepalived", link: "/blogs/linux/network/keepalived"},
                             ]
                         },
                         {
