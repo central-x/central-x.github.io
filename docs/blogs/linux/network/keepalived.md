@@ -1,6 +1,6 @@
 # Keepalived 搭建高可用
 ## 概述
-&emsp;&emsp;Keepalived [[链接](https://www.keepalived.org)]是一个基于 VRRP （虚拟路由冗余）协议来实现的 LVS 服务高可用方案，能够利用其来避免单点故障。一个 LVS 服务会有 2 台或以上服务器运行 Keepalived，一台为主服务器（MASTER），其余为备份服务器（BACKUP），可是对外表现为一个虚拟 IP，主服务器会发送特定的消息给备份服务器，当备份服务器收不到这个消息的时候，即主服务器宕机的时候，备份服务器就会接管虚拟 IP，继续提供服务，从而保证了高可用性。Keepalived 是 VRRP 的完美实现。
+&emsp;&emsp;Keepalived [[链接](https://www.keepalived.org)]是一个基于 VRRP （虚拟路由冗余）协议来实现的 LVS（Linux Virtual Server）服务高可用方案，能够利用其来避免单点故障。一个 LVS 服务会有 2 台或以上服务器运行 Keepalived，一台为主服务器（MASTER），其余为备份服务器（BACKUP），可是对外表现为一个虚拟 IP，主服务器会发送特定的消息给备份服务器，当备份服务器收不到这个消息的时候，即主服务器宕机的时候，备份服务器就会接管虚拟 IP，继续提供服务，从而保证了高可用性。Keepalived 是 VRRP 的完美实现。
 
 &emsp;&emsp;Keepalived 的 MASTER 节点在工作时，会不断地向备用节点发送心跳信息，告诉 BACKUP 节点自己还活着。当主节点发生故障时，就无法发送心跳了，于是备用节点接管主节点的 IP 资源和服务。
 
