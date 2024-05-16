@@ -535,12 +535,6 @@ export default defineConfig({
                             link: "/blogs/linux/permission"
                         },
                         {
-                            text: "驱动",
-                            collapsed: true,
-                            items: [
-                            ]
-                        },
-                        {
                             text: "Ubuntu",
                             collapsed: true,
                             items: [
