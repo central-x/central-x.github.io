@@ -149,3 +149,35 @@ $ docker info
   http://mirror.cluster.k8s/
  Live Restore Enabled: false
 ```
+
+### 优化日志存储
+&emsp;&emsp;Docker 默认将容器运行时产生的日志保存在 `/var/lib/docker/<container>/<container>-json.log` 文件，并且默认不滚动。也就是说，在容器未销毁前，这个容器产生的日志会一直保存在这个文件下。长期运行时，这个日志文件就会越滚越大，最终将磁盘占满。
+
+&emsp;&emsp;为了解决这个问题，可以修改 Docker 的配置文件来优化日志的存储方式。
+
+```bash
+# 修改配置文件，添加日志选项
+# 单个文件最大 10m，保留最近 10 个文件
+# 这样就可以限制单个容器的日志最多占用磁盘 100m 空间了
+$ vi /etc/docker/daemon.json
+
+{
+    "log-driver": "json-file",
+    "log-opts": {
+        "max-size": "10m",
+        "max-file": "10"
+    }
+}
+
+# 重启 Docker 以生效
+$ systemctl restart docker
+```
+
+&emsp;&emsp;查看以下文档，获取更多关于日志的配置选项：
+
+- [Configure logging drivers](https://docs.docker.com/config/containers/logging/configure/)
+- [JSON File logging driver](https://docs.docker.com/config/containers/logging/json-file/)
+
+::: warning 提示
+&emsp;&emsp;虽然通过 `systemctl restart docker` 使配置生效了，但是新配置对已创建的容器是不生效的，因此需要重新创建这些容器。
+:::
