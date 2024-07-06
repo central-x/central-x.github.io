@@ -12,13 +12,13 @@
 
 ```bash
 # 下载安装文件
-$ wget https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh
+$ wget https://repo.anaconda.com/archive/Anaconda3-2024.06-1-Linux-x86_64.sh
 
 # 安装 Anaconda3
 # 安装时需要同意协议，协议非常长，且无法跳过
 # 安装路径默认放在 /home/<username>/anaconda3 目录下
 # 注意，不要使用 sudo 来安装 Anaconda3
-$ sh ./Anaconda3-2023.09-0-Linux-x86_64.sh
+$ sh ./Anaconda3-2024.06-1-Linux-x86_64.sh
 
 # 提示以下内容时，输入 yes，表示 shell 在启动时自动激活 conda
 ...
@@ -55,7 +55,7 @@ Thank you for installing Anaconda3!
 ```bash
 # 验证环境
 (base) $ conda --version
-conda 23.7.4
+conda 24.5.0
 ```
 
 ### 创建环境
