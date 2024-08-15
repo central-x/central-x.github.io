@@ -89,11 +89,15 @@ $ docker info
  Live Restore Enabled: false
 
 # 创建 Docker 配置文件，添加 insecure-registries 选项
+# 注意，如果 insecure-registries 只添加域名，在正常情况下是能正常使用私库的
+# 但是发现有时在编译镜像时，Docker 还是以 https 去访问私库
+# 此时可以在 insecure-registries 再加上 http://<domain> 选项即可
 $ vi /etc/docker/daemon.json
 
 {
     "insecure-registries": [
-        "mirror.cluster.k8s"
+        "mirror.cluster.k8s",
+        "http://mirror.cluster.k8s"
     ]
 }
 
