@@ -587,6 +587,7 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         {text: "快速生成 favicon", link: "/blogs/web/favicon"},
+                        {text: "VitePress 集成 Disqus", link: "/blogs/web/vitepress-disqus"},
                     ]
                 },
                 {
