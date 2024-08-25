@@ -66,11 +66,9 @@ $ nginx -s stop
 ```nginx
 user nginx;
 worker_processes auto;
-error_log /var/log/nginx/error.log;
-pid /run/nginx.pid;
 
-# Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.
-include /usr/share/nginx/modules/*.conf;
+error_log   /var/log/nginx/error.log notice;
+pid         /run/nginx.pid;
 
 events {
     worker_connections 1024;
@@ -122,7 +120,7 @@ stream {
    - Mac: `/usr/local/var/log/nginx`
 
 ### 域名配置文件
-&emsp;&emsp;在上一步中，我们建议不要在总配置文件 `nginx.conf` 中添加路由信息，将路由配置信息放在 `conf.d` 目录下。除了以上要求，建议将不同的域名的路由放在不同的配置文件中，这样可以方便后续的配置管理。如：
+&emsp;&emsp;在上一步中，建议不要在总配置文件 `nginx.conf` 中添加路由信息，而是将路由配置信息放在 `conf.d` 目录下。除了以上要求，建议将不同的域名的路由放在不同的配置文件中，这样可以方便后续的配置管理。如：
 
 ```text
 <nginx>
@@ -139,8 +137,11 @@ stream {
 
 ![](./assets/nginx-reverse-proxy.svg)
 
+&emsp;&emsp;一般使用以下配置：
+
 ```nginx
 server {
+    # 设置变量，在日志中输出请求处理节点信息
     set                $handler            "local.cluster.k8s";
 
     # 监听端口
@@ -153,8 +154,10 @@ server {
     proxy_set_header   HOST                $http_host;
     proxy_set_header   X-Forwarded-Host    $http_host;
     proxy_set_header   X-Forwarded-For     $proxy_add_x_forwarded_for;
-    proxy_set_header   X-Forwarded-Proto   $scheme;
     proxy_set_header   X-Forwarded-Port    $server_port;
+    proxy_set_header   X-Forwarded-Proto   $scheme;
+    proxy_set_header   X-Forwarded-Scheme  $scheme;
+    proxy_set_header   X-Scheme            $scheme;
 
     # 路径匹配到以 / 开头的全部转发到 http://192.168.2.50:8081 服务器上
     location / {
@@ -167,10 +170,11 @@ server {
         proxy_pass         http://192.168.2.51:8082; 
         proxy_redirect     default;
     }
-} 
+}
 ```
 
-&emsp;&emsp;反向代理时，被代理的服务无法得知真实客户端相关信息，也无法得知客户端访问服务器时的协议、域名、端口信息等。而且在真实的运维过程中，可能存在多层反向代理的情况。为了保证被代理的服务可以正确地获取这些信息，需要在 Nginx 转发时添加一些请求头信息。
+#### 单层反向代理
+&emsp;&emsp;反向代理时，被代理的服务无法得知真实客户端相关信息，也无法得知客户端访问服务器时的协议、域名、端口信息等，这就有可能引起服务器日志异常、重定向异常等问题。为了保证被代理的服务可以正确地获取这些信息，需要在 Nginx 转发时添加一些请求头信息。一般情况下，我们约定使用以下请求头传递代理信息：
 
 - X-Real-IP：客户端真实 IP
 - X-Forwarded-Host：客户端访问服务器时的域名信息
@@ -180,21 +184,90 @@ server {
 - X-Forwarded-Scheme：客户端访问服务器时的协议（兼容性冗余）
 - X-Scheme：客户端访问服务器时的协议（兼容性冗余）
 
-&emsp;&emsp;如果只存在单层反向代理，那么需要添加以下请求头配置
+&emsp;&emsp;如果只存在单层反向代理，那么需要添加以下请求头配置：
 
 ```nginx
-proxy_set_header   X-Real-IP           $remote_addr;
-proxy_set_header   HOST                $http_host;
-proxy_set_header   X-Forwarded-Host    $http_host;
-proxy_set_header   X-Forwarded-For     $proxy_add_x_forwarded_for;
-proxy_set_header   X-Forwarded-Proto   $scheme;
-proxy_set_header   X-Forwarded-Port    $server_port;
+server {
+    # 其它配置
+    ...
+    
+    proxy_set_header   X-Real-IP           $remote_addr;
+    proxy_set_header   HOST                $http_host;
+    proxy_set_header   X-Forwarded-Host    $http_host;
+    proxy_set_header   X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header   X-Forwarded-Port    $server_port;
+    proxy_set_header   X-Forwarded-Proto   $scheme;
+    proxy_set_header   X-Forwarded-Scheme  $scheme;
+    proxy_set_header   X-Scheme            $scheme;
+    
+    # 代理配置
+    location / {
+        ...
+    }
+}
 ```
 
-&emsp;&emsp;如果存在多层反向代理，那么首层反向代理与上面一致，第二层及以后的反向代理应加入以下头部配置
+#### 多层反向代理
+&emsp;&emsp;在真实的运维过程中，还可能存在多层反向代理的情况。如果存在多层反向代理，那么首层反向代理与上面一致，第二层及以后的反向代理应添加以下头部配置：
 
 ```nginx
-proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for
+server {
+    # 其它配置
+    ...
+    
+    # 只添加 X-Forwarded-For 请求头
+    proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for
+    
+    # 代理配置
+    location / {
+        ...
+    }
+}
+```
+
+::: tip 提示
+&emsp;&emsp;第二层以后的反向代理就不要再添加 `X-Real-IP`、`HOST`、`X-Forwarded-Host`、`X-Forwarded-Proto`、`X-Forwarded-Port` 等代理信息请求头了，否则将会导致代理信息被覆盖。
+:::
+
+#### WebSocket
+&emsp;&emsp;反向代理时，如果需要支持反向代理，则需要添加以下配置：
+
+```nginx
+server {
+    # 其它配置
+    ...
+    
+    location / {
+        proxy_pass              http://192.168.2.50:8081; 
+        proxy_redirect          default;
+        client_max_body_size    1g;
+        
+        # WebSocket 支持
+        proxy_http_version      1.1;
+        proxy_set_header        Upgrade      $http_upgrade;
+        proxy_set_header        Connection   'upgrade';
+    }
+}
+```
+
+#### 超时配置
+
+```nginx
+server {
+    # 其它配置
+    ...
+    
+    location / {
+        proxy_pass              http://192.168.2.50:8081; 
+        proxy_redirect          default;
+        client_max_body_size    1g;
+        
+        # 超时配置
+        proxy_connect_timeout   60s;
+        proxy_read_timeout      60s;
+        proxy_send_timeout      60s;
+    }
+}
 ```
 
 ### 静态文件托管
@@ -212,6 +285,12 @@ server {
         index index.htm index.html;
         # 静态资源存放的路径
         root /usr/share/nginx/www;
+    }
+    
+    # 也可以根据后缀名确认资源类别
+    location ~.*\.(gif|jpg|jpeg|png|bmp|swf|css|js)$ {
+        root /usr/share/nginx/www;
+        expires 30d; # 缓存静态文件 30 天
     }
 }
 ```
@@ -309,7 +388,10 @@ server {
 ```
 
 ### 负载均衡
-&emsp;&emsp;在 http 节点下添加 upstream 节点。
+&emsp;&emsp;在 http 节点下添加 upstream 节点，并在 upstream 节点上配置负载均衡策略；server 节点转发时，将 proxy_pass 指向 upstream 节点即可。
+
+#### 轮询（Round Robin）
+&emsp;&emsp;轮询是 Nginx 的默认负载均衡策略，它将客户端的请求按顺序轮流分配到后端的服务上。如果后端服务器宕机了，Nginx 会自动将其剔除候选，直到该服务恢复正常。
 
 ```nginx
 http {
@@ -318,28 +400,115 @@ http {
 
     # 声明负载均衡节点
     upstream lbnode {
-        # 负载策略
-        ip_hash;
-        server 10.10.2.2L8080 weight=1; # weight 为权重值
-        server 10.10.2.3:8080 weight=2;
+        server 10.10.2.2:8080;
+        server 10.10.2.3:8080;
+    }
+    
+    server {
+        # 监听端口
+        listen 80;
+
+        location / {
+            # 将流量转发到 upstream 节点
+            proxy_pass http://lbnode;
+            # 其它配置
+            ...
+        }
     }
 }
 ```
 
-&emsp;&emsp;修改 server 节点下的 proxy_pass 属性，由原来指定 IP 变成使用 upstream 名称。
+#### 权重（Weight）
+&emsp;&emsp;权重策略允许为后端服务分配不同的权重，权重越高的服务器被分配到的请求越多，因此可以根据服务器的请求处理能力等因素进行灵活配置。
 
 ```nginx
-server {
-    # 监听端口
-    listen 80;
+http {
+    # 其它配置
+    ...
 
-    location / {
-        # 将流量转发到 upstream 节点
-        proxy_pass http://lbnode;
-        proxy_redirect default;
+    # 声明负载均衡节点
+    upstream lbnode {
+        # 为节点添加权重
+        server 10.10.2.2:8080 weight=1;
+        server 10.10.2.3:8080 weight=2;
+    }
+    
+    server {
+        # 监听端口
+        listen 80;
+
+        location / {
+            # 将流量转发到 upstream 节点
+            proxy_pass http://lbnode;
+            # 其它配置
+            ...
+        }
     }
 }
 ```
+
+#### IP 哈希（IP Hash）
+&emsp;&emsp;IP 哈希策略会根据客户端的 IP 地址进行哈希运算，将相同的请求分配给同一个后端服务器。这种策略一般适用于需要绑定会话（Session）的场景，因为同一个客户端的请求会被发送到相同的服务器，从而避免了会话丢失的问题。
+
+```nginx
+http {
+    # 其它配置
+    ...
+
+    # 声明负载均衡节点
+    upstream lbnode {
+        ip_hash;
+        server 10.10.2.2:8080;
+        server 10.10.2.3:8080;
+    }
+    
+    server {
+        # 监听端口
+        listen 80;
+
+        location / {
+            # 将流量转发到 upstream 节点
+            proxy_pass http://lbnode;
+            # 其它配置
+            ...
+        }
+    }
+}
+```
+
+#### 最少连接（Least Connections）
+&emsp;&emsp;最少连接策略将新的请求分配给当前连接数最少的后端服务器。这种策略可以确保每个后端服务器的负载相对均衡，避免某个服务器过载而其它服务器空闲的问题。
+
+```nginx
+http {
+    # 其它配置
+    ...
+
+    # 声明负载均衡节点
+    upstream lbnode {
+        least_conn;
+        server 10.10.2.2:8080;
+        server 10.10.2.3:8080;
+    }
+    
+    server {
+        # 监听端口
+        listen 80;
+
+        location / {
+            # 将流量转发到 upstream 节点
+            proxy_pass http://lbnode;
+            # 其它配置
+            ...
+        }
+    }
+}
+```
+
+::: tip 提示
+&emsp;&emsp;Nginx 原生的 Stream 模块支持最少连接，但 Http 模块中通常需要借助第三方插件或脚本实现。
+:::
+
 
 ### 直接返回字符串
 
