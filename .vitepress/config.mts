@@ -528,6 +528,7 @@ export default defineConfig({
                                 {text: "iptables", link: "/blogs/linux/network/iptables"},
                                 {text: "firewalld", link: "/blogs/linux/network/firewalld"},
                                 {text: "keepalived", link: "/blogs/linux/network/keepalived"},
+                                {text: "tcpdump", link: "/blogs/linux/network/tcpdump"},
                             ]
                         },
                         {
