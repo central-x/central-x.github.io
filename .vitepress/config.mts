@@ -549,6 +549,7 @@ export default defineConfig({
                             collapsed: true,
                             items: [
                                 {text: "下载 yum 的离线安装包", link: "/blogs/linux/centos/download-yum"},
+                                {text: "Nvidia 驱动", link: "/blogs/linux/centos/nvidia-driver"},
                             ]
                         },
                         {

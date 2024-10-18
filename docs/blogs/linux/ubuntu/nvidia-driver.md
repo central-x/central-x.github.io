@@ -9,7 +9,7 @@
 - 显卡：NVIDIA GeForce RTX 4090
 
 ::: danger 提示
-&emsp;&emsp;在 ESXi 的虚拟机里安装 Nvidia 驱动，需确保已关闭虚拟机配置`引导选项`里的 `启用 UEFI 安全引导`，否则可能会出现正常安装驱动后，但无法找到显卡的问题。详细操作请参考 GPU 直通文档[[链接](/blogs/vmware/esxi/gpu-pass-through)]。
+&emsp;&emsp;在 ESXi 的虚拟机里安装 Nvidia 驱动，需确保`已关闭`虚拟机配置`引导选项`里的 `启用 UEFI 安全引导`，否则可能会出现正常安装驱动后，但无法找到显卡的问题。详细操作请参考 GPU 直通文档[[链接](/blogs/vmware/esxi/gpu-pass-through)]。
 :::
 
 ## 操作
