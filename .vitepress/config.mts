@@ -483,6 +483,7 @@ export default defineConfig({
                         {text: "搭建 Clash 代理", link: "/blogs/docker/clash"},
                         {text: "搭建 Nexus3", link: "/blogs/docker/nexus3"},
                         {text: "代理下载镜像", link: "/blogs/docker/pull-image-from-proxy"},
+                        {text: "Nvidia GPU", link: "/blogs/docker/gpu-nvidia"},
                     ]
                 },
                 {
