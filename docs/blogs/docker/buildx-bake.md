@@ -751,7 +751,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Release OpenJDK 8(Alpine)
-        uses: docker/bake-action@v4
+        uses: docker/bake-action@v5
         with:
           targets: openjdk-alpine
           workdir: ./openjdk
