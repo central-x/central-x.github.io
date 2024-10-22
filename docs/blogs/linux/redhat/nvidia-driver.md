@@ -4,13 +4,14 @@
 
 ## 环境
 
-- 操作系统：CentOS 7.4（无界面，最小安装）
+- 操作系统：CentOS 7（无界面，最小安装）
 - ESXi： 8.0 Update 2
 - 显卡：NVIDIA GeForce RTX 4090
 - 驱动版本：550.120[[下载地址](https://www.nvidia.com/en-us/drivers/details/232672/)]
 
 ::: danger 提示
-&emsp;&emsp;在 ESXi 的虚拟机里安装 Nvidia 驱动，需确保`已关闭`虚拟机配置`引导选项`里的 `启用 UEFI 安全引导`，否则可能会出现正常安装驱动后，但无法找到显卡的问题。详细操作请参考 GPU 直通文档[[链接](/blogs/vmware/esxi/gpu-pass-through)]。
+- 经测试，此文档在 Rocky Linux 9.4 下也能正常工作。
+- 在 ESXi 的虚拟机里安装 Nvidia 驱动，需确保`已关闭`虚拟机配置`引导选项`里的 `启用 UEFI 安全引导`，否则可能会出现正常安装驱动后，但无法找到显卡的问题。详细操作请参考 GPU 直通文档[[链接](/blogs/vmware/esxi/gpu-pass-through)]。
 :::
 
 ## 操作
