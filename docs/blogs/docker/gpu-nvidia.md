@@ -40,8 +40,8 @@ Mon Oct 20 21:30:48 2024
 ::: tip 提示
 &emsp;&emsp;如果系统未安装驱动，可以参考以下文档：
 
-- CentOS[[链接](/blogs/linux/centos/nvidia-driver)]
-- Ubuntu[[链接](/blogs/linux/ubuntu/nvidia-driver)]
+- CentOS[[链接](/blogs/linux/redhat/nvidia-driver)]
+- Ubuntu[[链接](/blogs/linux/debian/nvidia-driver)]
 :::
 
 ### 安装 nvidia-container-toolkit

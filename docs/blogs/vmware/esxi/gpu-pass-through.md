@@ -35,4 +35,5 @@
 
 &emsp;&emsp;关于在 Linux 下安装 NVIDIA 显卡驱动请参考以下文档：
 
-- Ubuntu Desktop [[链接](/blogs/linux/ubuntu/nvidia-driver)]
+- Ubuntu [[链接](/blogs/linux/debian/nvidia-driver)]
+- CentOS [[链接](/blogs/linux/redhat/nvidia-driver)]

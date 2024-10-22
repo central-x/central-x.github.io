@@ -1,6 +1,6 @@
 # RAID
 ## 概述
-&emsp;&emsp;1988 年美国加州大学伯克利分校的 D.A. Patterson 教授等首次在论文 “A Case of Redundant Array of Inexpensive Disks” 中提出了 RAID 概念，即廉价冗余阵列（Redundant Array of Inexpensive Disks）。由于当时大容量磁盘比较昂贵，RAID 的基本思想是将多个容量较小、相对廉价的磁盘进行有机组合，从而以较低的成本获得与昂贵大容量磁盘相当的容量、性能、可靠性。随着磁盘成本和价格的不断降低，RAID 可以使用大部份的磁盘，“兼价”已经毫无意义。因此，RAID 咨询委员会（RAID Advisory Board，RAB）决定用“独立”替代“廉价”，于是 RAID 变成独立磁盘冗余队列（Redundant Array of Independent Disks）。
+&emsp;&emsp;1988 年美国加州大学伯克利分校的 D.A. Patterson 教授等首次在论文 “A Case of Redundant Array of Inexpensive Disks” 中提出了 RAID 概念，即廉价冗余阵列（Redundant Array of Inexpensive Disks）。由于当时大容量磁盘比较昂贵，RAID 的基本思想是将多个容量较小、相对廉价的磁盘进行有机组合，从而以较低的成本获得与昂贵大容量磁盘相当的容量、性能、可靠性。随着磁盘成本和价格的不断降低，RAID 可以使用大部份的磁盘，“兼价”已经毫无意义。因此，RAID 咨询委员会（RAID Advisory Board，RAB）决定用“独立”替代“廉价”，于是 RAID 变成独立磁盘冗余阵列（Redundant Array of Independent Disks）。
 
 &emsp;&emsp;RAID 主要利用数据条带、镜像和数据校验技术来获取高性能、可靠性、容错能力和扩展性，根据运用或组合运用这三种技术的策略和架构，可以把 RAID 分为不同等级，以满足不同数据应用的需求。D.A. Patterson 等的论文中定义了 RAID1 ～ RAID5 原始 RAID 等级，1988 年以来又扩展了 RAID0 和 RAID6。近年来，存储厂商不断推出诸如 RAID7、RAID10/01、RAID50、RAID53、RAID100 等 RAID 等级，但这些并无统一标准。目前业界公认的标准是 RAID0 ～ RAID5，除了 RAID2 外的四个等级被定为工业标准，而在实际应用领域中使用最多的 RAID 等级是 RAID0、RAID1、RAID3、RAID5、RAID6 和 RAID10。
 

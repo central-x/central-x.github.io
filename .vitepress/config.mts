@@ -537,20 +537,20 @@ export default defineConfig({
                             link: "/blogs/linux/permission"
                         },
                         {
-                            text: "Ubuntu",
+                            text: "Debian系",
                             collapsed: true,
                             items: [
-                                {text: "远程桌面", link: "/blogs/linux/ubuntu/remote-desktop"},
-                                {text: "OpenSSH Server", link: "/blogs/linux/ubuntu/openssh-server"},
-                                {text: "Nvidia 驱动", link: "/blogs/linux/ubuntu/nvidia-driver"}
+                                {text: "远程桌面", link: "/blogs/linux/debian/remote-desktop"},
+                                {text: "OpenSSH Server", link: "/blogs/linux/debian/openssh-server"},
+                                {text: "Nvidia 驱动", link: "/blogs/linux/debian/nvidia-driver"}
                             ]
                         },
                         {
-                            text: "CentOS",
+                            text: "Redhat系",
                             collapsed: true,
                             items: [
-                                {text: "下载 yum 的离线安装包", link: "/blogs/linux/centos/download-yum"},
-                                {text: "Nvidia 驱动", link: "/blogs/linux/centos/nvidia-driver"},
+                                {text: "下载 yum 的离线安装包", link: "/blogs/linux/redhat/download-yum"},
+                                {text: "Nvidia 驱动", link: "/blogs/linux/redhat/nvidia-driver"},
                             ]
                         },
                         {
