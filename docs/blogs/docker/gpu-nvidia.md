@@ -55,7 +55,7 @@ $ curl -o /etc/yum.repos.d/nvidia-container-toolkit.repo https://nvidia.github.i
 $ yum install nvidia-container-toolkit
 
 # 配置 Docker Runtime
-$  nvidia-ctk runtime configure --runtime=docker
+$ nvidia-ctk runtime configure --runtime=docker
 
 # 重新启动 Docker 服务
 $ systemctl restart docker

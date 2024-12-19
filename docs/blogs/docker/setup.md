@@ -8,7 +8,7 @@
 ```bash
 # 由于 firewalld 防火墙与 docker 服务有冲突，因此卸载 firewalld
 # 可以使用 iptables 来代替 firewalld
-$ systemctl stop firewalld && systemctl disable firewalld && yum -y remove firewalld
+$ systemctl stop firewalld && systemctl disable firewalld && yum remove -y firewalld
 
 # 安装 iptables
 $ yum install -y iptables iptables-services

@@ -19,10 +19,10 @@ $ systemctl start sendmail && systemctl enable sendmail
 ```bash
 set smtp=smtp.exmail.qq.com:465
 set smtp-auth=login
-set smtp-auth-user=platform@minstone.com.cn
-set smtp-auth-password=Md@123
+set smtp-auth-user=support@central-x.com
+set smtp-auth-password=x.123456
 set ssl-verify=ignore
-set from=platform@minstone.com.cn
+set from=support@central-x.com
 ```
 
 ### 多帐户配置

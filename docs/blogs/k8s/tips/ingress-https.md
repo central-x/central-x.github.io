@@ -22,9 +22,6 @@ server {
         proxy_redirect default;
         client_max_body_size 1000m;
 
-        # 设置当前端口对应的租户编码
-        proxy_set_header X-MCube-Tenant test;
-
         # 将请求的相关信息封状成头部传递给网关
         proxy_set_header Host $http_host;
         proxy_set_header X-Forwarded-Host $http_host;

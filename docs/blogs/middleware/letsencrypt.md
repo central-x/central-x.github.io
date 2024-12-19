@@ -25,7 +25,6 @@ services:
 
 networks:
   default:
-    name: svc
     driver: bridge
 ```
 
@@ -106,6 +105,19 @@ If you like Certbot, please consider supporting our work by:
 
 &emsp;&emsp;可以通过 Play with Docker 项目[[链接](https://labs.play-with-docker.com)]提供的环境去生成证书，再拉回本地使用。
 :::
+
+&emsp;&emsp;除了使用 `docker-compose run` 来运行 docker 镜像，也可以通过以下命令完成相同功能：
+
+```bash
+docker run --rm -it --name certbot \
+  -v ./certbot/etc/:/etc/letsencrypt \
+  -v ./certbot/lib:/var/lib/letsencrypt \
+  -v ./certbot/log:/var/log/letsencrypt \
+  -v ./certbot/www:/var/www \
+  --net=host \
+  certbot/certbot:latest \
+  certonly --preferred-challenges dns --manual -d *.central-x.com
+```
 
 ### 更新证书
 &emsp;&emsp;使用以下命令更新证书。
