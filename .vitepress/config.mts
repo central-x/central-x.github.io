@@ -66,6 +66,7 @@ export default defineConfig({
                     {text: "Environment", link: "/blogs/environment/python"},
                     {text: "Linux", link: "/blogs/linux/storage/partition"},
                     {text: "VMware", link: "/blogs/vmware/esxi/template"},
+                    {text: "Synology", link: "/blogs/synology/install-synology"},
                     {text: "Java", link: "/blogs/java/jsch-scp"},
                     {text: "Web", link: "/blogs/web/favicon"},
                     {text: "Android", link: "/blogs/android/junit-custom-application"},
