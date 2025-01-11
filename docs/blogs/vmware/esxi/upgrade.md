@@ -11,16 +11,15 @@
 ![](assets/upgrade_01.png)
 
 ### 远程登录到服务器
-&emsp;&emsp;在默认情况下，ESXi 是不允许使用 SSH 远程登录到服务器的，因此需要先启用 Secure Shell。在首面中执行以下操作，即可启用远程 SSH 远程登录功能。
-
-![](assets/upgrade_02.png)
-
-&emsp;&emsp;然后在命令行工具里，就可以执行远程操作了。
+&emsp;&emsp;使用 SSH 登录到 ESXi。
 
 ```bash
-# 远程登录到 ESXi 服务器
-$ ssh root@10.10.10.1
+$ ssh root@vm.yeh.cn
 ```
+
+::: tip 提示
+&emsp;&emsp;ESXi 默认关闭了 SSH 远程登录功能，可以参考另一篇文档[[链接](./enable-ssh)]启用该功能。
+:::
 
 ### 执行升级操作
 

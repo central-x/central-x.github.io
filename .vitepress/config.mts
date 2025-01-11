@@ -571,11 +571,21 @@ export default defineConfig({
                         text: "ESXi",
                         collapsed: true,
                         items: [
+                            {text: "启用 SSH", link: "/blogs/vmware/esxi/enable-ssh"},
                             {text: "创建 ESXi 系统模板", link: "/blogs/vmware/esxi/template"},
                             {text: "使用命令升级 ESXi", link: "/blogs/vmware/esxi/upgrade"},
                             {text: "GPU 直通", link: "/blogs/vmware/esxi/gpu-pass-through"},
+                            {text: "硬盘直通", link: "/blogs/vmware/esxi/disk-pass-through"},
                         ]
                     }]
+                },
+                {
+                    text: "Synology",
+                    collapsed: true,
+                    items: [
+                        {text: "安装群晖", link: "/blogs/synology/install-synology"},
+                        {text: "存储管理", link: "/blogs/synology/create-storage-pool-and-volume"},
+                    ]
                 },
                 {
                     text: "Java",
