@@ -154,6 +154,33 @@ $ docker info
  Live Restore Enabled: false
 ```
 
+### 设置网络代理
+&emsp;&emsp;Docker 进程是由 systemd 启动的，因此我们可以通过修改 systemd 的配置文件来设置代理。
+
+```bash
+$ nano /lib/systemd/system/docker.service
+
+# 一些 Linux 发行版可能存放在这里
+$ nano /etc/systemd/system/docker.service
+```
+
+&emsp;&emsp;在 `[Service]` 节中添加以下内容：
+
+```ini
+[Service]
+Environment="HTTP_PROXY=http://<server>:<port>/"
+Environment="HTTPS_PROXY=http://<server>:<port>/"
+Environment="ALL_PROXY=socks5://<server>:<port>/"
+Environment="NO_PROXY=localhost,127.0.0.1"
+```
+
+&emsp;&emsp;完成配置后，重启 Docker 进程以生效。
+
+```bash
+$ systemctl daemon-reload
+$ systemctl restart docker
+```
+
 ### 优化日志存储
 &emsp;&emsp;Docker 默认将容器运行时产生的日志保存在 `/var/lib/docker/<container>/<container>-json.log` 文件，并且默认不滚动。也就是说，在容器未销毁前，这个容器产生的日志会一直保存在这个文件下。长期运行时，这个日志文件就会越滚越大，最终将磁盘占满。
 
