@@ -119,6 +119,22 @@ docker run --rm -it --name certbot \
   certonly --preferred-challenges dns --manual -d *.central-x.com
 ```
 
+### 使用证书
+&emsp;&emsp;使用 certbot 命令生成证书后，可以使用 `nginx` 来使用这个证书。找到 `certbot/etc/live/<domain>` 目录，将 `fullchain.pem` 和 `privkey.pem` 文件拷贝到 `/etc/nginx/ssl` 目录下，修改 nginx 配置:
+
+```nginx {5,6}
+server {
+    listen                443 ssl;
+    server_name           www.central-x.com;
+    
+    ssl_certificate       /etc/nginx/ssl/fullchain.pem;
+    ssl_certificate_key   /etc/nginx/ssl/privkey.pem;
+
+    # 其余配置
+    ...
+}
+```
+
 ### 更新证书
 &emsp;&emsp;使用以下命令更新证书。
 
