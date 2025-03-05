@@ -212,3 +212,42 @@ $ systemctl restart docker
 ::: warning 提示
 &emsp;&emsp;虽然通过 `systemctl restart docker` 使配置生效了，但是新配置对已创建的容器是不生效的，因此需要重新创建这些容器。
 :::
+
+### 调整存储位置
+&emsp;&emsp;Docker 默认将数据保存在 `/var/lib/docker/` 目录下，如果想将数据迁移并保存在 `/data` 目录下，可以使用以下方式：
+
+```bash
+# 停止 Docker 进程
+$ systemctl stop docker
+
+# 将 Docker 数据迁移到 /data 目录下
+$ mv /var/lib/docker /data
+
+# 修改 Docker 配置文件，添加数据存储路径选项
+$ vi /etc/docker/daemon.json
+{
+    "data-root": "/data/docker",
+    
+    # 其它选项
+    ...
+}
+
+# 重启 Docker 以生效
+$ systemctl start docker
+```
+
+### 清理无用数据
+&emsp;&emsp;在使用 Docker 的过程中，可能会产生一些无用的数据，如编译产生的中间文件，或者下载的镜像文件等。这些数据可以通过以下命令清理：
+
+```bash
+# 查看 Docker 占用的磁盘空间
+$ docker system df
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          40        5         15.65GB   14.62GB (93%)
+Containers      27        3         63.2kB    6.746kB (10%)
+Local Volumes   142       24        120.4GB   47.61GB (39%)
+Build Cache     70        0         769.1MB   769.1MB
+
+# 清理无用数据
+$ docker system prune -a
+```
