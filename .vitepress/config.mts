@@ -578,6 +578,12 @@ export default defineConfig({
                             {text: "GPU 直通", link: "/blogs/vmware/esxi/gpu-pass-through"},
                             {text: "硬盘直通", link: "/blogs/vmware/esxi/disk-pass-through"},
                         ]
+                    },{
+                      text: "vCenter",
+                      collapsed: true,
+                      items: [
+                        {text: "无 DNS 环境下安装 vCenter", link: "/blogs/vmware/vcenter/vcenter-no-dns"}
+                      ]
                     }]
                 },
                 {
